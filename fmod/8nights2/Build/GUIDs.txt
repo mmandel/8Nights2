@@ -1,0 +1,5 @@
+{3934e26e-3ae8-400b-bc71-e6b702e7d2fd} event:/Stem-Melody1
+{1f508e95-76b6-4bde-a226-79512685db23} event:/Stems
+{bf91661c-9d51-405a-9ee8-d43eb55e2590} bus:/
+{96a16132-1a06-4a47-8249-2fbfd063a4c7} bus:/Reverb
+{75a807ad-a65c-4e3a-a255-b73f361f1704} bank:/Master Bank

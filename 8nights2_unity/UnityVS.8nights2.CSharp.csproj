@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D8269E77-B41C-0B73-ED0D-5BB30F884C9F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
+    <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectType>Game:1</UnityProjectType>
+    <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
+    <UnityVersion>5.1.3f1</UnityVersion>
+    <RootNamespace></RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\UnityVS_bin\Debug\</OutputPath>
+    <IntermediateOutputPath>Temp\UnityVS_obj\Debug\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_1_3;UNITY_5_1;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_2D_PHYSICS;ENABLE_4_6_FEATURES;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PHYSICS_PHYSX3;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_LICENSE;ENABLE_AUDIOMIXER_SUSPEND;ENABLE_EDITOR_METRICS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\UnityVS_bin\Release\</OutputPath>
+    <IntermediateOutputPath>Temp\UnityVS_obj\Release\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>TRACE;UNITY_5_1_3;UNITY_5_1;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_2D_PHYSICS;ENABLE_4_6_FEATURES;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PHYSICS_PHYSX3;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_LICENSE;ENABLE_AUDIOMIXER_SUSPEND;ENABLE_EDITOR_METRICS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN</DefineConstants>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="Boo.Lang" />
+    <Reference Include="UnityScript.Lang" />
+    <Reference Include="UnityEngine">
+      <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Analytics">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
+    <Reference Include="HOTween">
+      <HintPath>Assets\HOTween\HOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zlib.CF">
+      <HintPath>Assets\Scripts\Hue\UnityHTTP-master\lib\Ionic.Zlib.CF.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenNI.Net">
+      <HintPath>Assets\ZigFu\Scripts\_Internal\OpenNI.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ZDK">
+      <HintPath>Assets\ZigFu\Scripts\_Internal\ZDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-UnityScript-firstpass">
+      <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="UnityVS.8nights2.CSharp.Plugins.csproj">
+      <Project>{DC01577D-9D98-0378-9BB5-BFA16661C88D}</Project>
+      <Name>UnityVS.8nights2.CSharp.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\OVR\Scripts\OVRCameraRig.cs" />
+    <Compile Include="Assets\OVR\Scripts\OVRCommon.cs" />
+    <Compile Include="Assets\OVR\Scripts\OVRDisplay.cs" />
+    <Compile Include="Assets\OVR\Scripts\OVRManager.cs" />
+    <Compile Include="Assets\OVR\Scripts\OVRPluginEvent.cs" />
+    <Compile Include="Assets\OVR\Scripts\OVRTracker.cs" />
+    <Compile Include="Assets\OVR\Scripts\OvrCapi.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRCrosshair.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRGUI.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRGamepadController.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRGridCube.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRMainMenu.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRPlayerController.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRUGUI.cs" />
+    <Compile Include="Assets\OVR\Scripts\Util\OVRVisionGuide.cs" />
+    <Compile Include="Assets\Scripts\Arduino\BlinkLED.cs" />
+    <Compile Include="Assets\Scripts\Arduino\ButtonPress.cs" />
+    <Compile Include="Assets\Scripts\Arduino\EightNightsArduinoButton.cs" />
+    <Compile Include="Assets\Scripts\Arduino\ReactToButton_MaterialColor.cs" />
+    <Compile Include="Assets\Scripts\Arduino\ReactToButton_TriggerMusic.cs" />
+    <Compile Include="Assets\Scripts\Attributes\AnimatorLayerAttribute.cs" />
+    <Compile Include="Assets\Scripts\Attributes\AnimatorStateAttribute.cs" />
+    <Compile Include="Assets\Scripts\Attributes\ScriptButtonAttribute.cs" />
+    <Compile Include="Assets\Scripts\CameraMgr.cs" />
+    <Compile Include="Assets\Scripts\EightNightsMgr.cs" />
+    <Compile Include="Assets\Scripts\FFTLightEffect.cs" />
+    <Compile Include="Assets\Scripts\FPSIndicator.cs" />
+    <Compile Include="Assets\Scripts\GroupTransformationFX.cs" />
+    <Compile Include="Assets\Scripts\Hue\DriveHueLight.cs" />
+    <Compile Include="Assets\Scripts\Hue\HSBColor.cs" />
+    <Compile Include="Assets\Scripts\Hue\HueEffect.cs" />
+    <Compile Include="Assets\Scripts\Hue\HueMessenger.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\AssemblyInfo.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\lib\JSON.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\src\CookieJar.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\src\DiskCache.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\src\FormDataStream.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\src\Request.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\src\Response.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\src\ResponseCallbackDispatcher.cs" />
+    <Compile Include="Assets\Scripts\Hue\UnityHTTP-master\src\StreamedWWWForm.cs" />
+    <Compile Include="Assets\Scripts\Koreographer\TestKoreoEventSubscriber.cs" />
+    <Compile Include="Assets\Scripts\LightEffect.cs" />
+    <Compile Include="Assets\Scripts\LightJams\LJValueToMaterial.cs" />
+    <Compile Include="Assets\Scripts\LightJams\LightJamsMgr.cs" />
+    <Compile Include="Assets\Scripts\LightJams\LightJamsValue.cs" />
+    <Compile Include="Assets\Scripts\LightJams\Par64Value.cs" />
+    <Compile Include="Assets\Scripts\LightJams\UnityOSC\OSC\OSCBundle.cs" />
+    <Compile Include="Assets\Scripts\LightJams\UnityOSC\OSC\OSCClient.cs" />
+    <Compile Include="Assets\Scripts\LightJams\UnityOSC\OSC\OSCMessage.cs" />
+    <Compile Include="Assets\Scripts\LightJams\UnityOSC\OSC\OSCPacket.cs" />
+    <Compile Include="Assets\Scripts\LightJams\UnityOSC\OSC\OSCServer.cs" />
+    <Compile Include="Assets\Scripts\LightJams\UnityOSC\OSCHandler.cs" />
+    <Compile Include="Assets\Scripts\LightJams\UnityOSC\OSCMessenger.cs" />
+    <Compile Include="Assets\Scripts\MIDI\ChannelAfterTouchEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\KeySignatureEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\MetaEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\MetaEventType.cs" />
+    <Compile Include="Assets\Scripts\MIDI\MidiCommandCode.cs" />
+    <Compile Include="Assets\Scripts\MIDI\MidiEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\MidiEventCollection.cs" />
+    <Compile Include="Assets\Scripts\MIDI\MidiEventComparer.cs" />
+    <Compile Include="Assets\Scripts\MIDI\MidiFile.cs" />
+    <Compile Include="Assets\Scripts\MIDI\NoteEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\NoteOnEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\PatchChangeEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\PitchWheelChangeEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\SequencerSpecificEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\SmpteOffsetEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\SysexEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\TempoEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\TextEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\TimeSignatureEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\TrackSequenceNumberEvent.cs" />
+    <Compile Include="Assets\Scripts\MIDI\Utils\ByteEncoding.cs" />
+    <Compile Include="Assets\Scripts\MIDI\Utils\MergeSort.cs" />
+    <Compile Include="Assets\Scripts\MirrorLightOnMaterial.cs" />
+    <Compile Include="Assets\Scripts\Music\BeatClock.cs" />
+    <Compile Include="Assets\Scripts\Music\ButtonSoundMgr.cs" />
+    <Compile Include="Assets\Scripts\Music\EightNightsAudioMgr.cs" />
+    <Compile Include="Assets\Scripts\Music\EightNightsMIDIMgr.cs" />
+    <Compile Include="Assets\Scripts\Music\EightNightsMusicPlayer.cs" />
+    <Compile Include="Assets\Scripts\Music\EightNightsMusicPlayerFMod.cs" />
+    <Compile Include="Assets\Scripts\Music\FModStemPlayer.cs" />
+    <Compile Include="Assets\Scripts\Music\MIDIReceiver.cs" />
+    <Compile Include="Assets\Scripts\Music\SpawnAudioLoop.cs" />
+    <Compile Include="Assets\Scripts\Music\SpectrogramMgr.cs" />
+    <Compile Include="Assets\Scripts\RiftButton.cs" />
+    <Compile Include="Assets\Scripts\RiftButtonMgr.cs" />
+    <Compile Include="Assets\Scripts\RoomTransformation.cs" />
+    <Compile Include="Assets\Scripts\ScrubFX.cs" />
+    <Compile Include="Assets\Scripts\ToggleGameObject.cs" />
+    <Compile Include="Assets\Scripts\TriggerFX.cs" />
+    <Compile Include="Assets\Scripts\TriggerLightEffect.cs" />
+    <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
+    <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
+    <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />
+    <Compile Include="Assets\SteamVR\Extras\SteamVR_TestThrow.cs" />
+    <Compile Include="Assets\SteamVR\Extras\SteamVR_TrackedController.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Camera.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_CameraFlip.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_CameraMask.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Controller.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_ControllerManager.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Fade.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Frustum.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_GameView.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_IK.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Menu.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Overlay.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_PlayArea.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Render.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_RenderModel.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Skybox.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Stats.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Status.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_StatusText.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_TestController.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_TrackedObject.cs" />
+    <Compile Include="Assets\SteamVR\Scripts\SteamVR_Utils.cs" />
+    <Compile Include="Assets\Uniduino\Scripts\Arduino.Firmata.cs" />
+    <Compile Include="Assets\Uniduino\Scripts\Arduino.cs" />
+    <Compile Include="Assets\Uniduino\Scripts\SerialPortProxy.cs" />
+    <Compile Include="Assets\Uniduino\Scripts\UniduinoSetup.cs" />
+    <Compile Include="Assets\Uniduino\Tutorials\Analog Read\AnalogRead.cs" />
+    <Compile Include="Assets\Uniduino\Tutorials\Analog Write (PWM)\AnalogWrite.cs" />
+    <Compile Include="Assets\Uniduino\Tutorials\Blink Button\BlinkButton.cs" />
+    <Compile Include="Assets\Uniduino\Tutorials\Blink Timer\Blink.cs" />
+    <Compile Include="Assets\Uniduino\Tutorials\Digital Read\DigitalRead.cs" />
+    <Compile Include="Assets\Uniduino\Tutorials\Servo\Servo.cs" />
+    <Compile Include="Assets\Uniduino\Tutorials\Servo\ServoSlideControl.cs" />
+    <Compile Include="Assets\Uniduino\UniduinoTestPanel\UniduinoTestPanel.cs" />
+    <Compile Include="Assets\ZigFu\SampleScenes\_Data\Scripts\ExitOnEscape.cs" />
+    <Compile Include="Assets\ZigFu\SampleScenes\_Data\Scripts\HSBColor.cs" />
+    <Compile Include="Assets\ZigFu\SampleScenes\_Data\Scripts\MenuController.cs" />
+    <Compile Include="Assets\ZigFu\SampleScenes\_Data\Scripts\RandomHSV.cs" />
+    <Compile Include="Assets\ZigFu\SampleScenes\_Data\Scripts\animatedTexture.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UISessionControls\ZigFader.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UISessionControls\ZigFollowHandPoint.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UISessionControls\ZigPushDetector.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UISessionControls\ZigSteadyDetector.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UISessionControls\ZigSwipeDetector.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UISessionControls\ZigWaveDetector.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserControls\ZigHandRaiseDetector.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserControls\ZigHandSessionDetector.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserControls\ZigMapJointToSession.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserControls\ZigSkeleton.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserEngagers\ZigEngageAllUsers.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserEngagers\ZigEngageSingleSession.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserEngagers\ZigEngageSingleUser.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\UserEngagers\ZigEngageSplitScreen.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\Viewers\ZigDepthViewer.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\Viewers\ZigDepthmapToParticles.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\Viewers\ZigImageViewer.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\Viewers\ZigUserViewer.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\Viewers\ZigUsersRadar.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\Zig.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\_Internal\Matrix3.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\_Internal\TimedBuffer.cs" />
+    <Compile Include="Assets\ZigFu\Scripts\_Internal\kinectSpecific.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\HOTween\HOTween.XML" />
+    <None Include="Assets\HOTween\HOTween_License.txt" />
+    <None Include="Assets\OVR\Shaders\OVRGUIShader.shader" />
+    <None Include="Assets\OVR\Shaders\TextShader3D.shader" />
+    <None Include="Assets\Plugins\donotdelete.txt" />
+    <None Include="Assets\Plugins\x86\donotdelete.txt" />
+    <None Include="Assets\Plugins\x86_64\donotdelete.txt" />
+    <None Include="Assets\Standard Assets\Koreographer\ReadMe_v0.0.7.txt" />
+    <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
+    <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
+    <None Include="Assets\SteamVR\Resources\SteamVR_Blit.shader" />
+    <None Include="Assets\SteamVR\Resources\SteamVR_BlitFlip.shader" />
+    <None Include="Assets\SteamVR\Resources\SteamVR_Fade.shader" />
+    <None Include="Assets\SteamVR\Resources\SteamVR_HiddenArea.shader" />
+    <None Include="Assets\SteamVR\Resources\SteamVR_Overlay.shader" />
+    <None Include="Assets\SteamVR\readme.txt" />
+    <None Include="Assets\StreamingAssets\FMOD_bank_list.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2012\UnityVS.CSharp.targets" />
+</Project>
