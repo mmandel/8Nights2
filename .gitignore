@@ -31,3 +31,7 @@ obj/
 ehthumbs.db
 Thumbs.db
 docs/~$8NightsVRDesign.pptx
+*.csproj
+8nights2_unity/8nights2_unity.sln
+*.suo
+8nights2_unity/8nights2_unity.v11.suo
