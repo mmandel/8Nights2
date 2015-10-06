@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "8nights2_unity.CSharp.Plugins", "8nights2_unity.CSharp.Plugins.csproj", "{086629B8-E983-E950-FD9D-C51ABEE26932}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "8nights2_unity.CSharp", "8nights2_unity.CSharp.csproj", "{382A60FA-CBED-DDB8-FC25-9F91B9AB6AAE}"
