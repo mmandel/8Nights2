@@ -16,6 +16,7 @@ public class Nights2CamMgr : MonoBehaviour
     private bool _torchOnRightCtrl = true;
     private Transform _rightCtrlTrans = null;
     private Transform _leftCtrlTrans = null;
+    private Transform _headTrans = null;
 
     public static Nights2CamMgr Instance { get; private set; }
 
@@ -34,6 +35,8 @@ public class Nights2CamMgr : MonoBehaviour
                 _rightCtrlTrans = SteamCtrlMgr.right.transform;
             if (SteamCtrlMgr.left != null)
                 _leftCtrlTrans = SteamCtrlMgr.left.transform;
+
+            _headTrans = SteamCtrlMgr.transform.FindChild("Camera (head)");
         }
 	}
 
@@ -45,6 +48,11 @@ public class Nights2CamMgr : MonoBehaviour
     public Transform GetLanternParent()
     {
         return _torchOnRightCtrl ? _leftCtrlTrans : _rightCtrlTrans;
+    }
+
+    public Transform GetHeadTrans()
+    {
+        return _headTrans;
     }
 
     void SwapControllers()
