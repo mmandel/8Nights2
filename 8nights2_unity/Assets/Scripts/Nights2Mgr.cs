@@ -5,9 +5,12 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class Nights2Mgr : MonoBehaviour 
 {
+
+    public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
     public event StateChangedHandler OnStateChanged;
     public class StateChangedEventArgs : EventArgs
@@ -20,12 +23,17 @@ public class Nights2Mgr : MonoBehaviour
 
     private Nights2State _curState = Nights2State.GettingReady;
 
+    private List<Nights2Beacon> _unlitBeacons = new List<Nights2Beacon>();
+    private List<Nights2Beacon> _litBeacons = new List<Nights2Beacon>();
+    private Nights2Beacon _nextBeacon = null; //the next beacon to be lit by the torch carrier
+
     public enum Nights2State
     {
         GettingReady,      //participant is putting on the headset
         SeekingShamash,    //i.e dark hallway, need to light torch with shamash
         NearShamash,       //close to shamash
         SeekingBeacon,     //torch lit, following lantern carrier
+        NearBeacon,        //near the beacon
         FlameExtinguished, //failure, gotta re-light torch
         BeaconLit          //success!
     };
@@ -41,6 +49,23 @@ public class Nights2Mgr : MonoBehaviour
             Nights2State prevState = _curState;
             _curState = s;
 
+            //if just starting to seek new beacon, pick one
+            if (((prevState == Nights2State.SeekingShamash) || (prevState == Nights2State.NearShamash)) &&
+                (_curState == Nights2State.SeekingBeacon))
+            {
+                PickNextBeacon();
+            }
+            //update tracking lists if a beacon is lit
+            if (_curState == Nights2State.BeaconLit)
+            {
+                Debug.Assert(_nextBeacon != null);
+
+                if(_unlitBeacons.Contains(_nextBeacon))
+                    _unlitBeacons.Remove(_nextBeacon);
+                if(!_litBeacons.Contains(_nextBeacon))
+                    _litBeacons.Add(_nextBeacon);
+            }
+
             if (OnStateChanged != null)
                 OnStateChanged(this, new StateChangedEventArgs(prevState, s));
         }
@@ -54,7 +79,73 @@ public class Nights2Mgr : MonoBehaviour
 	void Start () 
     {
         SetState(Nights2State.GettingReady);
+
+        ResetBeacons();
 	}
+
+    public Nights2Beacon GetBeacon(int idx)
+    {
+        if ((idx >= 0) && (idx < Candles.Length))
+        {
+            return Candles[idx].GetComponent<Nights2Beacon>();
+        }
+
+        return null;
+    }
+
+    public Nights2Beacon NextBeacon()
+    {
+        return _nextBeacon;
+    }
+
+    void ResetBeacons()
+    {
+        _unlitBeacons.Clear();
+        _litBeacons.Clear();
+
+        //build unlit list and initialize beacons to off
+        int idx = 0;
+        foreach (GameObject g in Candles)
+        {
+            Nights2Beacon b = g.GetComponent<Nights2Beacon>();
+            if (b != null)
+            {
+                b.SetIsNext(false);
+                b.SetLit(false);
+                b.SetBeaconIdx(idx);
+
+                _unlitBeacons.Add(b);
+            }
+
+            idx++;
+        }
+    }
+
+    void PickNextBeacon()
+    {
+        if (_unlitBeacons.Count == 0)
+        {
+            Debug.LogError("Can't pick next beacon, there are no unlit ones left!");
+            return;
+        }
+
+        //pick one randomly and update our lists
+        int idxToRemove = UnityEngine.Random.Range(0, _unlitBeacons.Count);
+        Nights2Beacon b = _unlitBeacons[idxToRemove];
+        Debug.Assert(b);
+
+        _unlitBeacons.RemoveAt(idxToRemove);
+        _litBeacons.Add(b);
+
+        //old one no longer next
+        if (_nextBeacon != null)
+            _nextBeacon.SetIsNext(false);
+
+        //new one is
+        b.SetIsNext(true);
+
+        _nextBeacon = b;
+    }
 	
 	void Update () 
     {
