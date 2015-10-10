@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PathData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Points>
+    <PathEntry>
+      <Point>
+        <x>2.19787812</x>
+        <y>3.94141626</y>
+        <z>0</z>
+      </Point>
+    </PathEntry>
+    <PathEntry>
+      <Point>
+        <x>0.4479426</x>
+        <y>3.89275265</y>
+        <z>0</z>
+      </Point>
+    </PathEntry>
+    <PathEntry>
+      <Point>
+        <x>0.7022083</x>
+        <y>2.81244969</y>
+        <z>0</z>
+      </Point>
+    </PathEntry>
+    <PathEntry>
+      <Point>
+        <x>4.695001</x>
+        <y>1.70153475</y>
+        <z>0</z>
+      </Point>
+    </PathEntry>
+    <PathEntry>
+      <Point>
+        <x>0.0706720352</x>
+        <y>4.95290041</y>
+        <z>0</z>
+      </Point>
+    </PathEntry>
+  </Points>
+</PathData>
