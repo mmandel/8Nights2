@@ -10,6 +10,7 @@ using System.Collections.Generic;
 public class Nights2Mgr : MonoBehaviour 
 {
 
+    public GameObject StartCandle = null; //optional start candle
     public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
     public event StateChangedHandler OnStateChanged;
@@ -26,6 +27,7 @@ public class Nights2Mgr : MonoBehaviour
     private List<Nights2Beacon> _unlitBeacons = new List<Nights2Beacon>();
     private List<Nights2Beacon> _litBeacons = new List<Nights2Beacon>();
     private Nights2Beacon _nextBeacon = null; //the next beacon to be lit by the torch carrier
+    private bool _isPathEditting = false;
 
     public enum Nights2State
     {
@@ -60,6 +62,11 @@ public class Nights2Mgr : MonoBehaviour
             {
                 Debug.Assert(_nextBeacon != null);
 
+                //update state of next beacon
+                _nextBeacon.SetLit(true);
+                _nextBeacon.SetIsNext(false);
+
+                //update bookkeeping
                 if(_unlitBeacons.Contains(_nextBeacon))
                     _unlitBeacons.Remove(_nextBeacon);
                 if(!_litBeacons.Contains(_nextBeacon))
@@ -70,6 +77,8 @@ public class Nights2Mgr : MonoBehaviour
                 OnStateChanged(this, new StateChangedEventArgs(prevState, s));
         }
     }
+
+    public void SetIsPathEditting(bool b) { _isPathEditting = b; }
 
     void Awake()
     {
@@ -129,13 +138,19 @@ public class Nights2Mgr : MonoBehaviour
             return;
         }
 
-        //pick one randomly and update our lists
-        int idxToRemove = UnityEngine.Random.Range(0, _unlitBeacons.Count);
-        Nights2Beacon b = _unlitBeacons[idxToRemove];
-        Debug.Assert(b);
+        Nights2Beacon b = null;
+        //first beacon, just use the one we're configured for
+        if ((_litBeacons.Count == 0) && (StartCandle != null))
+        {
+            b = StartCandle.GetComponent<Nights2Beacon>();
+        }
 
-        _unlitBeacons.RemoveAt(idxToRemove);
-        _litBeacons.Add(b);
+        //pick randomly
+        if (b == null)
+        {
+            int idxToPick = UnityEngine.Random.Range(0, _unlitBeacons.Count);
+            b = _unlitBeacons[idxToPick];
+        }
 
         //old one no longer next
         if (_nextBeacon != null)
@@ -150,7 +165,8 @@ public class Nights2Mgr : MonoBehaviour
 	void Update () 
     {
         //use spacebar to toggle between getting ready and initial gameplay state
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) ||
+            (Nights2InputMgr.Instance.TorchInfo().GetRedButtonDown() && !_isPathEditting)) //red button on torch too!
         {
             if (GetState() != Nights2State.GettingReady)
                 SetState(Nights2State.GettingReady);

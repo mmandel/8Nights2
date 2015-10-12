@@ -45,9 +45,32 @@ public class Nights2CamMgr : MonoBehaviour
         return _torchOnRightCtrl ? _rightCtrlTrans : _leftCtrlTrans;
     }
 
+    public SteamVR_Controller.Device GetTorchDevice()
+    {
+        Transform torchTrans = GetTorchParent();
+        if (torchTrans != null)
+        {
+            SteamVR_Controller.Device device = SteamVR_Controller.Input((int)torchTrans.gameObject.GetComponent<SteamVR_TrackedObject>().index);
+            return device;
+        }
+        return null;
+    }
+
     public Transform GetLanternParent()
     {
         return _torchOnRightCtrl ? _leftCtrlTrans : _rightCtrlTrans;
+    }
+
+
+    public SteamVR_Controller.Device GetLanternDevice()
+    {
+        Transform lanternTrans = GetLanternParent();
+        if (lanternTrans != null)
+        {
+            SteamVR_Controller.Device device = SteamVR_Controller.Input((int)lanternTrans.gameObject.GetComponent<SteamVR_TrackedObject>().index);
+            return device;
+        }
+        return null;
     }
 
     public Transform GetHeadTrans()
