@@ -13,6 +13,8 @@ public class Nights2Path : MonoBehaviour
 {
     [Tooltip("Name of file to save/load our path from.  This will be in the Resources/paths/ directory")]
     public string SaveName = "test_path";
+    [Tooltip("Which shamash does this path lead to?")]
+    public Nights2Beacon LeadsToBeacon = null;
 
     [ScriptButton("Begin Editting!", "OnStartEditPressed")]
     public bool BeginEditDummy = false;
@@ -42,9 +44,44 @@ public class Nights2Path : MonoBehaviour
     private LineRenderer _previewRenderer = null;
     private bool _isEditting = false;
 
+    //find the closest point on the path to the given point
+    public Vector3 ClosestPointOnPath(Vector3 testPoint)
+    {
+        Vector3 result =  Vector3.zero;
+        if ((_pathData == null) || (_pathData.Points.Length <= 1))
+            return result;
+
+        //meh just test all the line segments and return the result with smallest dist to the test point
+        float closestDist = float.MaxValue;
+        for (int i = 0; i < _pathData.Points.Length - 1; i++)
+        {
+            Vector3 a = _pathData.Points[i].Point;
+            Vector3 b = _pathData.Points[i + 1].Point;
+
+            Vector3 closestPoint = Nights2Utl.ClosestPointOnLine(a, b, testPoint);
+            float curDist = (testPoint - closestPoint).sqrMagnitude;
+            if (curDist < closestDist)
+            {
+                closestDist = curDist;
+                result = closestPoint;
+            }
+        }
+
+        return result;
+    }
+
+    //distance from the given point to the path
+    public float DistToPath(Vector3 point)
+    {
+        return (point - ClosestPointOnPath(point)).magnitude;
+    }
+
 	void Start () 
     {
         LoadFromXML();
+
+        //Let nights 2 mgr know which beacon this path leads to
+        Nights2Mgr.Instance.RegisterPath(this, LeadsToBeacon);
 
         //temp: generate fake data to test serialization
         /*_pathData = new PathData();

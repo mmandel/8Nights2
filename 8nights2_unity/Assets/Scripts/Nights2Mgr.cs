@@ -27,6 +27,7 @@ public class Nights2Mgr : MonoBehaviour
     private List<Nights2Beacon> _unlitBeacons = new List<Nights2Beacon>();
     private List<Nights2Beacon> _litBeacons = new List<Nights2Beacon>();
     private Nights2Beacon _nextBeacon = null; //the next beacon to be lit by the torch carrier
+    private Dictionary<Nights2Beacon, Nights2Path> _beaconToPathMap = new Dictionary<Nights2Beacon, Nights2Path>();
     private bool _isPathEditting = false;
 
     public enum Nights2State
@@ -79,6 +80,27 @@ public class Nights2Mgr : MonoBehaviour
     }
 
     public void SetIsPathEditting(bool b) { _isPathEditting = b; }
+
+    //paths register here so mgr knows which paths lead to which beacons
+    public void RegisterPath(Nights2Path path, Nights2Beacon leadsToBeacon)
+    {
+        if ((path == null) || (leadsToBeacon == null))
+            return;
+
+        _beaconToPathMap[leadsToBeacon] = path;
+    }
+
+    //returns the path the torch carrier is currently following
+    public Nights2Path CurrentTorchPath()
+    {
+        if (_nextBeacon == null)
+            return null;
+
+        if (_beaconToPathMap.ContainsKey(_nextBeacon))
+            return _beaconToPathMap[_nextBeacon];
+
+        return null;
+    }
 
     void Awake()
     {
