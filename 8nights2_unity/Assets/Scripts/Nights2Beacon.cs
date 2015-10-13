@@ -36,8 +36,6 @@ public class Nights2Beacon : MonoBehaviour
         if (_isNextBeacon != b)
         {
             _isNextBeacon = b;
-
-            SetAnimatorBool(IsNextBool, b);
             //TODO: events?
         }
     }
@@ -61,8 +59,14 @@ public class Nights2Beacon : MonoBehaviour
 
 	void Update () 
     {
-	
+        SetAnimatorBool(IsNextBool, _isNextBeacon && IsInSeekingState());
 	}
+
+    bool IsInSeekingState()
+    {
+        return (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) ||
+                             (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon);
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -73,8 +77,7 @@ public class Nights2Beacon : MonoBehaviour
         if ((other != null) && other.GetComponent<Nights2Torch>() != null)
         {
             //transision to seeking beacon state when torch is lit by shamash
-            if (IsNext() && ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) ||
-                             (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon)))
+            if (IsNext() && IsInSeekingState())
             {
                 Debug.Log("TORCH LIT BEACON!!");
 

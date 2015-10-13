@@ -52,6 +52,8 @@ public class Nights2Mgr : MonoBehaviour
             Nights2State prevState = _curState;
             _curState = s;
 
+            Debug.Log("STATE CHANGE from '" + prevState.ToString() + "' to '" + _curState.ToString() +"'");
+
             //if just starting to seek new beacon, pick one
             if (((prevState == Nights2State.SeekingShamash) || (prevState == Nights2State.NearShamash)) &&
                 (_curState == Nights2State.SeekingBeacon))

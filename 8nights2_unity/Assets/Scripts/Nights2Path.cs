@@ -181,7 +181,7 @@ public class Nights2Path : MonoBehaviour
         ShowPreview(false);
     }
 
-    void ShowPreview(bool b)
+    public void ShowPreview(bool b)
     {
         if (b)
         {

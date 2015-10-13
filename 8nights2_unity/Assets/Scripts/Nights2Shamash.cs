@@ -7,28 +7,35 @@ public class Nights2Shamash : MonoBehaviour
 
     public string PlayerCloseBool = "player_close";
 
+    public string FlameExtinguishedBool = "flame_extinguished";
+
     private Animator _animator = null;
+    private bool _playerIsClose = false;
 
 	void Start () 
     {
         _animator = gameObject.GetComponent<Animator>();
+        _playerIsClose = false;
         SetAnimatorBool(PlayerCloseBool, false);
         SetAnimatorBool(ShamashOnBool, false);
+        SetAnimatorBool(FlameExtinguishedBool, false);
 	}
+
+    bool ShamashIsOn()
+    {
+        return (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingShamash) ||
+            (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash) ||
+            (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.FlameExtinguished);
+    }
 	
 
 	void Update () 
     {
-        if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingShamash) ||
-            (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash))
-        {
-            SetAnimatorBool(ShamashOnBool, true);
-        }
-        else
-        {
-            SetAnimatorBool(ShamashOnBool, false);
-        }
-	}
+
+        SetAnimatorBool(ShamashOnBool, ShamashIsOn());
+        SetAnimatorBool(PlayerCloseBool, _playerIsClose && (Nights2Mgr.Instance.GetState() != Nights2Mgr.Nights2State.FlameExtinguished));
+        SetAnimatorBool(FlameExtinguishedBool, (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.FlameExtinguished));
+    }
 
     void SetAnimatorBool(string boolName, bool val)
     {
@@ -44,8 +51,7 @@ public class Nights2Shamash : MonoBehaviour
             Debug.Log("TORCH ENTER!!");
 
             //transision to seeking beacon state when torch is lit by shamash
-            if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingShamash) ||
-                (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash))
+            if (ShamashIsOn())
             {
                 Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.SeekingBeacon);
             }
@@ -57,13 +63,13 @@ public class Nights2Shamash : MonoBehaviour
     {
         Debug.Log("PLAYER NEAR!");
 
-        SetAnimatorBool(PlayerCloseBool, true);
+        _playerIsClose = true;
         if (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingShamash)
             Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.NearShamash);
     }
     public void NotifyPlayerNotNearby()
     {
-        SetAnimatorBool(PlayerCloseBool, false);
+        _playerIsClose = false;
         Debug.Log("PLAYER EXIT NEAR!");
     }
 }

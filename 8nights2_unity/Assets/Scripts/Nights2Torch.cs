@@ -23,14 +23,16 @@ public class Nights2Torch : MonoBehaviour
         if (_animator != null)
             _animator.SetBool(boolName, val);
     }
+
+    bool IsFlameOn()
+    {
+        return (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) || (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon);
+    }
 	
 	void Update () 
     {
-
-        if (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon)
-            SetAnimatorBool(TorchOnBool, true);
-        else
-            SetAnimatorBool(TorchOnBool, false);
+        //update animator with status of torch
+        SetAnimatorBool(TorchOnBool, IsFlameOn());
 
 	    //make sure we are parented to the right thing
         if (Nights2CamMgr.Instance != null)
