@@ -29,6 +29,7 @@ public class Nights2Mgr : MonoBehaviour
     private Nights2Beacon _nextBeacon = null; //the next beacon to be lit by the torch carrier
     private Dictionary<Nights2Beacon, Nights2Path> _beaconToPathMap = new Dictionary<Nights2Beacon, Nights2Path>();
     private bool _isPathEditting = false;
+    private int _numPortalsPassed = 0;
 
     public enum Nights2State
     {
@@ -42,6 +43,17 @@ public class Nights2Mgr : MonoBehaviour
     };
 
     public static Nights2Mgr Instance { get; private set; }
+
+    public int NumPortalsPassed() { return _numPortalsPassed; }
+
+    //called by Nights2TorchPlayer when torch carrier walks through a portal
+    public void NotifyPortalPassed()
+    {
+        _numPortalsPassed++;
+
+        Debug.Log("Num Portals Passed: " + _numPortalsPassed);
+        //TODO: send out event?
+    }
 
     public Nights2State GetState() { return _curState; }
 
@@ -74,6 +86,14 @@ public class Nights2Mgr : MonoBehaviour
                     _unlitBeacons.Remove(_nextBeacon);
                 if(!_litBeacons.Contains(_nextBeacon))
                     _litBeacons.Add(_nextBeacon);
+            }
+
+            //reset num portals tracking
+            if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.FlameExtinguished) || 
+                (_curState == Nights2State.SeekingBeacon))
+            {
+                _numPortalsPassed = 0;
+                Debug.Log("Num Portal Passed: 0");
             }
 
             if (OnStateChanged != null)

@@ -8,6 +8,11 @@ using System.Collections;
 
 public class Nights2AnimTrigger : MonoBehaviour 
 {
+    [Tooltip("The number of portals the torch carrier has walked through on the current path to a beacon")]
+    public string NumPortalsPassedParam = "portals_passed";
+
+    [Space(10)]
+
     public AnimTriggerEntry[] Triggers = new AnimTriggerEntry[0];
 
     [System.Serializable]
@@ -20,6 +25,7 @@ public class Nights2AnimTrigger : MonoBehaviour
 
 
     private Animator _animator = null;
+    private bool _hasPortalsParam = false;
 
     void Start()
     {
@@ -28,6 +34,29 @@ public class Nights2AnimTrigger : MonoBehaviour
         //subscribe to state changed events
         if (Nights2Mgr.Instance != null)
             Nights2Mgr.Instance.OnStateChanged += OnNights2StateChanged;
+
+        //see if the animator actually has the specific 'num portals passed' param...
+        _hasPortalsParam = false;
+        if ((_animator != null) && (NumPortalsPassedParam.Length > 0))
+        {
+            foreach(var p in _animator.parameters)
+            {
+                if(p.name.Equals(NumPortalsPassedParam))
+                    _hasPortalsParam = true;
+            }
+        }
+    }
+
+    void Update()
+    {
+        if (_animator == null)
+            return;
+
+        //drive num portals passed param
+        if ((NumPortalsPassedParam.Length > 0) && _hasPortalsParam)
+        {
+            _animator.SetInteger(NumPortalsPassedParam, Nights2Mgr.Instance.NumPortalsPassed());
+        }
     }
 
     void OnDestroy()

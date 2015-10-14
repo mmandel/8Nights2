@@ -44,12 +44,18 @@ public class Nights2Path : MonoBehaviour
     private LineRenderer _previewRenderer = null;
     private bool _isEditting = false;
 
+    public bool IsEditting() { return _isEditting; }
+
     //find the closest point on the path to the given point
-    public Vector3 ClosestPointOnPath(Vector3 testPoint)
+    public Vector3 ClosestPointOnPath(Vector3 testPoint, out int outPathSegment)
     {
+        outPathSegment = -1;
+
         Vector3 result =  Vector3.zero;
         if ((_pathData == null) || (_pathData.Points.Length <= 1))
+        {            
             return result;
+        }
 
         //meh just test all the line segments and return the result with smallest dist to the test point
         float closestDist = float.MaxValue;
@@ -64,6 +70,7 @@ public class Nights2Path : MonoBehaviour
             {
                 closestDist = curDist;
                 result = closestPoint;
+                outPathSegment = i;
             }
         }
 
@@ -73,7 +80,63 @@ public class Nights2Path : MonoBehaviour
     //distance from the given point to the path
     public float DistToPath(Vector3 point)
     {
-        return (point - ClosestPointOnPath(point)).magnitude;
+        int ignore;
+        return (point - ClosestPointOnPath(point, out ignore)).magnitude;
+    }
+
+    //gives distance that given point is along the given path segment
+    public float GetDistanceAlongSegment(Vector3 pt, int pathSegment)
+    {
+        float result = float.MinValue;
+
+        if ((_pathData == null) || (pathSegment >= _pathData.Points.Length - 1))
+        {
+            return result;
+        }
+
+        Vector3 segA = _pathData.Points[pathSegment].Point;
+        Vector3 segB = _pathData.Points[pathSegment+1].Point;
+
+        Vector3 segDir = (segB - segA).normalized;
+
+        //project point onto segment
+        //Vector3 projectedPt = Vector3.Project(pt, segDir);
+        //meh, not working. just assume pt is on segment for now
+        Vector3 projectedPt = pt;
+
+        //dist from beginning of segment is our result
+        result = (projectedPt - segA).magnitude;
+
+        return result;
+    }
+
+    //get the position a given distance along the given segment
+    public Vector3 GetPositionOnSegment(float distAlongSegment, int pathSegment)
+    {
+        if ((_pathData == null) || (pathSegment >= _pathData.Points.Length - 1))
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 segA = _pathData.Points[pathSegment].Point;
+        Vector3 segB = _pathData.Points[pathSegment + 1].Point;
+
+        Vector3 segDir = (segB - segA).normalized;
+
+        return segA + (distAlongSegment*segDir);
+    }
+
+    public Vector3 GetSegmentDirection(int pathSegment)
+    {
+        if ((_pathData == null) || (pathSegment >= _pathData.Points.Length - 1))
+        {
+            return Vector3.forward;
+        }
+
+        Vector3 segA = _pathData.Points[pathSegment].Point;
+        Vector3 segB = _pathData.Points[pathSegment + 1].Point;
+
+        return (segB - segA).normalized;
     }
 
 	void Start () 

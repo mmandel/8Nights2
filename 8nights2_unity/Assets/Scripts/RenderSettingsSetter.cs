@@ -8,20 +8,25 @@ using System.Collections;
 [ExecuteInEditMode]
 public class RenderSettingsSetter : MonoBehaviour 
 {
+    public bool DriveAmbient = false;
     public float AmbientIntensity = 1.0f;
-    public bool AffectSkybox = false;
+    [Space(10)]
+    public bool DriveSkybox = false;
     public float SkyboxExposure = 1.3f;
     public Color SkyboxSkyTint = Color.black;
     public Color SkyboxGround = Color.black;
 
 	void Update () 
     {
-        RenderSettings.ambientIntensity = AmbientIntensity;
+        if (DriveAmbient)
+        {
+            RenderSettings.ambientIntensity = AmbientIntensity;
+        }
 
-        if (AffectSkybox)
+        if (DriveSkybox)
         {
             RenderSettings.skybox.SetColor("_SkyTint", SkyboxSkyTint);
-            RenderSettings.skybox.SetColor("_Ground", SkyboxGround);
+            RenderSettings.skybox.SetColor("_GroundColor", SkyboxGround);
             RenderSettings.skybox.SetFloat("_Exposure", SkyboxExposure);
         }
 	}

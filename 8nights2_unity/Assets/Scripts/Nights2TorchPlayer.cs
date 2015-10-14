@@ -16,7 +16,15 @@ public class Nights2TorchPlayer : MonoBehaviour
     public float NearPathThresh = .25f;
     [Tooltip("How many seconds does the player need to be off the path before we fail them?")]
     public float OutsidePathFailureSecs = .5f;
-    
+
+    [Space(10)]
+
+    [Tooltip("An object to enable/disable and position as torch carrier successfully navigates the path")]
+    public GameObject PortalObj = null;
+    [Tooltip("The distance after a turn to place the portal, in meters")]
+    public float PortalDistFromTurn = .5f;
+    [Tooltip("The distance thresh where we should start showing portal.  Should be less than 'PortalDistFromTurn')")]
+    public float ShowPortalDistThresh = .05f;
 
     [Space(10)]
 
@@ -28,6 +36,8 @@ public class Nights2TorchPlayer : MonoBehaviour
     private bool _deadzoneActive = false;
     private Vector3 _deadzoneCenter = Vector3.zero;
     private float _outsidePathStartTime = -1.0f;
+    private int _lastPathSegment = -1;
+    private int _nextPortalSegment = 1; //the path segment the next portal should go on
 
     void Start()
     {
@@ -51,6 +61,11 @@ public class Nights2TorchPlayer : MonoBehaviour
             //record their position to allow for a small "dead zone" before they are required to stay super close
             _deadzoneActive = true;
             _deadzoneCenter = GetPlayerPosOnGround();
+
+            //reset which path segment the next portal should be on
+            _nextPortalSegment = 1;
+
+            ShowPortal(false);
         }
     }
 
@@ -69,6 +84,38 @@ public class Nights2TorchPlayer : MonoBehaviour
 
         return (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) ||
                (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon);
+    }
+
+    void ShowPortal(bool b)
+    {
+        if (PortalObj == null)
+            return;
+
+        PortalObj.SetActive(b);
+    }
+
+    void PositionPortal(Vector3 pt)
+    {
+        if (PortalObj == null)
+            return;
+
+        PortalObj.transform.position = pt;
+    }
+
+    void AlignPortal(Vector3 alignDir)
+    {
+        if (PortalObj == null)
+            return;
+
+        PortalObj.transform.rotation = Quaternion.LookRotation(alignDir);
+    }
+
+    void AdvanceNextPortalSegment()
+    {
+        ShowPortal(false);
+
+        Nights2Mgr.Instance.NotifyPortalPassed();
+        _nextPortalSegment++;
     }
 
 	void Update () 
@@ -91,10 +138,14 @@ public class Nights2TorchPlayer : MonoBehaviour
                 }
             }
 
+            int curPathSegment = -1;
+            Vector3 closestPtOnPath = Vector3.zero;
+            if (curPath != null)
+                closestPtOnPath = curPath.ClosestPointOnPath(curPlayerPos, out curPathSegment);
+
             //make sure player stays on the path
-            if (!_deadzoneActive && (curPath != null))
+            if (!_deadzoneActive && (curPath != null) && !curPath.IsEditting())
             {
-                Vector3 closestPtOnPath = curPath.ClosestPointOnPath(curPlayerPos);
                 closestPtOnPath.y = 0.0f; //project to ground, just in case
 
                 //are we too far off the path?
@@ -117,6 +168,43 @@ public class Nights2TorchPlayer : MonoBehaviour
                     }
                 }
             }
+
+            _lastPathSegment = curPathSegment;
+
+            //make sure next portal segment is valid
+            if ((curPathSegment != -1) && (curPathSegment > _nextPortalSegment))
+            {
+                while (_nextPortalSegment <= curPathSegment)
+                {
+                    AdvanceNextPortalSegment();
+                }
+            }
+
+            //update portal processing
+            if ((curPathSegment != -1) && (curPathSegment == _nextPortalSegment))
+            {
+                //ok we know we're on the current portal segment, how far along tho?
+                float distAlongSegment = curPath.GetDistanceAlongSegment(closestPtOnPath, curPathSegment);
+
+                //if we're far enough to show portal, do it
+                if ((distAlongSegment <= PortalDistFromTurn) && (distAlongSegment >= ShowPortalDistThresh))
+                {
+                    ShowPortal(true);
+                    PositionPortal(curPath.GetPositionOnSegment(PortalDistFromTurn, _nextPortalSegment));
+                    AlignPortal(curPath.GetSegmentDirection(_nextPortalSegment));
+                }
+                //give credit if we've just pass through a portal
+                else if (distAlongSegment > PortalDistFromTurn)
+                {
+                    AdvanceNextPortalSegment();
+                }
+            }
+
+            _lastPathSegment = -1;
+        }
+        else //not followinbg path
+        {
+            ShowPortal(false);
         }
 
         //visual debugging stuff
@@ -129,7 +217,8 @@ public class Nights2TorchPlayer : MonoBehaviour
                 if (DebugSnapToPath != null)
                 {
                     DebugSnapToPath.SetActive(true);
-                    Vector3 closestPt = p.ClosestPointOnPath(transform.position);
+                    int curPathSegment = -1;
+                    Vector3 closestPt = p.ClosestPointOnPath(transform.position, out curPathSegment);
                     DebugSnapToPath.transform.position = closestPt;
                 }
             }
