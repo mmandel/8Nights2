@@ -14,10 +14,25 @@ public class MirrorLightOnMaterial : MonoBehaviour {
 
 	void Start () 
    {
-      EightNightsMgr.Instance.OnLightChanged += OnLightChanged;
+      if (LightMgr.Instance != null)
+         LightMgr.Instance.OnLightChanged += OnLightChanged;
+      else if(EightNightsMgr.Instance != null)
+         EightNightsMgr.Instance.OnLightChanged += OnOld8NightsLightChanged;
 	}
 
-   void OnLightChanged(object sender, EightNightsMgr.LightEventArgs e)
+
+   void OnLightChanged(object sender, LightMgr.LightEventArgs e)
+   {
+      if ((e.Group == Group) && (e.Light == Light))
+      {
+         if (RendererWithMat != null)
+         {
+            RendererWithMat.material.color = Color.Lerp(Color.grey, e.Data.LightColor, e.Data.LightIntensity);
+         }
+      }
+   }
+
+   void OnOld8NightsLightChanged(object sender, EightNightsMgr.LightEventArgs e)
    {
       if ((e.Group == Group) && (e.Light == Light))
       {

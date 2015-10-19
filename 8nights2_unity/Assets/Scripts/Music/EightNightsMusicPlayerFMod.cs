@@ -23,8 +23,6 @@ public class EightNightsLayerDetailsFMod
 public class EightNightsMusicPlayerFMod : MonoBehaviour
 {
 
-    [SerializeField]    public bool AutoLoop = true;
-
     [Tooltip("The fmod event that plays all the stems (a gameobject with the FMOD_StudioEventEmitter component on it)")]
     public FMOD_StudioEventEmitter FModEvent;
 

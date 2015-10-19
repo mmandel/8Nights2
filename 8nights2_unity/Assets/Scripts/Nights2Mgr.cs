@@ -208,6 +208,9 @@ public class Nights2Mgr : MonoBehaviour
 	
 	void Update () 
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+
         //use spacebar to toggle between getting ready and initial gameplay state
         if (Input.GetKeyDown(KeyCode.Space) ||
             (Nights2InputMgr.Instance.TorchInfo().GetRedButtonDown() && !_isPathEditting)) //red button on torch too!

@@ -17,6 +17,10 @@ public class FFTLightEffect : MonoBehaviour
    [Range(0, 39)]
    public int MaxFFTBin = 39;
 
+   [Header("Colors")]
+   public bool EnableColorGradient = false;
+   public Gradient ColorGradient;
+
    [Header("ADSR")]
    public bool EnableADSR = false;
    [Range(0, 3)]
@@ -58,6 +62,16 @@ public class FFTLightEffect : MonoBehaviour
    {
 	
 	}
+
+   float GetLatency(EightNightsMgr.GroupID g, EightNightsMgr.LightID l)
+   {
+      if (LightMgr.Instance != null)
+         return LightMgr.Instance.GetLatency(g, l);
+      else if (EightNightsMgr.Instance != null)
+         return EightNightsMgr.Instance.GetLatency(g, l);
+
+      return 0.0f;
+   }
 	
 	void Update () 
    {
@@ -69,7 +83,7 @@ public class FFTLightEffect : MonoBehaviour
 
       SpectrogramMgr.SpectroConfig fftData =  SpectrogramMgr.Instance.GetSpectroDataForGroup(Group);
       float timeToSample = SpectrogramMgr.Instance.GetFFTTime();
-      timeToSample += EightNightsMgr.Instance.GetLatency(Group, Light);
+      timeToSample += GetLatency(Group, Light);
 
       //average the frequency bins to get our signal value
       float curSignal = 0.0f;
@@ -87,6 +101,12 @@ public class FFTLightEffect : MonoBehaviour
          if (FadeWithStemVolume)
             groupFader = EightNightsAudioMgr.Instance.MusicPlayer.GetVolumeForGroup(Group);
       }
+      //fade with Nights2 Audio system
+      if (Nights2AudioMgr.Instance != null)
+      {
+         if (FadeWithStemVolume)
+            groupFader = Nights2AudioMgr.Instance.GetGroupVolume(Group);
+      }
 
       if (EnableADSR)
       {
@@ -97,9 +117,19 @@ public class FFTLightEffect : MonoBehaviour
 
       _lastSignalValue = curSignal;
 
-      if(OutputToLight)
-         EightNightsMgr.Instance.SetLight(Group, Light, curSignal, EightNightsMgr.Instance.GetDefaultColor(Group), 0.0f);
-	}
+      if (OutputToLight)
+      {
+         Color color = (LightMgr.Instance != null) ? LightMgr.Instance.GetDefaultColor(Group) : EightNightsMgr.Instance.GetDefaultColor(Group);
+         //evaluate color gradient if we have one
+         if (EnableColorGradient)
+            color = ColorGradient.Evaluate(curSignal);
+
+         if(LightMgr.Instance != null)
+            LightMgr.Instance.SetLight(Group, Light, curSignal, color, 0.0f);
+         else if(EightNightsMgr.Instance != null)
+            EightNightsMgr.Instance.SetLight(Group, Light, curSignal, color, 0.0f);
+      }
+   }
 
    float EvaluateADSR(float curSignal)
    {

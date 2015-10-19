@@ -46,8 +46,6 @@ public class LightEffect : MonoBehaviour
    float _timeStamp = -1.0f;
    float _curTransitionTime = 0.0f;
    KeyState _curState = KeyState.kOff;
-   bool _doesControlHue = false;
-   bool _doesControlLightJams = false;
 
    enum KeyState
    {
@@ -61,16 +59,7 @@ public class LightEffect : MonoBehaviour
    // Use this for initialization
    void Start()
    {
-      foreach (EffectKeyframe k in Keyframes)
-      {
-         foreach (LightState l in k.LightKeys)
-         {
-            if (EightNightsMgr.Instance.IsHueLight(LightGroup, l.Light))
-               _doesControlHue = true;
-            if (EightNightsMgr.Instance.IsLightJamsLight(LightGroup, l.Light))
-               _doesControlLightJams = true;
-         }
-      }
+
    }
 
    void OnEnable()
@@ -80,15 +69,6 @@ public class LightEffect : MonoBehaviour
          TriggerEffect();
    }
 
-   public bool ControlsHueLight()
-   {
-      return _doesControlHue;
-   }
-
-   public bool ControlsLightJamsLight()
-   {
-      return _doesControlLightJams;
-   }
 
    public void TriggerEffect(string propPath = "")
    {
@@ -174,7 +154,10 @@ public class LightEffect : MonoBehaviour
       for (int i = 0; i < key.LightKeys.Length; i++)
       {
          LightState curState = key.LightKeys[i];
-         EightNightsMgr.Instance.SetLight(LightGroup, curState.Light, groupFader*curState.fade, curState.color, transitionTime);
+         if (LightMgr.Instance != null)
+            LightMgr.Instance.SetLight(LightGroup, curState.Light, groupFader * curState.fade, curState.color, transitionTime);
+         else if(EightNightsMgr.Instance != null)
+            EightNightsMgr.Instance.SetLight(LightGroup, curState.Light, groupFader*curState.fade, curState.color, transitionTime);
       }
 
       if (Mathf.Approximately(key.BlendTime, 0.0f))

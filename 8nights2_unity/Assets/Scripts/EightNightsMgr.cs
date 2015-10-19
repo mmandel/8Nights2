@@ -57,7 +57,17 @@ public class EightNightsMgr : MonoBehaviour
       RoomGroup1,
       RoomGroup2,
       RoomGroup3,
-      RoomGroup4
+      RoomGroup4,
+      //Nights2 (2015) groups
+      Shamash,
+      Candle1,
+      Candle2,
+      Candle3,
+      Candle4,
+      Candle5,
+      Candle6,
+      Candle7,
+      Candle8
    }
 
    //identifiers for each light within a group (up to 8)
