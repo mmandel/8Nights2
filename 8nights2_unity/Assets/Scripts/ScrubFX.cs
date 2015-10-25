@@ -43,9 +43,28 @@ public class ScrubFX : MonoBehaviour
 
 	void Start () 
    {
-      EightNightsMgr.Instance.OnLightChanged += OnLightChanged;
+      if (EightNightsMgr.Instance != null)
+         EightNightsMgr.Instance.OnLightChanged += OnLightChanged;
+      else if (LightMgr.Instance != null)
+         LightMgr.Instance.OnLightChanged += OnLightMgrLightChanged;
       _animator = gameObject.GetComponent<Animator>();
 	}
+
+   void OnLightMgrLightChanged(object sender, LightMgr.LightEventArgs e)
+   {
+      if (_animator == null)
+         return;
+
+      if (SyncFromLightEffect != null)
+         return;
+
+      if ((e.Group == Group) && (e.Light == Light))
+      {
+         float val = e.Data.LightIntensity;
+
+         UpdateWithScrubValue(val);
+      }
+   }
 
    void OnLightChanged(object sender, EightNightsMgr.LightEventArgs e)
    {
@@ -67,7 +86,7 @@ public class ScrubFX : MonoBehaviour
    {
       if (EnableAnimCycle && (CycleState.Length > 0))
       {
-         _animator.speed = 0.0f;
+        // _animator.speed = 0.0f;
          const float kValScale = 4.5f; //to keep speed values in normal 0..1 range
          _curCycleVal += Mathf.Lerp(CycleSpeedMin * kValScale * Time.deltaTime, CycleSpeedMax * kValScale * Time.deltaTime, CycleEase.Evaluate(val));
          _curCycleVal = _curCycleVal % 1.0f; //wrap around
@@ -76,7 +95,7 @@ public class ScrubFX : MonoBehaviour
 
       if (EnableAnimScrub && (ScrubState.Length > 0))
       {
-         _animator.speed = 0.0f;
+         //_animator.speed = 0.0f;
          _animator.Play(ScrubState, ScrubLayer, val);
       }
    }

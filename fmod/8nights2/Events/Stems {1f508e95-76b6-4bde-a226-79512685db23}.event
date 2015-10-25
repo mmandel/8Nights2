@@ -1086,7 +1086,11 @@
         </property>
     </object>
     <object class="MixerBusFader" id="{1805dd67-dda3-4e18-86a2-daff6dfe7e32}"/>
-    <object class="SpatialiserEffect" id="{5c797ed2-0137-4b33-9523-c5e34ba8d549}"/>
+    <object class="SpatialiserEffect" id="{5c797ed2-0137-4b33-9523-c5e34ba8d549}">
+        <property name="distanceRolloffType">
+            <value>4</value>
+        </property>
+    </object>
     <object class="MixerSend" id="{36db9ac5-8d44-4fa7-98d2-0854fa48c118}">
         <relationship name="return">
             <destination>{96a16132-1a06-4a47-8249-2fbfd063a4c7}</destination>

@@ -17,9 +17,11 @@ public class LightJamsMgr : MonoBehaviour
    public event LJHandler OnLightCommandSent; //when message is sent to hardware, ahead of time
    public class LJEventArgs : EventArgs
    {
-      public LJEventArgs(int chan, float i) { Channel = chan; Intensity = i; }
+      public LJEventArgs(int chan, float i, Color c, bool isPar64) { Channel = chan; Intensity = i; EventColor = c; IsPar64 = isPar64;  }
       public int Channel = 0;
       public float Intensity = 1.0f;
+      public Color EventColor = Color.white;
+      public bool IsPar64 = false;
    }
    public delegate void LJHandler(object sender, LJEventArgs e);
 
@@ -41,7 +43,7 @@ public class LightJamsMgr : MonoBehaviour
          gameObject.AddComponent<OSCMessenger>();
 	}
 
-   public void SendToLightJams(int channelNum, float val)
+   public void SendToLightJams(int channelNum, float val, bool notify = true)
    {
       if (OSCMessenger.Instance != null)
       {
@@ -52,18 +54,23 @@ public class LightJamsMgr : MonoBehaviour
             OnLightChanged(this, new LJEventArgs(channelNum, val));
          }*/
          //notify anyone who cares
-         if ((OnLightCommandSent != null) || (OnLightChanged != null))
+         if (notify && ((OnLightCommandSent != null) || (OnLightChanged != null)))
          {
-            LJEventArgs eventData = new LJEventArgs(channelNum, val);
-
-            if (OnLightCommandSent != null)
-               OnLightCommandSent(this, eventData);
-
-            //run co-routine to send out event for game after latency elapses (so visuals in-game don't trigger early)
-            if (OnLightChanged != null)
-               StartCoroutine(SendDelayedUpdateEvent(GetCurLatency(), eventData));
+            SendLightChangedEvent(channelNum, val, Color.white, false);
          }
       }
+   }
+
+   public void SendLightChangedEvent(int channelNum, float val, Color color, bool isPar64)
+   {
+      LJEventArgs eventData = new LJEventArgs(channelNum, val, color, isPar64);
+
+      if (OnLightCommandSent != null)
+         OnLightCommandSent(this, eventData);
+
+      //run co-routine to send out event for game after latency elapses (so visuals in-game don't trigger early)
+      if (OnLightChanged != null)
+         StartCoroutine(SendDelayedUpdateEvent(GetCurLatency(), eventData));
    }
 
    IEnumerator SendDelayedUpdateEvent(float delayTime, LJEventArgs eventData)

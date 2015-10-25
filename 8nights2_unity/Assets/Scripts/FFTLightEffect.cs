@@ -78,7 +78,7 @@ public class FFTLightEffect : MonoBehaviour
       if (SpectrogramMgr.Instance == null)
          return;
 
-      if (DisableDuringCrescendos && ButtonSoundMgr.Instance.IsGroupCrescendoing(Group))
+      if ((ButtonSoundMgr.Instance != null) && DisableDuringCrescendos && ButtonSoundMgr.Instance.IsGroupCrescendoing(Group))
          return;
 
       SpectrogramMgr.SpectroConfig fftData =  SpectrogramMgr.Instance.GetSpectroDataForGroup(Group);
@@ -119,6 +119,9 @@ public class FFTLightEffect : MonoBehaviour
 
       if (OutputToLight)
       {
+         //don't let it hit 1.0 or it will wrap around if the clip is marked as looping
+         curSignal = Mathf.Clamp(curSignal, 0.0f, .999f);
+
          Color color = (LightMgr.Instance != null) ? LightMgr.Instance.GetDefaultColor(Group) : EightNightsMgr.Instance.GetDefaultColor(Group);
          //evaluate color gradient if we have one
          if (EnableColorGradient)

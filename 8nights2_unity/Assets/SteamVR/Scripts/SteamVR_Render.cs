@@ -142,12 +142,16 @@ public class SteamVR_Render : MonoBehaviour
 			if (vr.compositor.CanRenderScene())
 			{
 				vr.compositor.SetTrackingSpace(trackingSpace);
-				vr.compositor.WaitGetPoses(poses, gamePoses);
+				SteamVR_Utils.QueueEventOnRenderThread(Unity.k_nRenderEventID_WaitGetPoses);
+
+				// Hack to flush render event that was queued in Update (this ensures WaitGetPoses has returned before we grab the new values).
+				Unity.EventWriteString("[UnityMain] GetNativeTexturePtr - Begin");
+				SteamVR_Camera.GetSceneTexture(cameras[0].GetComponent<Camera>().hdr).GetNativeTexturePtr();
+				Unity.EventWriteString("[UnityMain] GetNativeTexturePtr - End");
+
+				vr.compositor.GetLastPoses(poses, gamePoses);
 				SteamVR_Utils.Event.Send("new_poses", poses);
 			}
-
-			GL.IssuePluginEvent(20150313); // Fire off render event to perform our compositor sync
-			SteamVR_Camera.GetSceneTexture(cameras[0].GetComponent<Camera>().hdr).GetNativeTexturePtr(); // flush render event
 
 			var overlay = SteamVR_Overlay.instance;
 			if (overlay != null)
@@ -165,8 +169,6 @@ public class SteamVR_Render : MonoBehaviour
 
 			if (cameraMask != null)
 				cameraMask.Clear();
-
-			GL.IssuePluginEvent(20150213); // Fire off render event for in-process present hook
 		}
 	}
 
@@ -269,6 +271,12 @@ public class SteamVR_Render : MonoBehaviour
 		cameraMask = go.AddComponent<SteamVR_CameraMask>();
 	}
 
+	void FixedUpdate()
+	{
+		// We want to call this as soon after Present as possible.
+		SteamVR_Utils.QueueEventOnRenderThread(Unity.k_nRenderEventID_PostPresentHandoff);
+	}
+
 	void Update()
 	{
 		if (cameras.Length == 0)
@@ -276,6 +284,9 @@ public class SteamVR_Render : MonoBehaviour
 			enabled = false;
 			return;
 		}
+
+		// If our FixedUpdate rate doesn't match our render framerate, then catch the handoff here.
+		SteamVR_Utils.QueueEventOnRenderThread(Unity.k_nRenderEventID_PostPresentHandoff);
 
 		// Force controller update in case no one else called this frame to ensure prevState gets updated.
 		SteamVR_Controller.Update();

@@ -30,7 +30,7 @@ public class SteamVR_PlayArea : MonoBehaviour
 	[HideInInspector]
 	public Vector3[] vertices;
 
-	public static bool GetBounds(Size size, ref ChaperoneSoftBoundsInfo_t pInfo)
+	public static bool GetBounds( Size size, ref HmdQuad_t pRect )
 	{
 		if (size == Size.Calibrated)
 		{
@@ -52,7 +52,7 @@ public class SteamVR_PlayArea : MonoBehaviour
 
 			var chaperone = new CVRChaperone(pChaperone);
 
-			bool success = chaperone.GetSoftBoundsInfo(ref pInfo);
+			bool success = chaperone.GetPlayAreaRect( ref pRect );
 			if (!success)
 				Debug.LogWarning("Failed to get Calibrated Play Area bounds!  Make sure you have tracking first, and that your space is calibrated.");
 
@@ -70,11 +70,11 @@ public class SteamVR_PlayArea : MonoBehaviour
 				// convert to half size in meters (from cm)
 				var x = float.Parse(arr[0]) / 200;
 				var z = float.Parse(arr[1]) / 200;
-				pInfo.quadCorners.vCorners = new HmdVector3_t[4];
-				pInfo.quadCorners.vCorners[0].v = new float[3] {  x, 0,  z };
-				pInfo.quadCorners.vCorners[1].v = new float[3] {  x, 0, -z };
-				pInfo.quadCorners.vCorners[2].v = new float[3] { -x, 0, -z };
-				pInfo.quadCorners.vCorners[3].v = new float[3] { -x, 0,  z };
+				pRect.vCorners = new HmdVector3_t[ 4 ];
+				pRect.vCorners[ 0 ].v = new float[ 3 ] { x, 0, z };
+				pRect.vCorners[ 1 ].v = new float[ 3 ] { x, 0, -z };
+				pRect.vCorners[ 2 ].v = new float[ 3 ] { -x, 0, -z };
+				pRect.vCorners[ 3 ].v = new float[ 3 ] { -x, 0, z };
 				return true;
 			}
 			catch {}
@@ -85,11 +85,11 @@ public class SteamVR_PlayArea : MonoBehaviour
 
 	public void BuildMesh()
 	{
-		var bounds = new ChaperoneSoftBoundsInfo_t();
-		if (!GetBounds(size, ref bounds))
+		var rect = new HmdQuad_t();
+		if ( !GetBounds( size, ref rect ) )
 			return;
 
-		var corners = bounds.quadCorners.vCorners;
+		var corners = rect.vCorners;
 
 		vertices = new Vector3[corners.Length * 2];
 		for (int i = 0; i < corners.Length; i++)
@@ -171,10 +171,40 @@ public class SteamVR_PlayArea : MonoBehaviour
 	}
 
 #if UNITY_EDITOR
+	Hashtable values;
 	void Update()
 	{
 		if (!Application.isPlaying)
-			BuildMesh();
+		{
+			var fields = GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+			bool rebuild = false;
+
+			if (values == null || (borderThickness != 0.0f && GetComponent<MeshFilter>().sharedMesh == null))
+			{
+				rebuild = true;
+			}
+			else
+			{
+				foreach (var f in fields)
+				{
+					if (!f.GetValue(this).Equals(values[f]))
+					{
+						rebuild = true;
+						break;
+					}
+				}
+			}
+
+			if (rebuild)
+			{
+				BuildMesh();
+
+				values = new Hashtable();
+				foreach (var f in fields)
+					values[f] = f.GetValue(this);
+			}
+		}
 	}
 #endif
 
@@ -231,6 +261,10 @@ public class SteamVR_PlayArea : MonoBehaviour
 	IEnumerator UpdateBounds()
 	{
 		GetComponent<MeshFilter>().mesh = null; // clear existing
+
+		var vr = SteamVR.instance;
+		if (vr == null)
+			yield break;
 
 		var error = HmdError.None;
 		var pChaperone = OpenVR.GetGenericInterface(OpenVR.IVRChaperone_Version, ref error);

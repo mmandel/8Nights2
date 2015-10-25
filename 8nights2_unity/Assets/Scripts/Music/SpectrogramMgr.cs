@@ -79,7 +79,11 @@ public class SpectrogramMgr : MonoBehaviour
          Vector2 curPos = startPos;
          int idx = 0;
          float fftTime = SpectrogramMgr.Instance.GetFFTTime();
-         float stemVolume = EightNightsAudioMgr.Instance.MusicPlayer.GetVolumeForGroup(Group);
+         float stemVolume = 0.0f;
+         if (EightNightsAudioMgr.Instance != null)
+            stemVolume = EightNightsAudioMgr.Instance.MusicPlayer.GetVolumeForGroup(Group);
+         else if (Nights2AudioMgr.Instance != null)
+            stemVolume = Nights2AudioMgr.Instance.MusicPlayer.GetVolumeForGroup(Group);
          foreach (AnimationCurve c in _spectroCurves)
          {
             float curveVal = Mathf.Clamp01(c.Evaluate(fftTime));

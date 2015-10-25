@@ -451,10 +451,10 @@ public class LightMgr : MonoBehaviour
         {
             EightNightsMgr.GroupID gID = EightNightsMgr.GroupID.Shamash;
             EightNightsMgr.LightID lID = EightNightsMgr.LightID.Light1;
-            if (FindLight(e.Channel, LightTypes.LightJams, ref gID, ref lID))
+           if (FindLight(e.Channel, e.IsPar64 ? LightTypes.LightJams_Par64 : LightTypes.LightJams, ref gID, ref lID))
             {
-                LightGroupConfig config = FindGroupConfig(gID);
-                OnLightChanged(this, new LightEventArgs(gID, lID, LightTypes.LightJams, new LightData(config.DefaultColor, e.Intensity)));
+              LightGroupConfig config = FindGroupConfig(gID);
+              OnLightChanged(this, new LightEventArgs(gID, lID, e.IsPar64 ? LightTypes.LightJams_Par64 : LightTypes.LightJams,  new LightData(e.IsPar64 ? e.EventColor : config.DefaultColor, e.Intensity)));
             }
         }
     }

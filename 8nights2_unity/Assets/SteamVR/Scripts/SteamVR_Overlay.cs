@@ -51,9 +51,12 @@ public class SteamVR_Overlay : MonoBehaviour
 	{
 		if (handle != OpenVR.k_ulOverlayHandleInvalid)
 		{
-			var vr = SteamVR.instance;
-			if (vr != null && vr.overlay != null)
-				vr.overlay.DestroyOverlay(handle);
+			if (SteamVR.active)
+			{
+				var vr = SteamVR.instance;
+				if (vr.overlay != null)
+					vr.overlay.DestroyOverlay(handle);
+			}
 
 			handle = OpenVR.k_ulOverlayHandleInvalid;
 		}

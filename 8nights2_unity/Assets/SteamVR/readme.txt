@@ -1,4 +1,4 @@
-SteamVR plugin for Unity - v1.0.3
+SteamVR plugin for Unity - v1.0.5
 Copyright 2014-2015, Valve Corporation, All rights reserved.
 
 
@@ -13,6 +13,25 @@ Requirements:
 The SteamVR runtime must be installed.  This can be found in Steam under Tools.
 
 The plugin currently only supports Windows / DX11.
+
+
+Changes for v1.0.5:
+
+* Updated to SteamVR runtime build #826021 (v.1445485596).
+
+* Removed TrackedDevices from [CameraRig] prefab (these were only ever meant to be in the example scene.
+
+* Added support for new native plugin interface.
+
+* Enabled MSAA in OpenGL as that appears to be fixed in the latest version of Unity.
+
+* Fix for upside-down rendering in OpenGL.
+
+* Moved calls to IVRCompositor::WaitGetPoses and Submit to Unity's render thread.
+
+* Couple fixes to prevent SteamVR from getting re-initialized when stopping the Editor preview.
+
+* Fix for hitches caused by SteamVR_PlayArea when not running SteamVR.
 
 
 Changes for v1.0.4:

@@ -46,8 +46,7 @@ public class SteamVR_Camera : MonoBehaviour
 
 		int w = (int)(vr.sceneWidth * sceneResolutionScale);
 		int h = (int)(vr.sceneHeight * sceneResolutionScale);
-		int aa = vr.graphicsAPI == Valve.VR.GraphicsAPIConvention.API_OpenGL || // MSAA disabled in OpenGL since it would render the scene all black
-			QualitySettings.antiAliasing == 0 ? 1 : QualitySettings.antiAliasing;
+		int aa = QualitySettings.antiAliasing == 0 ? 1 : QualitySettings.antiAliasing;
 		var format = hdr ? RenderTextureFormat.ARGBHalf : RenderTextureFormat.ARGB32;
 
 		if (_sceneTexture != null)
@@ -311,7 +310,7 @@ public class SteamVR_Camera : MonoBehaviour
 	void OnPreRender()
 	{
 		if (flip)
-			flip.enabled = (SteamVR_Render.Top() == this);
+			flip.enabled = (SteamVR_Render.Top() == this && SteamVR.instance.graphicsAPI == GraphicsAPIConvention.API_DirectX);
 
 		var headCam = head.GetComponent<Camera>();
 		if (headCam != null)
@@ -331,10 +330,21 @@ public class SteamVR_Camera : MonoBehaviour
 	{
 		if (SteamVR_Render.Top() == this)
 		{
-			var vr = SteamVR.instance;
-			var i = (int)SteamVR_Render.eye;
-			var bounds = vr.textureBounds[i];
-			vr.compositor.Submit(SteamVR_Render.eye, vr.graphicsAPI, src.GetNativeTexturePtr(), ref bounds, VRSubmitFlags_t.Submit_Default);
+			int eventID;
+			if (SteamVR_Render.eye == Hmd_Eye.Eye_Left)
+			{
+				// Get gpu started on work early to avoid bubbles at the top of the frame.
+				SteamVR_Utils.QueueEventOnRenderThread(Unity.k_nRenderEventID_Flush);
+
+				eventID = Unity.k_nRenderEventID_SubmitL;
+			}
+			else
+			{
+				eventID = Unity.k_nRenderEventID_SubmitR;
+			}
+
+			// Queue up a call on the render thread to Submit our render target to the compositor.
+			SteamVR_Utils.QueueEventOnRenderThread(eventID);
 		}
 
 		Graphics.SetRenderTarget(dest);

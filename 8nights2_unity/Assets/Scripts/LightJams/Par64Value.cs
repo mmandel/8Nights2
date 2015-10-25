@@ -69,19 +69,24 @@ public class Par64Value : MonoBehaviour
     //utility function for basic Par64 color setting
     public static void SetPar64Color(int startChannel, float masterDim, Color c)
     {
+       bool notify = false; //we will manually notify
+
         //master dimmer
-        LightJamsMgr.Instance.SendToLightJams(startChannel, masterDim);
+       LightJamsMgr.Instance.SendToLightJams(startChannel, masterDim, notify);
 
         //clear special mode
-        LightJamsMgr.Instance.SendToLightJams(startChannel + 6, 0.0f);
+       LightJamsMgr.Instance.SendToLightJams(startChannel + 6, 0.0f, notify);
 
         //Color
-        LightJamsMgr.Instance.SendToLightJams(startChannel + 1, c.r);
-        LightJamsMgr.Instance.SendToLightJams(startChannel + 2, c.g);
-        LightJamsMgr.Instance.SendToLightJams(startChannel + 3, c.b);
+       LightJamsMgr.Instance.SendToLightJams(startChannel + 1, c.r, notify);
+       LightJamsMgr.Instance.SendToLightJams(startChannel + 2, c.g, notify);
+       LightJamsMgr.Instance.SendToLightJams(startChannel + 3, c.b, notify);
 
         //"Dimming", do we need this?
-        LightJamsMgr.Instance.SendToLightJams(startChannel + 5, 0.0f);
+       LightJamsMgr.Instance.SendToLightJams(startChannel + 5, 0.0f, notify);
+
+       //manually notify
+       LightJamsMgr.Instance.SendLightChangedEvent(startChannel, masterDim, c, true);
     }
 	
 	void Update () 

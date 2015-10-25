@@ -238,10 +238,6 @@ public class SteamVR : System.IDisposable
 			Debug.Log("Compositor - " + result);
 		}
 
-		// Hook up the render thread event.
-		var error = HmdError.None;
-		SetUnityRenderCallback(OpenVR.GetGenericInterface(IVRHmdDistortPresent_Version, ref error));
-
 		// Setup render values
 		uint w = 0, h = 0;
 		hmd.GetRecommendedRenderTargetSize(ref w, ref h);
@@ -269,6 +265,8 @@ public class SteamVR : System.IDisposable
 		textureBounds[1].uMax = 0.5f + 0.5f * r_right / tanHalfFov.x;
 		textureBounds[1].vMin = 0.5f - 0.5f * r_bottom / tanHalfFov.y;
 		textureBounds[1].vMax = 0.5f - 0.5f * r_top / tanHalfFov.y;
+
+		Unity.SetSubmitParams(textureBounds[0], textureBounds[1], VRSubmitFlags_t.Submit_Default);
 
 		// Grow the recommended size to account for the overlapping fov
 		sceneWidth = sceneWidth / Mathf.Max(textureBounds[0].uMax - textureBounds[0].uMin, textureBounds[1].uMax - textureBounds[1].uMin);
@@ -312,7 +310,6 @@ public class SteamVR : System.IDisposable
 		SteamVR_Utils.Event.Remove("device_connected", OnDeviceConnected);
 		SteamVR_Utils.Event.Remove("new_poses", OnNewPoses);
 
-		SetUnityRenderCallback(System.IntPtr.Zero);
 		ShutdownSystems();
 		_instance = null;
 	}
@@ -328,15 +325,5 @@ public class SteamVR : System.IDisposable
 		if (_instance != null)
 			_instance.Dispose();
 	}
-
-	#region Unity Native Rendering Hooks
-
-	public delegate void UnityRenderDelegate(int eventID);
-	[DllImport("openvr_api", CallingConvention = CallingConvention.StdCall)]
-	public static extern void SetUnityRenderCallback(System.IntPtr fn);
-
-	public const string IVRHmdDistortPresent_Version = "IVRHmdDistortPresent_001";
-
-	#endregion
 }
 

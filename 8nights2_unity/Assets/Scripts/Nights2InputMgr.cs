@@ -17,7 +17,7 @@ public class Nights2InputMgr : MonoBehaviour
     //wraps controller device and exposes functions
     public class InputInfo
     {
-        public bool HasDevice() { return (device != null) && device.connected; }
+       public bool HasDevice() { return (SteamVR.instance != null) && (device != null) && device.connected; }
         public bool HasTracking() { return HasDevice() && device.hasTracking; }
 
         //trigger down this frame?

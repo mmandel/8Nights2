@@ -27,9 +27,12 @@ public class SteamVR_Skybox : MonoBehaviour
 
 	void OnDisable()
 	{
-		var vr = SteamVR.instance;
-		if (vr != null && vr.compositor != null)
-			vr.compositor.ClearSkyboxOverride();
+		if (SteamVR.active)
+		{
+			var vr = SteamVR.instance;
+			if (vr.compositor != null)
+				vr.compositor.ClearSkyboxOverride();
+		}
 	}
 }
 

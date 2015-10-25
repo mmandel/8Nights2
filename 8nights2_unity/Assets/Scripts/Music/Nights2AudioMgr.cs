@@ -441,7 +441,7 @@ public class Nights2AudioMgr : MonoBehaviour
                isLit = b.IsLit();
 
             //turn on stem if we're lit but not yet attacking or sustaining
-            if (isLit && ((d.LoopState != StemLoopState.Attacking) || (d.LoopState != StemLoopState.Sustaining)))
+            if (isLit && ((d.LoopState != StemLoopState.Attacking) && (d.LoopState != StemLoopState.Sustaining)))
             {
                d.LoopState = StemLoopState.Attacking;
                d.CaptureTimestamp();
