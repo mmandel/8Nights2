@@ -79,13 +79,20 @@ public class Nights2Beacon : MonoBehaviour
             //transision to seeking beacon state when torch is lit by shamash
             if (IsNext() && IsInSeekingState())
             {
-                Debug.Log("TORCH LIT BEACON!!");
-
-                SetIsNext(false);
-                SetLit(true);
-                Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.BeaconLit);
+               TriggerTorchLitBeacon();
             }
         }
+    }
+
+    public void TriggerTorchLitBeacon()
+    {
+       Debug.Assert(IsNext() && IsInSeekingState());
+
+       Debug.Log("TORCH LIT BEACON!!");
+
+       SetIsNext(false);
+       SetLit(true);
+       Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.BeaconLit);
     }
 
 

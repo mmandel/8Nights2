@@ -12,6 +12,13 @@ public class Nights2Shamash : MonoBehaviour
     private Animator _animator = null;
     private bool _playerIsClose = false;
 
+    public static Nights2Shamash Instance { get; private set; }
+
+   void Awake()
+   {
+      Instance = this;
+   }
+
 	void Start () 
     {
         _animator = gameObject.GetComponent<Animator>();

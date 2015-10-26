@@ -22,6 +22,9 @@ public class Nights2Path : MonoBehaviour
     public bool EndEditDummy = false;
     [ScriptButton("Save!", "OnSavePressed")]
     public bool SaveDummy = false;
+    [ScriptButton("Load!", "OnLoadPressed")]
+    public bool LoadDummy = false;
+
 
     public class PathData
     {
@@ -215,6 +218,11 @@ public class Nights2Path : MonoBehaviour
     public void OnSavePressed(string propPath)
     {
         SaveToXML();
+    }
+
+    public void OnLoadPressed(string propPath)
+    {
+       LoadFromXML();
     }
 
     public void OnStartEditPressed(string propPath)

@@ -321,6 +321,32 @@ public class Nights2AudioMgr : MonoBehaviour
          }
       */
 
+      //advance progression in bottom center
+      startPos.x = (Screen.width / 2) - 150;
+      startPos.y = Screen.height - 30;
+      //display current state
+      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), "State:  " +  Nights2Mgr.Instance.GetState().ToString());
+      //display next button
+      startPos.x += 160;
+      if (GUI.Button(new Rect(startPos.x, startPos.y, 30, 20), ">"))
+      {
+         Nights2Mgr.Instance.CheatToNextState();
+      }
+      //reset button
+      startPos.y -= 25;
+      startPos.x -= 100;
+      if (GUI.Button(new Rect(startPos.x, startPos.y, 50, 20), "Reset"))
+      {
+         Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.GettingReady);
+      }
+      //fail button
+      startPos.x += 100;
+      if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) &&
+         GUI.Button(new Rect(startPos.x, startPos.y, 50, 20), "Fail"))
+      {
+         Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.FlameExtinguished);
+      }
+
       //Test lights in bottom right
       if (LightMgr.Instance != null)
       {

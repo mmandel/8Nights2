@@ -75,17 +75,17 @@ public class Nights2Mgr : MonoBehaviour
             //update tracking lists if a beacon is lit
             if (_curState == Nights2State.BeaconLit)
             {
-                Debug.Assert(_nextBeacon != null);
+               Debug.Assert(_nextBeacon != null);
 
-                //update state of next beacon
-                _nextBeacon.SetLit(true);
-                _nextBeacon.SetIsNext(false);
+               //update state of next beacon
+               _nextBeacon.SetLit(true);
+               _nextBeacon.SetIsNext(false);
 
-                //update bookkeeping
-                if(_unlitBeacons.Contains(_nextBeacon))
-                    _unlitBeacons.Remove(_nextBeacon);
-                if(!_litBeacons.Contains(_nextBeacon))
-                    _litBeacons.Add(_nextBeacon);
+               //update bookkeeping
+               if (_unlitBeacons.Contains(_nextBeacon))
+                  _unlitBeacons.Remove(_nextBeacon);
+               if (!_litBeacons.Contains(_nextBeacon))
+                  _litBeacons.Add(_nextBeacon);
             }
 
             //reset num portals tracking
@@ -221,4 +221,30 @@ public class Nights2Mgr : MonoBehaviour
                 SetState(Nights2State.SeekingShamash);
         }
 	}
+
+   public void CheatToNextState()
+   {
+      if (GetState() == Nights2State.GettingReady)
+         SetState(Nights2State.SeekingShamash);
+      else if (GetState() == Nights2State.SeekingShamash)
+         Nights2Shamash.Instance.NotifyPlayerNearby();
+      else if (GetState() == Nights2State.NearShamash)
+      {
+         SetState(Nights2State.SeekingBeacon);
+         Nights2Shamash.Instance.NotifyPlayerNotNearby();
+      }
+      else if (GetState() == Nights2State.SeekingBeacon)
+      {
+         SetState(Nights2State.NearBeacon);
+         _nextBeacon.NotifyPlayerNearby();
+      }
+      else if (GetState() == Nights2State.FlameExtinguished)
+         SetState(Nights2State.SeekingBeacon);
+      else if (GetState() == Nights2State.NearBeacon)
+      {
+         _nextBeacon.TriggerTorchLitBeacon();
+      }
+      else if (GetState() == Nights2State.BeaconLit)
+         SetState(Nights2State.SeekingShamash);
+   }
 }

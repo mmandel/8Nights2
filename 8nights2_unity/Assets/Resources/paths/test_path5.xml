@@ -3,21 +3,21 @@
   <Points>
     <PathEntry>
       <Point>
-        <x>0.0413053036</x>
+        <x>-0.0413053036</x>
         <y>0.05</y>
         <z>1.82815313</z>
       </Point>
     </PathEntry>
     <PathEntry>
       <Point>
-        <x>0.7779431</x>
+        <x>-0.7779431</x>
         <y>0.05</y>
         <z>-1.09083939</z>
       </Point>
     </PathEntry>
     <PathEntry>
       <Point>
-        <x>1.489521</x>
+        <x>-1.489521</x>
         <y>0.05</y>
         <z>1.629853</z>
       </Point>

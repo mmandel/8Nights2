@@ -3,23 +3,23 @@
   <Points>
     <PathEntry>
       <Point>
-        <x>0.0413053036</x>
+        <x>-0.0155543685</x>
         <y>0.05</y>
-        <z>1.82815313</z>
+        <z>1.71116543</z>
       </Point>
     </PathEntry>
     <PathEntry>
       <Point>
-        <x>0.7779431</x>
+        <x>0.133217037</x>
         <y>0.05</y>
-        <z>-1.09083939</z>
+        <z>-1.51963329</z>
       </Point>
     </PathEntry>
     <PathEntry>
       <Point>
-        <x>1.489521</x>
+        <x>-1.56996679</x>
         <y>0.05</y>
-        <z>1.629853</z>
+        <z>-0.2916807</z>
       </Point>
     </PathEntry>
   </Points>
