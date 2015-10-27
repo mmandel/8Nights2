@@ -335,7 +335,7 @@ public class Nights2AudioMgr : MonoBehaviour
       //reset button
       startPos.y -= 25;
       startPos.x -= 100;
-      if (GUI.Button(new Rect(startPos.x, startPos.y, 50, 20), "Reset"))
+      if (GUI.Button(new Rect(startPos.x, startPos.y, 65, 20), "End Turn"))
       {
          Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.GettingReady);
       }

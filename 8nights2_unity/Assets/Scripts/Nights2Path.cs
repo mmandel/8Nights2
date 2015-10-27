@@ -15,6 +15,12 @@ public class Nights2Path : MonoBehaviour
     public string SaveName = "test_path";
     [Tooltip("Which shamash does this path lead to?")]
     public Nights2Beacon LeadsToBeacon = null;
+    [Tooltip("Position along the path to place the entrance portal")]
+    [Range(0.0f, 1.0f)]
+    public float EntrancePortalPos = .125f;
+    [Tooltip("Position along the path to place the exit portal")]
+    [Range(0.0f, 1.0f)]
+    public float ExitPortalPos = .875f;
 
     [ScriptButton("Begin Editting!", "OnStartEditPressed")]
     public bool BeginEditDummy = false;
@@ -24,6 +30,17 @@ public class Nights2Path : MonoBehaviour
     public bool SaveDummy = false;
     [ScriptButton("Load!", "OnLoadPressed")]
     public bool LoadDummy = false;
+
+    private float _exitPortalDist = 0.0f; //dist along path of exit portal
+    private int _exitPortalSegment = 0;
+    private float _entrancePortalDist = 0.0f;
+    private int _entrancePortalSegment = 0;
+
+    public enum PortalType
+    {
+       EntrancePortal,
+       ExitPortal
+    }
 
 
     public class PathData
@@ -48,6 +65,122 @@ public class Nights2Path : MonoBehaviour
     private bool _isEditting = false;
 
     public bool IsEditting() { return _isEditting; }
+
+    public Vector3 GetPortalDir(PortalType portal)
+    {
+       return GetSegmentDirection((portal == PortalType.EntrancePortal) ? _entrancePortalSegment : _exitPortalSegment);
+    }
+
+    public Vector3 GetPortalPos(PortalType portal)
+    {
+       float portalU = (portal == PortalType.EntrancePortal) ? EntrancePortalPos : ExitPortalPos;
+
+       int ignore;
+       return UToPos(portalU, out ignore);
+    }
+
+    //find the distance along the path to the given portal.  Will be negative if already in front of the portal
+    public float DistToPortal(PortalType portal, Vector3 ptToTest)
+    {
+       //dist along path of the portal
+       float portalDist = (portal == PortalType.EntrancePortal) ? _entrancePortalDist : _exitPortalDist;
+
+       //ok, find out where the point is on the path (and which segment)
+       int ptSegment;
+       Vector3 ptOnPath = ClosestPointOnPath(ptToTest, out ptSegment);
+
+       if (ptSegment == -1)
+          return float.MaxValue;
+
+       //now compute distance along path the pt we found on the path (looping up to the found segment)
+       float distAccum = 0.0f;
+       for (int i = 0; i <= ptSegment; i++)
+       {
+          Vector3 a = _pathData.Points[i].Point;
+          Vector3 b = _pathData.Points[i + 1].Point;
+
+          if (i == ptSegment) 
+             distAccum += (ptOnPath - a).magnitude;
+          else
+             distAccum += (b - a).magnitude;
+       }
+
+       return (portalDist - distAccum);
+    }
+
+    public float ComputeTotalPathDist()
+    {
+       if ((_pathData == null) || (_pathData.Points.Length <= 1))
+          return 0.0f;
+       float totalDist = 0.0f;
+       for (int i = 0; i < _pathData.Points.Length - 1; i++)
+       {
+          Vector3 a = _pathData.Points[i].Point;
+          Vector3 b = _pathData.Points[i + 1].Point;
+          totalDist += (b - a).magnitude;
+       }
+       return totalDist;
+    }
+
+    //take a 0..1 percentage of path and convert it to a distance
+    public float UToDist(float u, out int segmentIdx)
+    {
+       u = Mathf.Clamp01(u);
+
+       float totalDist = ComputeTotalPathDist();
+
+       float resultDist = 0.0f;
+       float uAccum = 0.0f;
+       segmentIdx = _pathData.Points.Length - 1;
+       for (int i = 0; i < _pathData.Points.Length - 1; i++)
+       {
+          Vector3 a = _pathData.Points[i].Point;
+          Vector3 b = _pathData.Points[i + 1].Point;
+
+          float segmentDist = (a - b).magnitude;
+          float prevUAccum = uAccum;
+          uAccum +=  (segmentDist / totalDist);
+
+          if (uAccum >= u) //ok, its on this segment
+          {
+             resultDist += ((u - prevUAccum) * totalDist);
+             segmentIdx = i;
+             break;
+          }
+          else
+             resultDist += segmentDist;
+       }
+
+       return resultDist;
+    }
+
+    public Vector3 UToPos(float u, out int segmentIdx)
+    {
+       u = Mathf.Clamp01(u);
+
+       float totalDist = ComputeTotalPathDist();
+       float uAccum = 0.0f;
+       segmentIdx = _pathData.Points.Length - 1;
+       for (int i = 0; i < _pathData.Points.Length - 1; i++)
+       {
+          Vector3 a = _pathData.Points[i].Point;
+          Vector3 b = _pathData.Points[i + 1].Point;
+
+          float segmentDist = (a - b).magnitude;
+          float prevUAccum = uAccum;
+          uAccum += (segmentDist / totalDist);
+
+          if (uAccum >= u) //ok, its on this segment
+          {
+             float distAlongSeg =  ((u - prevUAccum) * totalDist);
+             Vector3 segDir = (b - a).normalized;
+             segmentIdx = i;
+             return a + distAlongSeg * segDir;
+          }
+       }
+
+       return Vector3.zero;
+    }
 
     //find the closest point on the path to the given point
     public Vector3 ClosestPointOnPath(Vector3 testPoint, out int outPathSegment)
@@ -148,6 +281,10 @@ public class Nights2Path : MonoBehaviour
 
         //Let nights 2 mgr know which beacon this path leads to
         Nights2Mgr.Instance.RegisterPath(this, LeadsToBeacon);
+
+        //get the distance to each portal, along with the path segment they are on
+        _entrancePortalDist = UToDist(EntrancePortalPos, out _entrancePortalSegment);
+        _exitPortalDist     = UToDist(ExitPortalPos, out _exitPortalSegment); 
 
         //temp: generate fake data to test serialization
         /*_pathData = new PathData();
@@ -324,6 +461,16 @@ public class Nights2Path : MonoBehaviour
 
             prevPt = curPt;
         }
+
+        //draw entrance portal
+        Vector3 entrancePos = GetPortalPos(PortalType.EntrancePortal);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(entrancePos, 2.0f * kSphereRadius);
+
+        //draw exit portal
+        Vector3 exitPos = GetPortalPos(PortalType.ExitPortal);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(exitPos, 2.0f * kSphereRadius);
     }
 
     //add point at whatever location the torch is right now
