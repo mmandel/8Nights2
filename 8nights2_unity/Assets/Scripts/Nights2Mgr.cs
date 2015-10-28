@@ -10,7 +10,7 @@ using System.Collections.Generic;
 public class Nights2Mgr : MonoBehaviour 
 {
 
-    public GameObject StartCandle = null; //optional start candle
+    public Nights2Path[] CandlePathOrder = new Nights2Path[0]; //the order we cycle through candles, will be random if this array isnt long enough
     public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
     public event StateChangedHandler OnStateChanged;
@@ -29,7 +29,6 @@ public class Nights2Mgr : MonoBehaviour
     private Nights2Beacon _nextBeacon = null; //the next beacon to be lit by the torch carrier
     private Dictionary<Nights2Beacon, Nights2Path> _beaconToPathMap = new Dictionary<Nights2Beacon, Nights2Path>();
     private bool _isPathEditting = false;
-    private int _numPortalsPassed = 0;
 
     public enum Nights2State
     {
@@ -44,16 +43,11 @@ public class Nights2Mgr : MonoBehaviour
 
     public static Nights2Mgr Instance { get; private set; }
 
-    public int NumPortalsPassed() { return _numPortalsPassed; }
-
-    //called by Nights2TorchPlayer when torch carrier walks through a portal
-    public void NotifyPortalPassed()
+    public int NumCandlesLit()
     {
-        _numPortalsPassed++;
-
-        Debug.Log("Num Portals Passed: " + _numPortalsPassed);
-        //TODO: send out event?
+        return _litBeacons.Count;
     }
+
 
     public Nights2State GetState() { return _curState; }
 
@@ -86,14 +80,6 @@ public class Nights2Mgr : MonoBehaviour
                   _unlitBeacons.Remove(_nextBeacon);
                if (!_litBeacons.Contains(_nextBeacon))
                   _litBeacons.Add(_nextBeacon);
-            }
-
-            //reset num portals tracking
-            if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.FlameExtinguished) || 
-                (_curState == Nights2State.SeekingBeacon))
-            {
-                _numPortalsPassed = 0;
-                Debug.Log("Num Portal Passed: 0");
             }
 
             if (OnStateChanged != null)
@@ -184,9 +170,9 @@ public class Nights2Mgr : MonoBehaviour
 
         Nights2Beacon b = null;
         //first beacon, just use the one we're configured for
-        if ((_litBeacons.Count == 0) && (StartCandle != null))
+        if (_litBeacons.Count < CandlePathOrder.Length)
         {
-            b = StartCandle.GetComponent<Nights2Beacon>();
+            b = CandlePathOrder[_litBeacons.Count].LeadsToBeacon;
         }
 
         //pick randomly

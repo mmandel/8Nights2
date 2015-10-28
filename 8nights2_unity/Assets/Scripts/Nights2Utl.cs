@@ -28,4 +28,18 @@ public class Nights2Utl
         return vClosestPoint;
     }
 
+    public static bool AnimatorHasParam(Animator a, string paramName)
+    {
+        if ((a != null) && (paramName.Length > 0))
+        {
+            foreach (var p in a.parameters)
+            {
+                if (p.name.Equals(paramName))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
 }

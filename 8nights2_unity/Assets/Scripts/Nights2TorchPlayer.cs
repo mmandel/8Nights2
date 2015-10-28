@@ -7,6 +7,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class Nights2TorchPlayer : MonoBehaviour 
 {
@@ -21,9 +22,7 @@ public class Nights2TorchPlayer : MonoBehaviour
 
     [Tooltip("An object to enable/disable and position as torch carrier successfully navigates the path")]
     public GameObject PortalObj = null;
-    [Tooltip("The distance after a turn to place the portal, in meters")]
-    public float PortalDistFromTurn = .5f;
-    [Tooltip("The distance thresh where we should start showing portal.  Should be less than 'PortalDistFromTurn')")]
+    [Tooltip("The distance thresh from portal location where we should start showing it")]
     public float ShowPortalDistThresh = .05f;
 
     [Space(10)]
@@ -32,15 +31,44 @@ public class Nights2TorchPlayer : MonoBehaviour
     public bool DebugPathFollowing = true;
     public GameObject DebugSnapToPath = null;
 
+    public event PortalChangedHandler OnPortalStateChanged;
+    public class PortalChangedEventArgs : EventArgs
+    {
+        public PortalChangedEventArgs(PortalState oldState, PortalState newState) { OldState = oldState; NewState = newState; }
+        public PortalState OldState;
+        public PortalState NewState;
+    }
+    public delegate void PortalChangedHandler(object sender, PortalChangedEventArgs e);
+
     private bool _wasDebugPathOn = false;
     private bool _deadzoneActive = false;
     private Vector3 _deadzoneCenter = Vector3.zero;
     private float _outsidePathStartTime = -1.0f;
-    private int _lastPathSegment = -1;
-    private int _nextPortalSegment = 1; //the path segment the next portal should go on
+    private Nights2Portal _portalFX = null;
+    private bool _portalShowing = false;
+
+    private PortalState _curPortalState = PortalState.NoProgress;
+    public enum PortalState
+    {
+        NoProgress,
+        ShowingEntrancePortal,
+        ThroughEntrancePortal,
+        ShowingExitPortal,
+        ThroughExitPortal
+    }
+
+    public static Nights2TorchPlayer Instance { get; private set; }
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
+        if (PortalObj != null)
+            _portalFX = PortalObj.GetComponent<Nights2Portal>();
+
         //subscribe to state changed events
         if (Nights2Mgr.Instance != null)
             Nights2Mgr.Instance.OnStateChanged += OnNights2StateChanged;
@@ -62,8 +90,8 @@ public class Nights2TorchPlayer : MonoBehaviour
             _deadzoneActive = true;
             _deadzoneCenter = GetPlayerPosOnGround();
 
-            //reset which path segment the next portal should be on
-            _nextPortalSegment = 1;
+            //reset portal state
+            SetPortalState(PortalState.NoProgress);
 
             ShowPortal(false);
         }
@@ -86,12 +114,72 @@ public class Nights2TorchPlayer : MonoBehaviour
                (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon);
     }
 
-    void ShowPortal(bool b)
+    void SetPortalState(PortalState s)
     {
+        if (s != _curPortalState)
+        {
+            PortalState prevState = _curPortalState;
+
+            _curPortalState = s;
+
+            if (s == PortalState.NoProgress)
+            {
+                ShowPortal(false); //just in case
+            }
+            else if (s == PortalState.ShowingEntrancePortal)
+            {
+                Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
+                Debug.Assert(curPath != null);
+
+                PositionPortal(curPath.GetPortalPos(Nights2Path.PortalType.EntrancePortal));
+                AlignPortal(curPath.GetPortalDir(Nights2Path.PortalType.EntrancePortal));
+                
+                ShowPortal(true);
+            }
+            else if (s == PortalState.ShowingExitPortal)
+            {
+                Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
+                Debug.Assert(curPath != null);
+
+                PositionPortal(curPath.GetPortalPos(Nights2Path.PortalType.ExitPortal));
+                AlignPortal(curPath.GetPortalDir(Nights2Path.PortalType.ExitPortal));
+
+                ShowPortal(true);
+            }
+            else if ((s == PortalState.ThroughEntrancePortal) || (s == PortalState.ThroughExitPortal))
+            {
+                ShowPortal(false, true);
+            }
+
+            if (OnPortalStateChanged != null)
+                OnPortalStateChanged(this, new PortalChangedEventArgs(prevState, _curPortalState));
+        }
+    }
+
+    void ShowPortal(bool b, bool wasActivated = false)
+    {
+        if (b == _portalShowing)
+            return;
+
+        _portalShowing = b;
+
         if (PortalObj == null)
             return;
 
-        PortalObj.SetActive(b);
+        if (_portalFX != null)
+        {
+            if (b)
+                _portalFX.TriggerShowPortal();
+            else
+            {
+                if (wasActivated)
+                    _portalFX.TriggerActivatedPortal();
+                else
+                    _portalFX.TriggerCancelPortal();
+            }
+        }
+        else
+            PortalObj.SetActive(b);
     }
 
     void PositionPortal(Vector3 pt)
@@ -110,13 +198,6 @@ public class Nights2TorchPlayer : MonoBehaviour
         PortalObj.transform.rotation = Quaternion.LookRotation(alignDir);
     }
 
-    void AdvanceNextPortalSegment()
-    {
-        ShowPortal(false);
-
-        Nights2Mgr.Instance.NotifyPortalPassed();
-        _nextPortalSegment++;
-    }
 
 	void Update () 
     {
@@ -169,38 +250,61 @@ public class Nights2TorchPlayer : MonoBehaviour
                 }
             }
 
-            _lastPathSegment = curPathSegment;
-
-            //make sure next portal segment is valid
-            if ((curPathSegment != -1) && (curPathSegment > _nextPortalSegment))
-            {
-                while (_nextPortalSegment <= curPathSegment)
-                {
-                    AdvanceNextPortalSegment();
-                }
-            }
-
             //update portal processing
-            if ((curPathSegment != -1) && (curPathSegment == _nextPortalSegment))
+            float distToEntrance = float.MaxValue;
+            float distToExit = float.MaxValue;
+            switch (_curPortalState)
             {
-                //ok we know we're on the current portal segment, how far along tho?
-                float distAlongSegment = curPath.GetDistanceAlongSegment(closestPtOnPath, curPathSegment);
+                case PortalState.NoProgress:
 
-                //if we're far enough to show portal, do it
-                if ((distAlongSegment <= PortalDistFromTurn) && (distAlongSegment >= ShowPortalDistThresh))
-                {
-                    ShowPortal(true);
-                    PositionPortal(curPath.GetPositionOnSegment(PortalDistFromTurn, _nextPortalSegment));
-                    AlignPortal(curPath.GetSegmentDirection(_nextPortalSegment));
-                }
-                //give credit if we've just pass through a portal
-                else if (distAlongSegment > PortalDistFromTurn)
-                {
-                    AdvanceNextPortalSegment();
-                }
+                    //OK, see when we're close to the entrance portal and show it
+                    distToEntrance = curPath.DistToPortal(Nights2Path.PortalType.EntrancePortal, GetPlayerPosOnGround());
+                    Debug.Log("Dist to entrance (not showing): " + distToEntrance);
+                    if ((distToEntrance >= 0.0f) && (distToEntrance <= ShowPortalDistThresh))
+                    {
+                        Debug.Log("   SHOWING ENTRANCE PORTAL!");
+                        SetPortalState(PortalState.ShowingEntrancePortal);
+                    }
+                    break;
+
+                case PortalState.ShowingEntrancePortal:
+
+                    //detect when player walks through entrance portal                   
+                    distToEntrance = curPath.DistToPortal(Nights2Path.PortalType.EntrancePortal, GetPlayerPosOnGround());
+                    Debug.Log("Dist to entrance (showing): " + distToEntrance);
+                    if (distToEntrance < 0.0f) //negative dist means we're past it
+                    {
+                        Debug.Log("   THROUGH ENTRANCE PORTAL!");
+                        SetPortalState(PortalState.ThroughEntrancePortal);
+                    }
+                    break;
+
+                case PortalState.ThroughEntrancePortal:
+
+                    //OK, see when we're close to the exit portal and show it                    
+                    distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetPlayerPosOnGround());
+                    Debug.Log("Dist to exit (not showing): " + distToExit);
+                    if ((distToExit >= 0.0f) && (distToExit <= ShowPortalDistThresh))
+                    {
+                        Debug.Log("   SHOWING ENTRANCE PORTAL!");
+                        SetPortalState(PortalState.ShowingExitPortal);
+                    }
+                    break;
+
+                case PortalState.ShowingExitPortal:
+
+                    //detect when player walks through exit portal
+                    distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetPlayerPosOnGround());
+                    Debug.Log("Dist to exit (showing): " + distToExit);
+                    if (distToExit < 0.0f) //negative dist means we're past it
+                    {
+                        Debug.Log("   THROUGH EXIT PORTAL!");
+                        SetPortalState(PortalState.ThroughExitPortal);
+                    }
+                    break;
+
+                default: break;
             }
-
-            _lastPathSegment = -1;
         }
         else //not followinbg path
         {
