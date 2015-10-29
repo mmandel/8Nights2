@@ -21,6 +21,7 @@ public class Nights2Path : MonoBehaviour
     [Tooltip("Position along the path to place the exit portal")]
     [Range(0.0f, 1.0f)]
     public float ExitPortalPos = .875f;
+    public Material PreviewLineMat;
 
     [ScriptButton("Begin Editting!", "OnStartEditPressed")]
     public bool BeginEditDummy = false;
@@ -414,11 +415,12 @@ public class Nights2Path : MonoBehaviour
             //add line renderer
             _previewRenderer = previewObj.AddComponent<LineRenderer>();
             _previewRenderer.SetWidth(.1f, .1f);
-            _previewRenderer.material =  new Material(Shader.Find("Unlit/Color"));
+            _previewRenderer.material =  (PreviewLineMat != null) ? PreviewLineMat : new Material(Shader.Find("Unlit/Color"));
             _previewRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             _previewRenderer.useLightProbes = false;
             _previewRenderer.useWorldSpace = false;
-            _previewRenderer.material.color = Color.green;
+            if(PreviewLineMat == null)
+                _previewRenderer.material.color = Color.green;
 
             previewObj.transform.parent = this.transform;
             previewObj.transform.localPosition = Vector3.zero;

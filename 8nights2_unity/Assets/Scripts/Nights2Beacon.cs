@@ -17,6 +17,7 @@ public class Nights2Beacon : MonoBehaviour
     private bool _isLit = false;
     private int _beaconIdx = -1;
     private Animator _animator = null;
+    private bool _playerIsNear = false;
 
     public bool IsLit() { return _isLit; } 
     public void SetLit(bool b)
@@ -60,6 +61,9 @@ public class Nights2Beacon : MonoBehaviour
 	void Update () 
     {
         SetAnimatorBool(IsNextBool, _isNextBeacon && IsInSeekingState());
+        SetAnimatorBool(PlayerCloseBool, _playerIsNear);
+        if (_playerIsNear && (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) && !Nights2TorchPlayer.Instance.IsPortalShowing())
+            Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.NearBeacon);
 	}
 
     bool IsInSeekingState()
@@ -104,13 +108,11 @@ public class Nights2Beacon : MonoBehaviour
 
         Debug.Log("PLAYER NEAR NEXT BEACON!");
 
-        SetAnimatorBool(PlayerCloseBool, true);
-        if (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon)
-            Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.NearBeacon);
+        _playerIsNear = true;
     }
     public void NotifyPlayerNotNearby()
     {
-        SetAnimatorBool(PlayerCloseBool, false);
+        _playerIsNear = false;
         //Debug.Log("PLAYER EXIT NEAR NEXT BEACON!");
     }
 }
