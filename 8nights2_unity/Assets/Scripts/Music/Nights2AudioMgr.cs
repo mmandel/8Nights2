@@ -141,6 +141,8 @@ public class Nights2AudioMgr : MonoBehaviour
 
    void ResetAllStems(bool instant = false)
    {
+      Nights2Mgr.Instance.ResetInstallation();
+
       foreach (GroupStateData g in _groupState)
       {
          if (instant)
@@ -332,14 +334,15 @@ public class Nights2AudioMgr : MonoBehaviour
       {
          Nights2Mgr.Instance.CheatToNextState();
       }
-      //reset button
+      //end a player's turn
       startPos.y -= 25;
       startPos.x -= 100;
       if (GUI.Button(new Rect(startPos.x, startPos.y, 65, 20), "End Turn"))
       {
          Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.GettingReady);
       }
-      //fail button
+
+      //simulate failing to walk along path
       startPos.x += 100;
       if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) &&
          GUI.Button(new Rect(startPos.x, startPos.y, 50, 20), "Fail"))

@@ -24,6 +24,7 @@ public class Nights2TorchPlayer : MonoBehaviour
     public GameObject PortalObj = null;
     [Tooltip("The distance thresh from portal location where we should start showing it")]
     public float ShowPortalDistThresh = .05f;
+    public Vector3 PortalDestOffset = Vector3.zero;
 
     [Space(10)]
 
@@ -81,6 +82,18 @@ public class Nights2TorchPlayer : MonoBehaviour
             Nights2Mgr.Instance.OnStateChanged -= OnNights2StateChanged;
     }
 
+    void TeleportToWorld(GameObject world)
+    {
+        Debug.Assert((world != null) && (Nights2Mgr.Instance.VRRig.transform != null));
+
+        //just parent the VR rig to the new world, that's about it
+        Transform vrTrans = Nights2Mgr.Instance.VRRig.transform;
+
+        vrTrans.parent = world.transform;
+        vrTrans.localPosition = Vector3.zero;
+        vrTrans.localRotation = Quaternion.identity;
+    }
+
     void OnNights2StateChanged(object sender, Nights2Mgr.StateChangedEventArgs e)
     {
         //OK, starting to follow a path
@@ -95,6 +108,8 @@ public class Nights2TorchPlayer : MonoBehaviour
 
             ShowPortal(false);
         }
+        else
+            TeleportToWorld(Nights2Mgr.Instance.RoomWorld);
     }
 
     //get the player's current position projected onto the ground
@@ -125,14 +140,26 @@ public class Nights2TorchPlayer : MonoBehaviour
             if (s == PortalState.NoProgress)
             {
                 ShowPortal(false); //just in case
+                TeleportToWorld(Nights2Mgr.Instance.RoomWorld);
             }
             else if (s == PortalState.ShowingEntrancePortal)
             {
                 Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
                 Debug.Assert(curPath != null);
 
-                PositionPortal(curPath.GetPortalPos(Nights2Path.PortalType.EntrancePortal));
-                AlignPortal(curPath.GetPortalDir(Nights2Path.PortalType.EntrancePortal));
+                Vector3 portalPos = curPath.GetPortalPos(Nights2Path.PortalType.EntrancePortal);
+                Vector3 portalDir = curPath.GetPortalDir(Nights2Path.PortalType.EntrancePortal);
+
+                //put dest trans in the alt world, so camera is positioned correctly on portal
+                Transform destTrans = (_portalFX != null) ? _portalFX.PortalDestTrans : null;
+                if (destTrans != null)
+                {
+                    destTrans.position = PortalDestOffset + portalPos + Nights2Mgr.Instance.RoomWorld.transform.position + (Nights2Mgr.Instance.AltWorld.transform.position - Nights2Mgr.Instance.RoomWorld.transform.position);
+                    destTrans.rotation = Quaternion.LookRotation(portalDir);
+                }
+
+                PositionPortal(portalPos);
+                AlignPortal(portalDir);
                 
                 ShowPortal(true);
             }
@@ -141,14 +168,27 @@ public class Nights2TorchPlayer : MonoBehaviour
                 Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
                 Debug.Assert(curPath != null);
 
-                PositionPortal(curPath.GetPortalPos(Nights2Path.PortalType.ExitPortal));
-                AlignPortal(curPath.GetPortalDir(Nights2Path.PortalType.ExitPortal));
+                Vector3 portalPos = curPath.GetPortalPos(Nights2Path.PortalType.ExitPortal);
+                Vector3 portalDir = curPath.GetPortalDir(Nights2Path.PortalType.ExitPortal);
+
+                //put dest trans in the alt world, so camera is positioned correctly on portal
+                Transform destTrans = (_portalFX != null) ? _portalFX.PortalDestTrans : null;
+                if (destTrans != null)
+                {
+                    destTrans.position = PortalDestOffset + portalPos + (Nights2Mgr.Instance.RoomWorld.transform.position - Nights2Mgr.Instance.AltWorld.transform.position);
+                    destTrans.rotation = Quaternion.LookRotation(portalDir);
+                }
+
+                PositionPortal(portalPos);
+                AlignPortal(portalDir);
 
                 ShowPortal(true);
             }
             else if ((s == PortalState.ThroughEntrancePortal) || (s == PortalState.ThroughExitPortal))
             {
                 ShowPortal(false, true);
+
+                TeleportToWorld((s == PortalState.ThroughEntrancePortal) ? Nights2Mgr.Instance.AltWorld : Nights2Mgr.Instance.RoomWorld);
             }
 
             if (OnPortalStateChanged != null)
@@ -233,6 +273,10 @@ public class Nights2TorchPlayer : MonoBehaviour
                 float distToPath = (closestPtOnPath - curPlayerPos).magnitude;
                 if (distToPath > NearPathThresh)
                 {
+                    //reset timer if portal is open, dont care in that case
+                    if ((_curPortalState == PortalState.ShowingEntrancePortal) || (_curPortalState == PortalState.ShowingExitPortal))
+                        _outsidePathStartTime = Time.time;
+
                     if (_outsidePathStartTime < 0.0f) //just fell off the path this frame, start timer
                     {
                         _outsidePathStartTime = Time.time;

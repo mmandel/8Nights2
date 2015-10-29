@@ -1,0 +1,4 @@
+(Version numbers: http://semver.org/)
+
+1.0.0:
+  Initial release

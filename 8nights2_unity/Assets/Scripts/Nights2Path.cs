@@ -96,8 +96,8 @@ public class Nights2Path : MonoBehaviour
        float distAccum = 0.0f;
        for (int i = 0; i <= ptSegment; i++)
        {
-          Vector3 a = _pathData.Points[i].Point;
-          Vector3 b = _pathData.Points[i + 1].Point;
+           Vector3 a = GetWorldPoint(i);
+           Vector3 b = GetWorldPoint(i + 1);
 
           if (i == ptSegment) 
              distAccum += (ptOnPath - a).magnitude;
@@ -115,8 +115,8 @@ public class Nights2Path : MonoBehaviour
        float totalDist = 0.0f;
        for (int i = 0; i < _pathData.Points.Length - 1; i++)
        {
-          Vector3 a = _pathData.Points[i].Point;
-          Vector3 b = _pathData.Points[i + 1].Point;
+           Vector3 a = GetWorldPoint(i);
+           Vector3 b = GetWorldPoint(i + 1);
           totalDist += (b - a).magnitude;
        }
        return totalDist;
@@ -134,8 +134,8 @@ public class Nights2Path : MonoBehaviour
        segmentIdx = _pathData.Points.Length - 1;
        for (int i = 0; i < _pathData.Points.Length - 1; i++)
        {
-          Vector3 a = _pathData.Points[i].Point;
-          Vector3 b = _pathData.Points[i + 1].Point;
+           Vector3 a = GetWorldPoint(i);
+           Vector3 b = GetWorldPoint(i + 1);
 
           float segmentDist = (a - b).magnitude;
           float prevUAccum = uAccum;
@@ -163,8 +163,8 @@ public class Nights2Path : MonoBehaviour
        segmentIdx = _pathData.Points.Length - 1;
        for (int i = 0; i < _pathData.Points.Length - 1; i++)
        {
-          Vector3 a = _pathData.Points[i].Point;
-          Vector3 b = _pathData.Points[i + 1].Point;
+           Vector3 a = GetWorldPoint(i);
+           Vector3 b = GetWorldPoint(i + 1);
 
           float segmentDist = (a - b).magnitude;
           float prevUAccum = uAccum;
@@ -197,8 +197,8 @@ public class Nights2Path : MonoBehaviour
         float closestDist = float.MaxValue;
         for (int i = 0; i < _pathData.Points.Length - 1; i++)
         {
-            Vector3 a = _pathData.Points[i].Point;
-            Vector3 b = _pathData.Points[i + 1].Point;
+            Vector3 a = GetWorldPoint(i);
+            Vector3 b = GetWorldPoint(i + 1);
 
             Vector3 closestPoint = Nights2Utl.ClosestPointOnLine(a, b, testPoint);
             float curDist = (testPoint - closestPoint).sqrMagnitude;
@@ -230,8 +230,8 @@ public class Nights2Path : MonoBehaviour
             return result;
         }
 
-        Vector3 segA = _pathData.Points[pathSegment].Point;
-        Vector3 segB = _pathData.Points[pathSegment+1].Point;
+        Vector3 segA = GetWorldPoint(pathSegment);
+        Vector3 segB = GetWorldPoint(pathSegment+1);
 
         Vector3 segDir = (segB - segA).normalized;
 
@@ -254,8 +254,8 @@ public class Nights2Path : MonoBehaviour
             return Vector3.zero;
         }
 
-        Vector3 segA = _pathData.Points[pathSegment].Point;
-        Vector3 segB = _pathData.Points[pathSegment + 1].Point;
+        Vector3 segA = GetWorldPoint(pathSegment);
+        Vector3 segB = GetWorldPoint(pathSegment + 1);
 
         Vector3 segDir = (segB - segA).normalized;
 
@@ -269,8 +269,8 @@ public class Nights2Path : MonoBehaviour
             return Vector3.forward;
         }
 
-        Vector3 segA = _pathData.Points[pathSegment].Point;
-        Vector3 segB = _pathData.Points[pathSegment + 1].Point;
+        Vector3 segA = GetWorldPoint(pathSegment);
+        Vector3 segB = GetWorldPoint(pathSegment + 1);
 
         return (segB - segA).normalized;
     }
@@ -417,7 +417,7 @@ public class Nights2Path : MonoBehaviour
             _previewRenderer.material =  new Material(Shader.Find("Unlit/Color"));
             _previewRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             _previewRenderer.useLightProbes = false;
-            _previewRenderer.useWorldSpace = true;
+            _previewRenderer.useWorldSpace = false;
             _previewRenderer.material.color = Color.green;
 
             previewObj.transform.parent = this.transform;
@@ -471,6 +471,11 @@ public class Nights2Path : MonoBehaviour
         Vector3 exitPos = GetPortalPos(PortalType.ExitPortal);
         Gizmos.color = Color.blue;
         Gizmos.DrawSphere(exitPos, 2.0f * kSphereRadius);
+    }
+    
+    Vector3 GetWorldPoint(int idx)
+    {
+        return transform.TransformPoint(_pathData.Points[idx].Point);
     }
 
     //add point at whatever location the torch is right now

@@ -13,6 +13,10 @@ public class Nights2Mgr : MonoBehaviour
     public Nights2Path[] CandlePathOrder = new Nights2Path[0]; //the order we cycle through candles, will be random if this array isnt long enough
     public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
+    public GameObject VRRig; //this gets teleported between worlds, all the VR stuff is a child of this
+    public GameObject RoomWorld; 
+    public GameObject AltWorld;
+
     public event StateChangedHandler OnStateChanged;
     public class StateChangedEventArgs : EventArgs
     {
@@ -117,10 +121,15 @@ public class Nights2Mgr : MonoBehaviour
 
 	void Start () 
     {
+        ResetInstallation();    
+	}
+
+    public void ResetInstallation()
+    {
         SetState(Nights2State.GettingReady);
 
         ResetBeacons();
-	}
+    }
 
     public Nights2Beacon GetBeacon(int idx)
     {

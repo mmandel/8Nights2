@@ -7,6 +7,7 @@ using System.Collections;
 
 public class Nights2Portal : MonoBehaviour 
 {
+    public Transform PortalDestTrans;
     public string ShowPortalTrigger = "show"; //show the portal
     public string CancelPortalTrigger = "cancel"; //hide the portal due to cancelling (player stepped off path)
     public string ActivatedTrigger = "activated"; //play effect with portal is activated, and then hide
