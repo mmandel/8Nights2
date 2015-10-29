@@ -64,6 +64,10 @@ public class Nights2TorchPlayer : MonoBehaviour
 
     public static Nights2TorchPlayer Instance { get; private set; }
 
+    public PortalState GetPortalState() { return _curPortalState; }
+
+    public void CheatPortalState(PortalState s) { SetPortalState(s); }
+
     void Awake()
     {
         Instance = this;

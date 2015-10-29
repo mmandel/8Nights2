@@ -230,8 +230,18 @@ public class Nights2Mgr : MonoBehaviour
       }
       else if (GetState() == Nights2State.SeekingBeacon)
       {
-         SetState(Nights2State.NearBeacon);
-         _nextBeacon.NotifyPlayerNearby();
+          if (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.NoProgress)
+              Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ShowingEntrancePortal);
+          else if (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.ShowingEntrancePortal)
+              Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ThroughEntrancePortal);
+          else if (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.ThroughEntrancePortal)
+              Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ShowingExitPortal);
+          else if (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.ShowingExitPortal)
+          {
+              Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ThroughExitPortal);
+              SetState(Nights2State.NearBeacon);
+              _nextBeacon.NotifyPlayerNearby();
+          }
       }
       else if (GetState() == Nights2State.FlameExtinguished)
          SetState(Nights2State.SeekingBeacon);
