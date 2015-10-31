@@ -250,6 +250,9 @@ public class Nights2Mgr : MonoBehaviour
          _nextBeacon.TriggerTorchLitBeacon();
       }
       else if (GetState() == Nights2State.BeaconLit)
+      {
+         _nextBeacon.NotifyPlayerNotNearby();
          SetState(Nights2State.SeekingShamash);
+      }
    }
 }

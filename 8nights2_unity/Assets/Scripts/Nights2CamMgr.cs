@@ -9,6 +9,7 @@ public class Nights2CamMgr : MonoBehaviour
 {
     public SteamVR_ControllerManager SteamCtrlMgr;
     public bool StartTorchOnRightCtrl = true; //is torch attached to "right" controller at start?
+    public Camera NonVRCam;
 
     [ScriptButton("Swap Torch/Lantern!", "OnSwapPressed")]
     public bool DummySwapCtrls = false;
@@ -35,10 +36,14 @@ public class Nights2CamMgr : MonoBehaviour
                 _rightCtrlTrans = SteamCtrlMgr.right.transform;
             if (SteamCtrlMgr.left != null)
                 _leftCtrlTrans = SteamCtrlMgr.left.transform;
-
             _headTrans = SteamCtrlMgr.transform.FindChild("Camera (head)");
         }
 	}
+
+   public bool IsVRActive()
+   {
+      return SteamVR.active;
+   }
 
     public Transform GetTorchParent()
     {
@@ -75,7 +80,7 @@ public class Nights2CamMgr : MonoBehaviour
 
     public Transform GetHeadTrans()
     {
-        return _headTrans;
+        return SteamVR.active ?  _headTrans : NonVRCam.transform;
     }
 
     void SwapControllers()

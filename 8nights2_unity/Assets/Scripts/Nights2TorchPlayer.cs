@@ -305,7 +305,8 @@ public class Nights2TorchPlayer : MonoBehaviour
             if (!_deadzoneActive && (curPath != null) && !curPath.IsEditting())
             {
                 //are we too far off the path?
-                if (distToPath > NearPathThresh)
+                if ((distToPath > NearPathThresh) &&
+                   Nights2CamMgr.Instance.IsVRActive()) //<-- so we don't fail the player when cheating in non-VR mode...
                 {
                     //reset timer if portal is open, dont care in that case
                     if ((_curPortalState == PortalState.ShowingEntrancePortal) || (_curPortalState == PortalState.ShowingExitPortal))
