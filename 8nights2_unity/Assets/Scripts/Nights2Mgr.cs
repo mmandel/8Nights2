@@ -15,7 +15,7 @@ public class Nights2Mgr : MonoBehaviour
 
     public GameObject VRRig; //this gets teleported between worlds, all the VR stuff is a child of this
     public GameObject RoomWorld; 
-    public GameObject AltWorld;
+    public GameObject[] AltWorlds = new GameObject[0];
 
     public event StateChangedHandler OnStateChanged;
     public class StateChangedEventArgs : EventArgs
@@ -33,6 +33,7 @@ public class Nights2Mgr : MonoBehaviour
     private Nights2Beacon _nextBeacon = null; //the next beacon to be lit by the torch carrier
     private Dictionary<Nights2Beacon, Nights2Path> _beaconToPathMap = new Dictionary<Nights2Beacon, Nights2Path>();
     private bool _isPathEditting = false;
+    private int _curAltWorldIdx = 0;
 
     public enum Nights2State
     {
@@ -50,6 +51,11 @@ public class Nights2Mgr : MonoBehaviour
     public int NumCandlesLit()
     {
         return _litBeacons.Count;
+    }
+
+    public GameObject CurAltWorld()
+    {
+        return AltWorlds[_curAltWorldIdx];
     }
 
 
@@ -78,6 +84,9 @@ public class Nights2Mgr : MonoBehaviour
                //update state of next beacon
                _nextBeacon.SetLit(true);
                _nextBeacon.SetIsNext(false);
+
+               //pick alt world for next beacon
+               _curAltWorldIdx = (_curAltWorldIdx + 1) % AltWorlds.Length;
 
                //update bookkeeping
                if (_unlitBeacons.Contains(_nextBeacon))

@@ -166,7 +166,7 @@ public class Nights2TorchPlayer : MonoBehaviour
                 Transform destTrans = (_portalFX != null) ? _portalFX.PortalDestTrans : null;
                 if (destTrans != null)
                 {
-                    destTrans.position = PortalDestOffset + portalPos + Nights2Mgr.Instance.RoomWorld.transform.position + (Nights2Mgr.Instance.AltWorld.transform.position - Nights2Mgr.Instance.RoomWorld.transform.position);
+                    destTrans.position = PortalDestOffset + portalPos + Nights2Mgr.Instance.RoomWorld.transform.position + (Nights2Mgr.Instance.CurAltWorld().transform.position - Nights2Mgr.Instance.RoomWorld.transform.position);
                     destTrans.rotation = Quaternion.LookRotation(portalDir);
                 }
 
@@ -188,7 +188,7 @@ public class Nights2TorchPlayer : MonoBehaviour
                 Transform destTrans = (_portalFX != null) ? _portalFX.PortalDestTrans : null;
                 if (destTrans != null)
                 {
-                    destTrans.position = PortalDestOffset + portalPos + (Nights2Mgr.Instance.RoomWorld.transform.position - Nights2Mgr.Instance.AltWorld.transform.position);
+                    destTrans.position = PortalDestOffset + portalPos + (Nights2Mgr.Instance.RoomWorld.transform.position - Nights2Mgr.Instance.CurAltWorld().transform.position);
                     destTrans.rotation = Quaternion.LookRotation(portalDir);
                 }
 
@@ -201,7 +201,7 @@ public class Nights2TorchPlayer : MonoBehaviour
             {
                 ShowPortal(false, true);
 
-                TeleportToWorld((s == PortalState.ThroughEntrancePortal) ? Nights2Mgr.Instance.AltWorld : Nights2Mgr.Instance.RoomWorld);
+                TeleportToWorld((s == PortalState.ThroughEntrancePortal) ? Nights2Mgr.Instance.CurAltWorld() : Nights2Mgr.Instance.RoomWorld);
             }
 
             if (OnPortalStateChanged != null)
