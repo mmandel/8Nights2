@@ -13,6 +13,8 @@ public class Nights2Mgr : MonoBehaviour
     public Nights2Path[] CandlePathOrder = new Nights2Path[0]; //the order we cycle through candles, will be random if this array isnt long enough
     public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
+    public float BeaconLitSuccessTime = 3.0f; //how long we stay in the BeaconLit state before auto advancing to the next stage of the installation
+
     public GameObject VRRig; //this gets teleported between worlds, all the VR stuff is a child of this
     public GameObject RoomWorld; 
     public GameObject[] AltWorlds = new GameObject[0];
@@ -34,6 +36,7 @@ public class Nights2Mgr : MonoBehaviour
     private Dictionary<Nights2Beacon, Nights2Path> _beaconToPathMap = new Dictionary<Nights2Beacon, Nights2Path>();
     private bool _isPathEditting = false;
     private int _curAltWorldIdx = 0;
+    private float _stateActivateTime = 0.0f;
 
     public enum Nights2State
     {
@@ -43,7 +46,8 @@ public class Nights2Mgr : MonoBehaviour
         SeekingBeacon,     //torch lit, following lantern carrier
         NearBeacon,        //near the beacon
         FlameExtinguished, //failure, gotta re-light torch
-        BeaconLit          //success!
+        BeaconLit,          //success!
+        AllBeaconsLit       //final success state
     };
 
     public static Nights2Mgr Instance { get; private set; }
@@ -69,6 +73,8 @@ public class Nights2Mgr : MonoBehaviour
             _curState = s;
 
             Debug.Log("STATE CHANGE from '" + prevState.ToString() + "' to '" + _curState.ToString() +"'");
+
+            _stateActivateTime = Time.time;
 
             //if just starting to seek new beacon, pick one
             if (((prevState == Nights2State.SeekingShamash) || (prevState == Nights2State.NearShamash)) &&
@@ -223,6 +229,23 @@ public class Nights2Mgr : MonoBehaviour
                 SetState(Nights2State.GettingReady);
             else
                 SetState(Nights2State.SeekingShamash);
+        }
+
+        //'r' key resets everything
+        if (Input.GetKeyDown(KeyCode.R))
+            ResetInstallation();
+
+        if (_curState == Nights2State.BeaconLit)
+        {
+            //stay in beacon lit state for a bit, then auto advance to next thing
+            float elapsed = Time.time - _stateActivateTime;
+            if (elapsed > BeaconLitSuccessTime)
+            {
+                if (_unlitBeacons.Count == 0) //we're done, all beacons are lit!
+                    SetState(Nights2State.AllBeaconsLit);
+                else //light up!
+                    SetState(Nights2State.SeekingShamash);
+            }
         }
 	}
 
