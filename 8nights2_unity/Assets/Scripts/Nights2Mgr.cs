@@ -81,7 +81,13 @@ public class Nights2Mgr : MonoBehaviour
                 (_curState == Nights2State.SeekingBeacon))
             {
                 PickNextBeacon();
+                LightCurrentPath(true);
             }
+
+            //turn off path
+            if ((_curState != Nights2State.SeekingBeacon) && (_curState != Nights2State.NearBeacon))
+                LightCurrentPath(false);
+
             //update tracking lists if a beacon is lit
             if (_curState == Nights2State.BeaconLit)
             {
@@ -215,8 +221,30 @@ public class Nights2Mgr : MonoBehaviour
 
         _nextBeacon = b;
     }
-	
-	void Update () 
+
+    void LightCurrentPath(bool lightOn)
+    {
+        int curPathIdx = -1;
+        Nights2Path path = CurrentTorchPath();
+        if (path != null)
+            curPathIdx = path.LeadsToBeacon.BeaconIdx();
+        //first turn em all off
+        for (int i = 0; i < 8; i++)
+        {
+            EightNightsMgr.GroupID g = (EightNightsMgr.GroupID)((int)EightNightsMgr.GroupID.Path1 + i);
+            if(!lightOn || (i != curPathIdx))
+                LightMgr.Instance.SetLight(g, EightNightsMgr.LightID.Light1, 0.0f);
+        }
+
+        //turn on the one we want
+        if (lightOn && (curPathIdx >= 0))
+        {
+            EightNightsMgr.GroupID g = (EightNightsMgr.GroupID)((int)EightNightsMgr.GroupID.Path1 + curPathIdx);
+            LightMgr.Instance.SetLight(g, EightNightsMgr.LightID.Light1, 1.0f);
+        }
+    }
+
+    void Update() 
     {
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
