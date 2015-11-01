@@ -250,6 +250,7 @@ public class LightMgr : MonoBehaviour
     //a way to set the value of any light in the system, regardless of type (Hue, LightJams, whatevs)
     public void SetLight(EightNightsMgr.GroupID gID, EightNightsMgr.LightID lID, float intensity, Color color = default(Color), float transitionTime = 0.0f)
     {
+        //Debug.Log("SEtting light " + gID.ToString() + " to " + intensity);
         LightConfig lc = FindLightConfig(gID, lID);
         if (lc != null)
             lc.Set(color, intensity, transitionTime);

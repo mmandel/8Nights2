@@ -83,6 +83,9 @@ public class OSCHandler : MonoBehaviour
 	private static Dictionary<string, ServerLog> _servers = new Dictionary<string, ServerLog>();
 	
 	private const int _loglength = 25;
+
+    private OSCMessage[] _messagePool = new OSCMessage[1024];
+    private int _nextMsgIdx = 0;
 	#endregion
 	
 	/// <summary>
@@ -91,6 +94,9 @@ public class OSCHandler : MonoBehaviour
 	/// </summary>
 	public void Init()
 	{
+        for (int i = 0; i < _messagePool.Length; i++)
+            _messagePool[i] = new OSCMessage("localhost");
+
 		//Initialize OSC clients (transmitters)
 		//Example:		
 		//CreateClient("SuperCollider", IPAddress.Parse("127.0.0.1"), 5555);
@@ -238,11 +244,17 @@ public class OSCHandler : MonoBehaviour
 	/// <param name="values">
 	/// A <see cref="List<T>"/>
 	/// </param>
+    /// 
 	public void SendMessageToClient<T>(string clientId, string address, List<T> values)
 	{	
 		if(_clients.ContainsKey(clientId))
 		{
-			OSCMessage message = new OSCMessage(address);
+			//OSCMessage message = new OSCMessage(address);
+
+            //pool these messages because new(ing) every frame gets expensive due to garbage collection shit
+            OSCMessage message = _messagePool[_nextMsgIdx];
+            message.Reset(address);
+            _nextMsgIdx = (_nextMsgIdx + 1) % _messagePool.Length;
 		
 			foreach(T msgvalue in values)
 			{

@@ -93,6 +93,12 @@ namespace UnityOSC
 		{
 			this._data = new List<object>();
 		}
+
+        public virtual void Reset(string newAddress)
+        {
+            this._data.Clear();
+            this._address = newAddress;
+        }
 		
 		/// <summary>
 		/// Swap endianess given a data set.

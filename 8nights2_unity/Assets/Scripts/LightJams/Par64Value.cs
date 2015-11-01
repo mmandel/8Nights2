@@ -75,7 +75,7 @@ public class Par64Value : MonoBehaviour
        LightJamsMgr.Instance.SendToLightJams(startChannel, masterDim, notify);
 
         //clear special mode
-       LightJamsMgr.Instance.SendToLightJams(startChannel + 6, 0.0f, notify);
+       LightJamsMgr.Instance.SendToLightJams(startChannel + 5, 0.0f, notify);
 
         //Color
        LightJamsMgr.Instance.SendToLightJams(startChannel + 1, c.r, notify);
@@ -83,7 +83,7 @@ public class Par64Value : MonoBehaviour
        LightJamsMgr.Instance.SendToLightJams(startChannel + 3, c.b, notify);
 
         //"Dimming", do we need this?
-       LightJamsMgr.Instance.SendToLightJams(startChannel + 5, 0.0f, notify);
+       LightJamsMgr.Instance.SendToLightJams(startChannel + 4, 0.0f, notify);
 
        //manually notify
        LightJamsMgr.Instance.SendLightChangedEvent(startChannel, masterDim, c, true);

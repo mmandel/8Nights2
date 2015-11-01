@@ -67,7 +67,15 @@ public class EightNightsMgr : MonoBehaviour
       Candle5,
       Candle6,
       Candle7,
-      Candle8
+      Candle8,
+      Path1,
+      Path2,
+      Path3,
+      Path4,
+      Path5,
+      Path6,
+      Path7,
+      Path8
    }
 
    //identifiers for each light within a group (up to 8)

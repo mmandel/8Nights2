@@ -67,6 +67,12 @@ namespace UnityOSC
 		/// A <see cref="System.Boolean"/>
 		/// </returns>
 		override public bool IsBundle() { return false; }
+
+        public override void Reset(string newAddress)
+        {
+            base.Reset(newAddress);
+            _typeTag = DEFAULT.ToString();
+        }
 		
 		/// <summary>
 		/// Packs the OSC message to binary data.
