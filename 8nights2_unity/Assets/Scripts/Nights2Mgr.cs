@@ -260,12 +260,12 @@ public class Nights2Mgr : MonoBehaviour
 
         //use spacebar to toggle between getting ready and initial gameplay state
         if (Input.GetKeyDown(KeyCode.Space) ||
-            (Nights2InputMgr.Instance.TorchInfo().GetRedButtonDown() && !_isPathEditting)) //red button on torch too!
+            ((Nights2InputMgr.Instance.TorchInfo().GetRedButtonDown() || Nights2InputMgr.Instance.LanternInfo().GetRedButtonDown()) && !_isPathEditting)) //red button on torch too!
         {
             if (GetState() == Nights2State.GettingReady) //activate seeking shamash state to get into the experience
                 SetState(Nights2State.SeekingShamash);
             else //otherwise swap lantern and torch
-                Nights2CamMgr.Instance.OnSwapPressed("");
+               Nights2CamMgr.Instance.SwapControllers();
         }
 
         //'r' key resets everything

@@ -83,7 +83,7 @@ public class Nights2CamMgr : MonoBehaviour
         return SteamVR.active ?  _headTrans : NonVRCam.transform;
     }
 
-    void SwapControllers()
+    public void SwapControllers()
     {
         _torchOnRightCtrl = !_torchOnRightCtrl;
     }

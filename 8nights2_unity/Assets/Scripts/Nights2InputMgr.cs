@@ -43,8 +43,19 @@ public class Nights2InputMgr : MonoBehaviour
 
     InputInfo[] _devices = new InputInfo[2];
 
-    public InputInfo TorchInfo() { return _devices[(int)WhichController.Torch]; }
-    public InputInfo LanternInfo() { return _devices[(int)WhichController.Lantern]; }
+    public InputInfo TorchInfo() { return FindInfoForDevice(Nights2CamMgr.Instance.GetTorchDevice()); }
+    public InputInfo LanternInfo() { return FindInfoForDevice(Nights2CamMgr.Instance.GetLanternDevice()); }
+
+    InputInfo FindInfoForDevice(SteamVR_Controller.Device dev)
+    {
+        for (int i = 0; i < _devices.Length; i++)
+        {
+            if (_devices[i].device == dev)
+                return _devices[i];
+        }
+
+        return null;
+    }
 
     void Awake()
     {
