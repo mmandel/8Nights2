@@ -227,7 +227,16 @@ public class Nights2Mgr : MonoBehaviour
         int curPathIdx = -1;
         Nights2Path path = CurrentTorchPath();
         if (path != null)
-            curPathIdx = path.LeadsToBeacon.BeaconIdx();
+        {
+            for (int i = 0; i < CandlePathOrder.Length; i++)
+            {
+                if (CandlePathOrder[i] == path)
+                {
+                    curPathIdx = i;
+                    break;
+                }
+            }
+        }
         //first turn em all off
         for (int i = 0; i < 8; i++)
         {
@@ -253,10 +262,10 @@ public class Nights2Mgr : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) ||
             (Nights2InputMgr.Instance.TorchInfo().GetRedButtonDown() && !_isPathEditting)) //red button on torch too!
         {
-            if (GetState() != Nights2State.GettingReady)
-                SetState(Nights2State.GettingReady);
-            else
+            if (GetState() == Nights2State.GettingReady) //activate seeking shamash state to get into the experience
                 SetState(Nights2State.SeekingShamash);
+            else //otherwise swap lantern and torch
+                Nights2CamMgr.Instance.OnSwapPressed("");
         }
 
         //'r' key resets everything
@@ -287,6 +296,8 @@ public class Nights2Mgr : MonoBehaviour
       {
          SetState(Nights2State.SeekingBeacon);
          Nights2Shamash.Instance.NotifyPlayerNotNearby();
+         for (int i = 0; i < Candles.Length; i++)
+             Candles[i].GetComponent<Nights2Beacon>().NotifyPlayerNotNearby();
       }
       else if (GetState() == Nights2State.SeekingBeacon)
       {

@@ -117,7 +117,8 @@ public class FFTLightEffect : MonoBehaviour
 
       _lastSignalValue = curSignal;
 
-      if (OutputToLight)
+      bool shouldDriveLight = OutputToLight && !LightMgr.Instance.TestLights;
+      if (shouldDriveLight)
       {
          //don't let it hit 1.0 or it will wrap around if the clip is marked as looping
          curSignal = Mathf.Clamp(curSignal, 0.0f, .999f);
