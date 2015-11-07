@@ -63,16 +63,17 @@ public class FMOD_StudioEventEmitter : MonoBehaviour
 		
 		return FMOD.Studio.PLAYBACK_STATE.STOPPED;
 	}
+	
+	//MMANDEL: added for convenience
+   	public int getPlaybackPos()
+    	{
+     	   if (evt == null || !evt.isValid())
+     	       return 0;
 
-    public int getPlaybackPos()
-    {
-        if (evt == null || !evt.isValid())
-            return 0;
-
-        int result;
-        evt.getTimelinePosition(out result);
-        return result;
-    }
+     	   int result;
+     	   evt.getTimelinePosition(out result);
+     	   return result;
+     	}	
 
 	void Start() 
 	{
@@ -185,28 +186,6 @@ public class FMOD_StudioEventEmitter : MonoBehaviour
 		}
 	}    
     
-    #if (UNITY_EDITOR)
-	void OnDrawGizmosSelected() 
-	{
-        if (asset != null && enabled &&
-            (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode || UnityEditor.EditorApplication.isPlaying))
-        {
-            FMOD.Studio.EventDescription desc = null;
-            desc = FMODEditorExtension.GetEventDescription(asset.id);
-
-            if (desc != null)
-            {
-                float max, min;
-                desc.getMaximumDistance(out max);
-                desc.getMinimumDistance(out min);
-
-                Gizmos.color = Color.blue;
-                Gizmos.DrawWireSphere(transform.position, min);
-                Gizmos.DrawWireSphere(transform.position, max);
-            }
-        }		
-	}
-    #endif
 	
 	FMOD.RESULT ERRCHECK(FMOD.RESULT result)
 	{

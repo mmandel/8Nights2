@@ -1,5 +1,5 @@
 /* ========================================================================================== */
-/* FMOD System - C# Wrapper . Copyright (c), Firelight Technologies Pty, Ltd. 2004-2015.       */
+/* FMOD System - C# Wrapper . Copyright (c), Firelight Technologies Pty, Ltd. 2004-2015.      */
 /*                                                                                            */
 /*                                                                                            */
 /* ========================================================================================== */
@@ -55,6 +55,24 @@ namespace Studio
         public string name;
         public IntPtr sound;
         public int subsoundIndex;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TIMELINE_MARKER_PROPERTIES
+    {
+        public IntPtr name;
+        public int position;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TIMELINE_BEAT_PROPERTIES
+    {
+        public int bar;
+        public int beat;
+        public int position;
+        public float tempo;
+        public int timeSignatureUpper;
+        public int timeSignatureLower;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -382,20 +400,22 @@ namespace Studio
         LIVEUPDATE              = 0x00000001,   /* Enable live update. */
         ALLOW_MISSING_PLUGINS   = 0x00000002,   /* Load banks even if they reference plugins that have not been loaded. */
         SYNCHRONOUS_UPDATE      = 0x00000004,   /* Disable asynchronous processing and perform all processing on the calling thread instead. */
+        DEFERRED_CALLBACKS      = 0x00000008,   /* Defer timeline callbacks until the main update. See Studio::EventInstance::setCallback for more information. */
     }
 
     [Flags]
     public enum LOAD_BANK_FLAGS : uint
     {
-        NORMAL      = 0x00000000,   /* Standard behaviour. */
-        NONBLOCKING = 0x00000001,   /* Bank loading occurs asynchronously rather than occurring immediately. */
+        NORMAL                  = 0x00000000,   /* Standard behaviour. */
+        NONBLOCKING             = 0x00000001,   /* Bank loading occurs asynchronously rather than occurring immediately. */
+        DECOMPRESS_SAMPLES      = 0x00000002,   /* Force samples to decompress into memory when they are loaded, rather than staying compressed. */
     }
 
     [Flags]
     public enum COMMANDCAPTURE_FLAGS : uint
     {
-        NORMAL      = 0x00000000,   /* Standard behaviour. */
-        FILEFLUSH   = 0x00000001,   /* Call file flush on every command. */
+        NORMAL                  = 0x00000000,   /* Standard behaviour. */
+        FILEFLUSH               = 0x00000001,   /* Call file flush on every command. */
         SKIP_INITIAL_STATE      = 0x00000002,   /* Normally the initial state of banks and instances is captured, unless this flag is set. */
     }
 
@@ -417,7 +437,11 @@ namespace Studio
 
     public enum EVENT_PROPERTY
     {
-        CHANNELPRIORITY,            /* Priority to set on low-level channels created by this event instance (-1 to 256). */
+        CHANNELPRIORITY,        /* Priority to set on low-level channels created by this event instance (-1 to 256). */
+        SCHEDULE_DELAY,         /* Schedule delay to synchronized playback for multiple tracks in DS clocks, or -1 for default. */
+        SCHEDULE_LOOKAHEAD,     /* Schedule look-ahead on the timeline in DSP clocks, or -1 for default. */
+        MINIMUM_DISTANCE,       /* Override the event's 3D minimum distance, or -1 for default. */
+        MAXIMUM_DISTANCE        /* Override the event's 3D maximum distance, or -1 for default. */
     };
 
     [StructLayout(LayoutKind.Sequential)]
@@ -426,41 +450,23 @@ namespace Studio
         public IntPtr name;                           /* The name of the plugin effect or sound (set in FMOD Studio). */
         public IntPtr dsp;                            /* The DSP plugin instance. This can be cast to/from FMOD::DSP* type. */
     }
-	
-    [StructLayout(LayoutKind.Sequential)]
-    public struct TIMELINE_MARKER_PROPERTIES
-    {
-        public IntPtr name;                         /* The marker name */
-        public int position;                        /* The position of the marker on the timeline in milliseconds. */
-    }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct TIMELINE_BEAT_PROPERTIES
-    {
-        public int bar;                                    /* The bar number (starting from 1). */
-        public int beat;                                   /* The beat number within the bar (starting from 1). */
-        public int position;                               /* The position of the beat on the timeline in milliseconds. */
-        public float tempo;                                /* The current tempo in beats per minute. */
-        public int timeSignatureUpper;                     /* The current time signature upper number (beats per bar). */
-        public int timeSignatureLower;                     /* The current time signature lower number (beat unit). */
-    }
-	
     [Flags]
     public enum EVENT_CALLBACK_TYPE : uint
     {
-        STARTED                   = 0x00000001,  /* Called when an instance starts. Parameters = unused. */
-        RESTARTED                 = 0x00000002,  /* Called when an instance is restarted. Parameters = unused. */
-        STOPPED                   = 0x00000004,  /* Called when an instance stops. Parameters = unused. */
-        CREATE_PROGRAMMER_SOUND   = 0x00000008,  /* Called when a programmer sound needs to be created in order to play a programmer instrument. Parameters = FMOD_STUDIO_PROGRAMMER_SOUND_PROPERTIES. */
-        DESTROY_PROGRAMMER_SOUND  = 0x00000010,  /* Called when a programmer sound needs to be destroyed. Parameters = FMOD_STUDIO_PROGRAMMER_SOUND_PROPERTIES. */
-        PLUGIN_CREATED            = 0x00000020,  /* Called when a DSP plugin instance has just been created. Parameters = FMOD_STUDIO_PLUGIN_INSTANCE_PROPERTIES. */
-        PLUGIN_DESTROYED          = 0x00000040,  /* Called when a DSP plugin instance is about to be destroyed. Parameters = FMOD_STUDIO_PLUGIN_INSTANCE_PROPERTIES. */
-        CREATED                   = 0x00000080,  /* Called when an instance is fully created. Parameters = unused. */
-        DESTROYED                 = 0x00000100,  /* Called when an instance is just about to be destroyed. Parameters = unused. */
-        START_FAILED              = 0x00000200,  /* Called when an instance did not start, e.g. due to polyphony. Parameters = unused. */
-        TIMELINE_MARKER           = 0x00000400,  /* Called when the timeline passes a named marker.  Parameters = FMOD_STUDIO_TIMELINE_MARKER_PROPERTIES. */
-        TIMELINE_BEAT             = 0x00000800,  /* Called when the timeline hits a beat in a tempo section.  Parameters = FMOD_STUDIO_TIMELINE_BEAT_PROPERTIES. */
-        ALL                       = 0xFFFFFFFF,  /* Pass this mask to Studio::EventDescription::setCallback or Studio::EventInstance::setCallback to receive all callback types. */
+        STARTED                  = 0x00000001,  /* Called when an instance starts. Parameters = unused. */
+        RESTARTED                = 0x00000002,  /* Called when an instance is restarted. Parameters = unused. */
+        STOPPED                  = 0x00000004,  /* Called when an instance stops. Parameters = unused. */
+        CREATE_PROGRAMMER_SOUND  = 0x00000008,  /* Called when a programmer sound needs to be created in order to play a programmer instrument. Parameters = FMOD_STUDIO_PROGRAMMER_SOUND_PROPERTIES. */
+        DESTROY_PROGRAMMER_SOUND = 0x00000010,  /* Called when a programmer sound needs to be destroyed. Parameters = FMOD_STUDIO_PROGRAMMER_SOUND_PROPERTIES. */
+        PLUGIN_CREATED           = 0x00000020,  /* Called when a DSP plugin instance has just been created. Parameters = FMOD_STUDIO_PLUGIN_INSTANCE_PROPERTIES. */
+        PLUGIN_DESTROYED         = 0x00000040,  /* Called when a DSP plugin instance is about to be destroyed. Parameters = FMOD_STUDIO_PLUGIN_INSTANCE_PROPERTIES. */
+        CREATED                  = 0x00000080,  /* Called when an instance is fully created. Parameters = unused. */
+        DESTROYED                = 0x00000100,  /* Called when an instance is just about to be destroyed. Parameters = unused. */
+        START_FAILED             = 0x00000200,  /* Called when an instance did not start, e.g. due to polyphony. Parameters = unused. */
+        TIMELINE_MARKER          = 0x00000400,  /* Called when the timeline passes a named marker.  Parameters = FMOD_STUDIO_TIMELINE_MARKER_PROPERTIES. */
+        TIMELINE_BEAT            = 0x00000800,  /* Called when the timeline hits a beat in a tempo section.  Parameters = FMOD_STUDIO_TIMELINE_BEAT_PROPERTIES. */
+        ALL                      = 0xFFFFFFFF,  /* Pass this mask to Studio::EventDescription::setCallback or Studio::EventInstance::setCallback to receive all callback types. */
     }
 
     public delegate RESULT EVENT_CALLBACK(EVENT_CALLBACK_TYPE type, IntPtr eventInstance, IntPtr parameters);
@@ -980,7 +986,7 @@ namespace Studio
         private static extern RESULT FMOD_Studio_System_LookupPath              (IntPtr studiosystem, ref Guid guid, [Out] byte[] path, int size, out int retrieved);
         [DllImport(STUDIO_VERSION.dll)]
         private static extern RESULT FMOD_Studio_System_GetNumListeners         (IntPtr studiosystem, out int numlisteners);
-        [DllImport(STUDIO_VERSION.dll)]
+        [DllImport (STUDIO_VERSION.dll)]
         private static extern RESULT FMOD_Studio_System_SetNumListeners         (IntPtr studiosystem, int numlisteners);
         [DllImport(STUDIO_VERSION.dll)]
         private static extern RESULT FMOD_Studio_System_GetListenerAttributes   (IntPtr studiosystem, int listener, out ATTRIBUTES_3D attributes);
