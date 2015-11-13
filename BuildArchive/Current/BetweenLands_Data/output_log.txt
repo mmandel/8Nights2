@@ -1,0 +1,85 @@
+Mono path[0] = 'D:/prj/8Nights2_Git/8Nights2/BuildArchive/Current/BetweenLands_Data/Managed'
+Mono path[1] = 'D:/prj/8Nights2_Git/8Nights2/BuildArchive/Current/BetweenLands_Data/Mono'
+Mono config path = 'D:/prj/8Nights2_Git/8Nights2/BuildArchive/Current/BetweenLands_Data/Mono/etc'
+PlayerConnection initialized from D:/prj/8Nights2_Git/8Nights2/BuildArchive/Current/BetweenLands_Data (debug = 0)
+PlayerConnection initialized network socket : 0.0.0.0 55431
+Multi-casting "[IP] 10.0.1.40 [Port] 55431 [Flags] 2 [Guid] 249153383 [EditorId] 1494649862 [Version] 1048832 [Id] WindowsPlayer(Michael-PC) [Debug] 0" to [225.0.0.222:54997]...
+PlayerConnection already initialized - listening to [10.0.1.40:55431]
+Initialize engine version: 5.2.2p1 (6dd5cd7ea574)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 980 Ti (ID=0x17c8)
+    Vendor:   NVIDIA
+    VRAM:     6048 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-UnityScript-firstpass.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\HOTween.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\HOTween.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Ionic.Zlib.CF.dll (this message is harmless)
+Loading D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\Ionic.Zlib.CF.dll into Unity Child Domain
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.142 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+desktop: 1920x1080 60Hz; virtual: 4080x1200 at 0,0
+<RI> Initialized touch support.
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\System.dll (this message is harmless)
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\System.Configuration.dll (this message is harmless)
+Platform assembly: D:\prj\8Nights2_Git\8Nights2\BuildArchive\Current\BetweenLands_Data\Managed\System.Xml.dll (this message is harmless)
+Connected to lighthouse:LHR-AFBB2835
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+SteamVR:.ctor(IntPtr, IntPtr, IntPtr) (at D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\SteamVR\Scripts\SteamVR.cs:243)
+SteamVR:CreateInstance() (at D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\SteamVR\Scripts\SteamVR.cs:84)
+SteamVR:get_instance() (at D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\SteamVR\Scripts\SteamVR.cs:39)
+SteamVR_Overlay:OnEnable() (at D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\SteamVR\Scripts\SteamVR_Overlay.cs:36)
+ 
+(Filename: D:/prj/8Nights2_Git/8Nights2/8nights2_unity/Assets/SteamVR/Scripts/SteamVR.cs Line: 243)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 2c6c -> priority: 1 
+  Thread -> id: 1a8c -> priority: 1 
+NullReferenceException: Object reference not set to an instance of an object
+  at UnityOSC.OSCClient.Close () [0x00000] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSC\OSCClient.cs:90 
+  at OSCHandler.OnApplicationQuit () [0x00032] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSCHandler.cs:149 
+ 
+(Filename: D:/prj/8Nights2_Git/8Nights2/8nights2_unity/Assets/Scripts/LightJams/UnityOSC/OSC/OSCClient.cs Line: 90)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UnityOSC.OSCClient.Close () [0x00000] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSC\OSCClient.cs:90 
+  at OSCHandler.OnApplicationQuit () [0x00032] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSCHandler.cs:149 
+ 
+(Filename: D:/prj/8Nights2_Git/8Nights2/8nights2_unity/Assets/Scripts/LightJams/UnityOSC/OSC/OSCClient.cs Line: 90)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UnityOSC.OSCClient.Close () [0x00000] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSC\OSCClient.cs:90 
+  at OSCHandler.OnApplicationQuit () [0x00032] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSCHandler.cs:149 
+ 
+(Filename: D:/prj/8Nights2_Git/8Nights2/8nights2_unity/Assets/Scripts/LightJams/UnityOSC/OSC/OSCClient.cs Line: 90)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UnityOSC.OSCClient.Close () [0x00000] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSC\OSCClient.cs:90 
+  at OSCHandler.OnApplicationQuit () [0x00032] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSCHandler.cs:149 
+ 
+(Filename: D:/prj/8Nights2_Git/8Nights2/8nights2_unity/Assets/Scripts/LightJams/UnityOSC/OSC/OSCClient.cs Line: 90)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at UnityOSC.OSCClient.Close () [0x00000] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSC\OSCClient.cs:90 
+  at OSCHandler.OnApplicationQuit () [0x00032] in D:\prj\8Nights2_Git\8Nights2\8nights2_unity\Assets\Scripts\LightJams\UnityOSC\OSCHandler.cs:149 
+ 
+(Filename: D:/prj/8Nights2_Git/8Nights2/8nights2_unity/Assets/Scripts/LightJams/UnityOSC/OSC/OSCClient.cs Line: 90)
+
