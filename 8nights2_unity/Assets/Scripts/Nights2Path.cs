@@ -39,8 +39,9 @@ public class Nights2Path : MonoBehaviour
 
     public enum PortalType
     {
-       EntrancePortal,
-       ExitPortal
+       EntrancePortal, //go to first world
+       EntrancePortal2, //go to second world
+       ExitPortal       //back to room world
     }
 
 

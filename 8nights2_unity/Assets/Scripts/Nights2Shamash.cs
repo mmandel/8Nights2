@@ -10,6 +10,8 @@ public class Nights2Shamash : MonoBehaviour
 
     public string ShamashOnBool = "on";
 
+    public string ShamashHiddenBool = "hidden";
+
     public string PlayerCloseBool = "player_close";
 
     public string FlameExtinguishedBool = "flame_extinguished";
@@ -84,6 +86,7 @@ public class Nights2Shamash : MonoBehaviour
             _closeTimerLeft -= Time.deltaTime;
         bool cantBeClose = (_closeTimerLeft >= 0.0f);
 
+        SetAnimatorBool(ShamashHiddenBool, (curNightsState != Nights2Mgr.Nights2State.SeekingShamash) && (curNightsState != Nights2Mgr.Nights2State.NearShamash));
         SetAnimatorBool(ShamashOnBool, ShamashIsOn());
         SetAnimatorBool(PlayerCloseBool, _playerIsClose && !cantBeClose);
         SetAnimatorBool(FlameExtinguishedBool, (curNightsState == Nights2Mgr.Nights2State.FlameExtinguished));

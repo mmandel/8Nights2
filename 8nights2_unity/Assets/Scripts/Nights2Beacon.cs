@@ -10,6 +10,7 @@ public class Nights2Beacon : MonoBehaviour
 {
 
     public string IsLitBool = "on";
+    public string IsHiddenBool = "hidden";
     public string IsNextBool = "is_next";
     public string PlayerCloseBool = "is_close";
 
@@ -58,11 +59,27 @@ public class Nights2Beacon : MonoBehaviour
             _animator.SetBool(boolName, val);
     }
 
+    bool IsHiddenInWorld()
+    {
+        Nights2TorchPlayer.PortalState curPortalState = Nights2TorchPlayer.Instance.GetPortalState();
+        Nights2Mgr.Nights2State curState = Nights2Mgr.Instance.GetState();
+        bool showIt = (IsLit() && (curState == Nights2Mgr.Nights2State.BeaconLit)) || (_isNextBeacon && (curPortalState == Nights2TorchPlayer.PortalState.ThroughExitPortal));
+        return !showIt;
+    }
+
+    bool ShouldDuckAudio()
+    {
+        return IsHiddenInWorld();
+    }
+
 	void Update () 
     {
+        Nights2Mgr.Nights2State curState = Nights2Mgr.Instance.GetState();
+
+        SetAnimatorBool(IsHiddenBool, IsHiddenInWorld());
         SetAnimatorBool(IsNextBool, _isNextBeacon && IsInSeekingState());
         SetAnimatorBool(PlayerCloseBool, _playerIsNear);
-        if (_playerIsNear && (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) && !Nights2TorchPlayer.Instance.IsPortalShowing())
+        if (_playerIsNear && (curState == Nights2Mgr.Nights2State.SeekingBeacon) && !Nights2TorchPlayer.Instance.IsPortalShowing())
             Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.NearBeacon);
 	}
 

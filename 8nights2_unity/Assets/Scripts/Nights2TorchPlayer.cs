@@ -118,7 +118,8 @@ public class Nights2TorchPlayer : MonoBehaviour
         }
         else
         {
-            SetPortalState(PortalState.NoProgress);
+            if (e.NewState != Nights2Mgr.Nights2State.NearBeacon) //we want portal state to still be "through exit portal"
+                SetPortalState(PortalState.NoProgress);
             TeleportToWorld(Nights2Mgr.Instance.RoomWorld);
         }
     }
@@ -127,6 +128,13 @@ public class Nights2TorchPlayer : MonoBehaviour
     Vector3 GetPlayerPosOnGround()
     {
         Vector3 r = this.transform.position;
+        r.y = 0.0f;
+        return r;
+    }
+
+    Vector3 GetLanternPosOnGround()
+    {
+        Vector3 r = Nights2CamMgr.Instance.GetLanternParent().transform.position;
         r.y = 0.0f;
         return r;
     }
@@ -337,7 +345,7 @@ public class Nights2TorchPlayer : MonoBehaviour
                 case PortalState.NoProgress:
 
                     //OK, see when we're close to the entrance portal and show it
-                    distToEntrance = curPath.DistToPortal(Nights2Path.PortalType.EntrancePortal, GetPlayerPosOnGround());
+                    distToEntrance = curPath.DistToPortal(Nights2Path.PortalType.EntrancePortal, GetLanternPosOnGround());
                     //Debug.Log("Dist to entrance (not showing): " + distToEntrance);
                     if ((distToEntrance >= 0.0f) && (distToEntrance <= ShowPortalDistThresh))
                     {
@@ -364,7 +372,7 @@ public class Nights2TorchPlayer : MonoBehaviour
                 case PortalState.ThroughEntrancePortal:
 
                     //OK, see when we're close to the exit portal and show it                    
-                    distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetPlayerPosOnGround());
+                    distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetLanternPosOnGround());
                     //Debug.Log("Dist to exit (not showing): " + distToExit);
                     if ((distToExit >= 0.0f) && (distToExit <= ShowPortalDistThresh))
                     {

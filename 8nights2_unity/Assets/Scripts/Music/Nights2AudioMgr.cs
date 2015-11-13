@@ -343,12 +343,12 @@ public class Nights2AudioMgr : MonoBehaviour
       }
 
       //simulate failing to walk along path
-      startPos.x += 100;
+      /*startPos.x += 100;
       if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) &&
          GUI.Button(new Rect(startPos.x, startPos.y, 50, 20), "Fail"))
       {
          Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.FlameExtinguished);
-      }
+      }*/
 
       //Test lights in bottom right
       if (LightMgr.Instance != null)
