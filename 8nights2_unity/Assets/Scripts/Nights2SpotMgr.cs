@@ -101,6 +101,7 @@ public class Nights2SpotMgr : MonoBehaviour
 
    static void drawString(string text, Vector3 worldPos, Color? colour = null)
    {
+      #if UNITY_EDITOR
       UnityEditor.Handles.BeginGUI();
       Color oldColor = GUI.color;
       if (colour.HasValue) GUI.color = colour.Value;
@@ -112,5 +113,6 @@ public class Nights2SpotMgr : MonoBehaviour
       GUI.Label(new Rect(screenPos.x - (size.x / 2), -screenPos.y + view.position.height + 4, size.x, size.y), text, s);
       GUI.color = oldColor;
       UnityEditor.Handles.EndGUI();
+      #endif
    }
 }
