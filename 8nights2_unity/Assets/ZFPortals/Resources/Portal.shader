@@ -6,6 +6,7 @@
 Shader "FX/Portal" {
 Properties {
 	_Color("Fallback color", Color) = (0, 0, 0, 1)
+	_Brightness("Brightness", Float)= .25
 	_PortalTex("Rendered Portal", 2D) = "" {}
 	_Scale("Scale center, mode, scale", vector) = (
 		//x/y center of scaling
@@ -54,6 +55,7 @@ v2f vert(appdata v)
 uniform sampler2D _PortalTex;
 uniform float4 _Color;
 uniform float4 _Scale;
+uniform float _Brightness;
 
 half4 frag(v2f i) : COLOR
 {
@@ -65,7 +67,7 @@ half4 frag(v2f i) : COLOR
 	pos.xy = (pos.xy - pOffset) / _Scale.w + pOffset;
 
 	//return tex2D( _PortalTex, pos) * .9 + .1*_Color;
-	return tex2D( _PortalTex, pos);
+	return _Brightness*tex2D( _PortalTex, pos);
 
 //	float4 pos = i.ref;
 //	float4 pOffset = float4(_Scale.xy, 0, 0);
