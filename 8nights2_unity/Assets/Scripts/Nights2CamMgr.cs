@@ -82,7 +82,8 @@ public class Nights2CamMgr : MonoBehaviour
 
     public Transform GetHeadTrans()
     {
-        return SteamVR.active ?  _headTrans : NonVRCam.transform;
+        //return SteamVR.active ?  _headTrans : NonVRCam.transform;
+        return _headTrans;
     }
 
     public void SwapControllers()
