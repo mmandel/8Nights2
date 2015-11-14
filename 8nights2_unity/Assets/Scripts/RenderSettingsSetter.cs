@@ -15,6 +15,10 @@ public class RenderSettingsSetter : MonoBehaviour
     public float SkyboxExposure = 1.3f;
     public Color SkyboxSkyTint = Color.black;
     public Color SkyboxGround = Color.black;
+    [Space(10)]
+    public bool DriveFog = false;
+    public Color FogColor = Color.black;
+    public float FogDensity = .1f;
 
 	void Update () 
     {
@@ -28,6 +32,12 @@ public class RenderSettingsSetter : MonoBehaviour
             RenderSettings.skybox.SetColor("_SkyTint", SkyboxSkyTint);
             RenderSettings.skybox.SetColor("_GroundColor", SkyboxGround);
             RenderSettings.skybox.SetFloat("_Exposure", SkyboxExposure);
+        }
+
+        if (DriveFog)
+        {
+            RenderSettings.fogColor = FogColor;
+            RenderSettings.fogDensity = FogDensity;
         }
 	}
 }
