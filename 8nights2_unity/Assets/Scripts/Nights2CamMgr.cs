@@ -97,6 +97,11 @@ public class Nights2CamMgr : MonoBehaviour
 	
 	void Update () 
     {
+        //turn on fly camera if VR isn't active
+        FlyCam flyCam = GetHeadTrans().gameObject.GetComponent<FlyCam>();
+        if (flyCam != null)
+            flyCam.enabled = !IsVRActive();
+
         if (Input.GetKeyDown(KeyCode.C))
             SwapControllers();
 	}
