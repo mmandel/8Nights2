@@ -90,7 +90,7 @@ public class Nights2TorchPlayer : MonoBehaviour
             Nights2Mgr.Instance.OnStateChanged -= OnNights2StateChanged;
     }
 
-    void TeleportToWorld(GameObject world)
+    void TeleportToWorld(GameObject world, Nights2Mgr.WorldID worldID)
     {
         Debug.Assert((world != null) && (Nights2Mgr.Instance.VRRig.transform != null));
 
@@ -100,6 +100,8 @@ public class Nights2TorchPlayer : MonoBehaviour
         vrTrans.parent = world.transform;
         vrTrans.localPosition = Vector3.zero;
         vrTrans.localRotation = Quaternion.identity;
+
+        Nights2Mgr.Instance.NotifyInWorld(worldID);
     }
 
     void OnNights2StateChanged(object sender, Nights2Mgr.StateChangedEventArgs e)
@@ -120,7 +122,7 @@ public class Nights2TorchPlayer : MonoBehaviour
         {
             if (e.NewState != Nights2Mgr.Nights2State.NearBeacon) //we want portal state to still be "through exit portal"
                 SetPortalState(PortalState.NoProgress);
-            TeleportToWorld(Nights2Mgr.Instance.RoomWorld);
+            TeleportToWorld(Nights2Mgr.Instance.RoomWorld, Nights2Mgr.WorldID.RoomWorld);
         }
     }
 
@@ -159,7 +161,7 @@ public class Nights2TorchPlayer : MonoBehaviour
             if (s == PortalState.NoProgress)
             {
                 ShowPortal(false); //just in case
-                TeleportToWorld(Nights2Mgr.Instance.RoomWorld);
+                TeleportToWorld(Nights2Mgr.Instance.RoomWorld, Nights2Mgr.WorldID.RoomWorld);
             }
             else if (s == PortalState.ShowingEntrancePortal)
             {
@@ -209,7 +211,14 @@ public class Nights2TorchPlayer : MonoBehaviour
             {
                 ShowPortal(false, true);
 
-                TeleportToWorld((s == PortalState.ThroughEntrancePortal) ? Nights2Mgr.Instance.CurAltWorld() : Nights2Mgr.Instance.RoomWorld);
+                if (s == PortalState.ThroughEntrancePortal)
+                {
+                    TeleportToWorld(Nights2Mgr.Instance.CurAltWorld(), Nights2Mgr.Instance.CurAltWorldID());
+                }
+                else
+                {
+                    TeleportToWorld( Nights2Mgr.Instance.RoomWorld, Nights2Mgr.WorldID.RoomWorld);
+                }                
             }
 
             if (OnPortalStateChanged != null)

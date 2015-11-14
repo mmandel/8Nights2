@@ -19,6 +19,9 @@ public class Nights2AnimTrigger : MonoBehaviour
     [Tooltip("Set this trigger on the animator when the player walks through an exit portal")]
     public string PassedExitPortalTrigger = "exit_portal";
 
+    public string InAltWorld1Bool = "alt_world1";
+    public string InAltWorld2Bool = "alt_world2";
+
     [Space(10)]
 
     public AnimTriggerEntry[] Triggers = new AnimTriggerEntry[0];
@@ -36,6 +39,8 @@ public class Nights2AnimTrigger : MonoBehaviour
     private bool _hasCandlesLitParam = false;
     private bool _hasEntrancePortalParam = false;
     private bool _hasExitPortalParam = false;
+    private bool _hasAltWorld1Param = false;
+    private bool _hasAltWorld2Param = false;
 
     void Start()
     {
@@ -53,6 +58,9 @@ public class Nights2AnimTrigger : MonoBehaviour
         _hasCandlesLitParam = Nights2Utl.AnimatorHasParam(_animator, NumCandlesLitParam);
         _hasEntrancePortalParam = Nights2Utl.AnimatorHasParam(_animator, PassedEntrancePortalTrigger);
         _hasExitPortalParam = Nights2Utl.AnimatorHasParam(_animator, PassedExitPortalTrigger);
+
+        _hasAltWorld1Param = Nights2Utl.AnimatorHasParam(_animator, InAltWorld1Bool);
+        _hasAltWorld2Param = Nights2Utl.AnimatorHasParam(_animator, InAltWorld2Bool);
     }
 
     void Update()
@@ -65,6 +73,11 @@ public class Nights2AnimTrigger : MonoBehaviour
         {
             _animator.SetInteger(NumCandlesLitParam, Nights2Mgr.Instance.NumCandlesLit());
         }
+
+        if (_hasAltWorld1Param)
+            _animator.SetBool(InAltWorld1Bool, Nights2Mgr.Instance.InAltWorld1());
+        if (_hasAltWorld2Param)
+            _animator.SetBool(InAltWorld2Bool, Nights2Mgr.Instance.InAltWorld2());
     }
 
     void OnDestroy()

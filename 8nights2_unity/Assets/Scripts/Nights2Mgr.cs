@@ -19,6 +19,13 @@ public class Nights2Mgr : MonoBehaviour
     public GameObject RoomWorld; 
     public GameObject[] AltWorlds = new GameObject[0];
 
+    public enum WorldID
+    {
+        RoomWorld,
+        AltWorld1,
+        AltWorld2
+    }
+
     public event StateChangedHandler OnStateChanged;
     public class StateChangedEventArgs : EventArgs
     {
@@ -37,6 +44,7 @@ public class Nights2Mgr : MonoBehaviour
     private bool _isPathEditting = false;
     private int _curAltWorldIdx = 0;
     private float _stateActivateTime = 0.0f;
+    private WorldID _curWorld = WorldID.RoomWorld;
 
     public enum Nights2State
     {
@@ -62,6 +70,25 @@ public class Nights2Mgr : MonoBehaviour
         return AltWorlds[_curAltWorldIdx];
     }
 
+    public WorldID CurAltWorldID()
+    {
+        return (_curAltWorldIdx == 0) ? WorldID.AltWorld1 : WorldID.AltWorld2;
+    }
+
+    public bool InAltWorld1()
+    {
+        return (_curWorld == WorldID.AltWorld1);
+    }
+
+    public bool InAltWorld2()
+    {
+        return (_curWorld == WorldID.AltWorld2);
+    }
+
+    public void NotifyInWorld(WorldID newWorld)
+    {
+        _curWorld = newWorld;
+    }
 
     public Nights2State GetState() { return _curState; }
 
