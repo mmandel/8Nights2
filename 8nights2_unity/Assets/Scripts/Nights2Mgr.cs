@@ -295,9 +295,32 @@ public class Nights2Mgr : MonoBehaviour
                Nights2CamMgr.Instance.SwapControllers();
         }
 
+        //gamepad cheat to toggle between end turn and initial state
+        if (Input.GetButtonDown("A"))
+        {
+            if (GetState() == Nights2State.GettingReady) //activate seeking shamash state to get into the experience
+                SetState(Nights2State.SeekingShamash);
+            else
+                SetState(Nights2State.GettingReady);
+        }
+
+        //button cheat for swapping lantern  + torch
+        if (Input.GetButtonDown("Y"))
+        {
+            Nights2CamMgr.Instance.SwapControllers();
+        }
+
         //'r' key resets everything
         if (Input.GetKeyDown(KeyCode.R))
             ResetInstallation();
+
+        if (Input.GetButtonDown("RB"))
+            CheatToNextState();
+
+        if (Input.GetButtonDown("A"))
+        {
+
+        }
 
         if (_curState == Nights2State.BeaconLit)
         {

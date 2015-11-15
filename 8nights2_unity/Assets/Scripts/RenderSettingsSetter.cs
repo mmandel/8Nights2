@@ -30,6 +30,7 @@ public class RenderSettingsSetter : MonoBehaviour
         if (DriveSkybox)
         {
             RenderSettings.skybox.SetColor("_SkyTint", SkyboxSkyTint);
+            RenderSettings.skybox.SetColor("_Tint", SkyboxSkyTint);
             RenderSettings.skybox.SetColor("_GroundColor", SkyboxGround);
             RenderSettings.skybox.SetFloat("_Exposure", SkyboxExposure);
         }
