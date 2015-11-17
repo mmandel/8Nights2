@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: a09fda30195a99645a02623a57af00a4
+timeCreated: 1447732942
+licenseType: Pro
+ShaderImporter:
+  defaultTextures:
+  - _particleshape: {fileID: 2800000, guid: b8f33de70f20e98449d54ed37528898c, type: 3}
+  - _flickergradient: {fileID: 2800000, guid: 33808ab004e674f428e41cb59df35a2b, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
