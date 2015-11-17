@@ -24,14 +24,18 @@ public class Nights2Shamash : MonoBehaviour
     public static Nights2Shamash Instance { get; private set; }
 
     private Quaternion _defaultTunnelRot = Quaternion.identity;
+    private Nights2Spot _closestSpot = null;
 
-   void Awake()
-   {
-      Instance = this;
-   }
+    void Awake()
+    {
+        Instance = this;
+    }
 
 	void Start () 
     {
+        if (Nights2SpotMgr.Instance != null)
+            _closestSpot = Nights2SpotMgr.Instance.FindClosestSpotTo(transform.position);
+
         _animator = gameObject.GetComponent<Animator>();
         _playerIsClose = false;
         SetAnimatorBool(PlayerCloseBool, false);
@@ -45,6 +49,11 @@ public class Nights2Shamash : MonoBehaviour
         if (Nights2Mgr.Instance != null)
             Nights2Mgr.Instance.OnStateChanged += OnNights2StateChanged;
 	}
+
+    public Nights2Spot ClosestSpot()
+    {
+        return _closestSpot;
+    }
 
     Vector3 GetTunnelTarget()
     {

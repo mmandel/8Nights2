@@ -11,31 +11,17 @@ using System.IO;
 
 public class Nights2Path : MonoBehaviour 
 {
-    [Tooltip("Name of file to save/load our path from.  This will be in the Resources/paths/ directory")]
-    public string SaveName = "test_path";
-    [Tooltip("Which shamash does this path lead to?")]
+    [Tooltip("Which candle does this path lead to?")]
     public Nights2Beacon LeadsToBeacon = null;
-    [Tooltip("Position along the path to place the entrance portal")]
-    [Range(0.0f, 1.0f)]
-    public float EntrancePortalPos = .125f;
-    [Tooltip("Position along the path to place the exit portal")]
-    [Range(0.0f, 1.0f)]
-    public float ExitPortalPos = .875f;
     public Material PreviewLineMat;
-
-    [ScriptButton("Begin Editting!", "OnStartEditPressed")]
-    public bool BeginEditDummy = false;
-    [ScriptButton("End Editting!", "OnEndEditPressed")]
-    public bool EndEditDummy = false;
-    [ScriptButton("Save!", "OnSavePressed")]
-    public bool SaveDummy = false;
-    [ScriptButton("Load!", "OnLoadPressed")]
-    public bool LoadDummy = false;
-
+    public PathData Path = new PathData();
+    
     private float _exitPortalDist = 0.0f; //dist along path of exit portal
     private int _exitPortalSegment = 0;
     private float _entrancePortalDist = 0.0f;
     private int _entrancePortalSegment = 0;
+    private float _entrancePortal2Dist = 0.0f;
+    private int _entrancePortal2Segment = 0;
 
     public enum PortalType
     {
@@ -44,24 +30,30 @@ public class Nights2Path : MonoBehaviour
        ExitPortal       //back to room world
     }
 
-
+    [System.Serializable]
     public class PathData
     {
-        [XmlArrayAttribute("Points")]
         public PathEntry[] Points = new PathEntry[0];
     };
 
+    [System.Serializable]
     public class PathEntry
     {
-        public PathEntry() { Point = Vector3.zero; }
-        public PathEntry(Vector3 pt) { Point = pt; }
 
-        //NOTE: making this an attribute makes the xml more compact, but it won't deserialize unless I make my own vector class (oh well)
-        //[XmlAttribute("Point")]
-        public Vector3 Point;
+        public Vector3 GetPos() { return Spot.transform.position; }
+
+        public Nights2Spot Spot = null;
+        public SpotAction Action = SpotAction.PortalToAltWorld1;
     }
 
-    private PathData _pathData = null; //our loaded path data
+    public enum SpotAction
+    {
+        PortalToAltWorld1,
+        PortalToAltWorld2,
+        PortalToRoom,
+        Beacon,
+        Shamash
+    }
 
     private LineRenderer _previewRenderer = null;
     private bool _isEditting = false;
@@ -70,22 +62,41 @@ public class Nights2Path : MonoBehaviour
 
     public Vector3 GetPortalDir(PortalType portal)
     {
-       return GetSegmentDirection((portal == PortalType.EntrancePortal) ? _entrancePortalSegment : _exitPortalSegment);
+        if (portal == PortalType.EntrancePortal)
+            return GetSegmentDirection(_entrancePortalSegment);
+        else if (portal == PortalType.EntrancePortal2)
+            return GetSegmentDirection(_entrancePortal2Segment);
+        else
+            return GetSegmentDirection(_exitPortalSegment);
     }
 
     public Vector3 GetPortalPos(PortalType portal)
     {
-       float portalU = (portal == PortalType.EntrancePortal) ? EntrancePortalPos : ExitPortalPos;
+        int portalIdx = -1;
+        if (portal == PortalType.EntrancePortal)
+            portalIdx = _entrancePortalSegment;
+        else if (portal == PortalType.EntrancePortal2)
+            portalIdx = _entrancePortal2Segment;
+        else if (portal == PortalType.ExitPortal)
+            portalIdx = _exitPortalSegment;
 
-       int ignore;
-       return UToPos(portalU, out ignore);
+        if (portalIdx >= 0)
+            return Path.Points[portalIdx].GetPos();
+        else
+            return Vector3.zero;
     }
 
     //find the distance along the path to the given portal.  Will be negative if already in front of the portal
     public float DistToPortal(PortalType portal, Vector3 ptToTest)
     {
        //dist along path of the portal
-       float portalDist = (portal == PortalType.EntrancePortal) ? _entrancePortalDist : _exitPortalDist;
+        float portalDist = 0.0f;
+        if (portal == PortalType.EntrancePortal)
+            portalDist = _entrancePortalDist;
+        else if (portal == PortalType.EntrancePortal2)
+            portalDist = _entrancePortal2Dist;
+        else if (portal == PortalType.ExitPortal)
+            portalDist = _exitPortalDist;
 
        //ok, find out where the point is on the path (and which segment)
        int ptSegment;
@@ -112,10 +123,10 @@ public class Nights2Path : MonoBehaviour
 
     public float ComputeTotalPathDist()
     {
-       if ((_pathData == null) || (_pathData.Points.Length <= 1))
+        if ((Path == null) || (Path.Points.Length <= 1))
           return 0.0f;
        float totalDist = 0.0f;
-       for (int i = 0; i < _pathData.Points.Length - 1; i++)
+       for (int i = 0; i < Path.Points.Length - 1; i++)
        {
            Vector3 a = GetWorldPoint(i);
            Vector3 b = GetWorldPoint(i + 1);
@@ -133,8 +144,8 @@ public class Nights2Path : MonoBehaviour
 
        float resultDist = 0.0f;
        float uAccum = 0.0f;
-       segmentIdx = _pathData.Points.Length - 1;
-       for (int i = 0; i < _pathData.Points.Length - 1; i++)
+       segmentIdx = Path.Points.Length - 1;
+       for (int i = 0; i < Path.Points.Length - 1; i++)
        {
            Vector3 a = GetWorldPoint(i);
            Vector3 b = GetWorldPoint(i + 1);
@@ -162,8 +173,8 @@ public class Nights2Path : MonoBehaviour
 
        float totalDist = ComputeTotalPathDist();
        float uAccum = 0.0f;
-       segmentIdx = _pathData.Points.Length - 1;
-       for (int i = 0; i < _pathData.Points.Length - 1; i++)
+       segmentIdx = Path.Points.Length - 1;
+       for (int i = 0; i < Path.Points.Length - 1; i++)
        {
            Vector3 a = GetWorldPoint(i);
            Vector3 b = GetWorldPoint(i + 1);
@@ -190,14 +201,14 @@ public class Nights2Path : MonoBehaviour
         outPathSegment = -1;
 
         Vector3 result =  Vector3.zero;
-        if ((_pathData == null) || (_pathData.Points.Length <= 1))
+        if ((Path == null) || (Path.Points.Length <= 1))
         {            
             return result;
         }
 
         //meh just test all the line segments and return the result with smallest dist to the test point
         float closestDist = float.MaxValue;
-        for (int i = 0; i < _pathData.Points.Length - 1; i++)
+        for (int i = 0; i < Path.Points.Length - 1; i++)
         {
             Vector3 a = GetWorldPoint(i);
             Vector3 b = GetWorldPoint(i + 1);
@@ -227,7 +238,7 @@ public class Nights2Path : MonoBehaviour
     {
         float result = float.MinValue;
 
-        if ((_pathData == null) || (pathSegment >= _pathData.Points.Length - 1))
+        if ((Path == null) || (pathSegment >= Path.Points.Length - 1))
         {
             return result;
         }
@@ -251,7 +262,7 @@ public class Nights2Path : MonoBehaviour
     //get the position a given distance along the given segment
     public Vector3 GetPositionOnSegment(float distAlongSegment, int pathSegment)
     {
-        if ((_pathData == null) || (pathSegment >= _pathData.Points.Length - 1))
+        if ((Path == null) || (pathSegment >= Path.Points.Length - 1))
         {
             return Vector3.zero;
         }
@@ -266,7 +277,17 @@ public class Nights2Path : MonoBehaviour
 
     public Vector3 GetSegmentDirection(int pathSegment)
     {
-        if ((_pathData == null) || (pathSegment >= _pathData.Points.Length - 1))
+        //if last point leads to beacon, we can form the segment by pointing at the beacon itself
+        if ((pathSegment == Path.Points.Length - 1) && ((Path.Points[pathSegment].Action == SpotAction.Beacon) || (Path.Points[pathSegment].Action == SpotAction.PortalToRoom)))
+        {
+            Vector3 a = GetWorldPoint(pathSegment);
+            Vector3 b = transform.TransformPoint(LeadsToBeacon.transform.position);
+            b.y = a.y;
+
+            return (b - a).normalized;
+        }
+
+        if ((Path == null) || (pathSegment >= Path.Points.Length - 1))
         {
             return Vector3.forward;
         }
@@ -277,119 +298,43 @@ public class Nights2Path : MonoBehaviour
         return (segB - segA).normalized;
     }
 
-	void Start () 
+    public void FindFirstSegmentWithAction(SpotAction action, out int outSegment, out float outDist)
     {
-        LoadFromXML();
+        outSegment = -1;
+        outDist = 0.0f;
+        if (Path.Points.Length == 0)
+            return;
+        Vector3 _prevPoint = Path.Points[0].GetPos();
+        for (int i = 0; i < Path.Points.Length; i++)
+        {
+            Vector3 curPoint = Path.Points[i].GetPos();
+            outDist += (curPoint - _prevPoint).magnitude;
+            if (action == Path.Points[i].Action)
+            {
+                outSegment = i;
+                return;
+            }
+            _prevPoint = curPoint;
+        }
+    }
 
+    void Start() 
+    {
         //Let nights 2 mgr know which beacon this path leads to
         Nights2Mgr.Instance.RegisterPath(this, LeadsToBeacon);
 
-        //get the distance to each portal, along with the path segment they are on
-        _entrancePortalDist = UToDist(EntrancePortalPos, out _entrancePortalSegment);
-        _exitPortalDist     = UToDist(ExitPortalPos, out _exitPortalSegment); 
-
-        //temp: generate fake data to test serialization
-        /*_pathData = new PathData();
-        _pathData.Points = new PathEntry[5];
-        for (int i = 0; i < 5; i++)
-        {
-            _pathData.Points[i] = new PathEntry();
-            _pathData.Points[i].Point = new Vector3(Random.Range(0.0f, 5.0f), 0.0f, Random.Range(0.0f, 5.0f));
-        }*/
-
-        //ShowPreview(true);
+        //get the distance to each portal, along with the path segment they are on 
+        FindFirstSegmentWithAction(SpotAction.PortalToAltWorld1, out _entrancePortalSegment, out _entrancePortalDist);
+        FindFirstSegmentWithAction(SpotAction.PortalToAltWorld2, out _entrancePortal2Segment, out _entrancePortal2Dist);
+        FindFirstSegmentWithAction(SpotAction.PortalToRoom, out _exitPortalSegment, out _exitPortalDist);
     }
 
     void Update() 
     {
-        if (_isEditting)
-        {
-            //add a point if you pull the trigger
-            if (Nights2InputMgr.Instance.TorchInfo().GetTriggerDown())
-                TriggerAddPoint();
-            //remove last point
-            else if (Nights2InputMgr.Instance.TorchInfo().GetTouchpadDown())
-                TriggerRemovePoint();
-            //save if you hit the red button
-            else if (Nights2InputMgr.Instance.TorchInfo().GetRedButtonDown())
-                SaveToXML();
-        }
+
 	}
 
-    void SaveToXML()
-    {
-        if (_pathData == null)
-        {
-            Debug.LogError("Cannot save path because there is no data!");
-            return;
-        }
 
-        XmlSerializer deserializer = new XmlSerializer(typeof(PathData));
-        string xmlPath = Application.dataPath + "/Resources/paths/" + SaveName + ".xml";
-        Debug.Log("Saving path to: " + xmlPath);
-
-        XmlSerializer serializer = new XmlSerializer(typeof(PathData));
-        using ( TextWriter writer = new StreamWriter(xmlPath))
-        {
-            serializer.Serialize(writer, _pathData);
-        }  
-    }
-
-    void LoadFromXML()
-    {
-        string xmlPath = "paths/" + SaveName;
-        TextAsset xmlData = new TextAsset();
-        xmlData = (TextAsset)Resources.Load(xmlPath, typeof(TextAsset));
-
-        if (xmlData == null)
-        {
-            Debug.LogError("Couldn't read path from resource: " + xmlPath);
-            return;
-        }
-
-        XmlSerializer deserializer = new XmlSerializer(typeof(PathData));
-        TextReader reader = new StringReader(xmlData.text);
-        object obj = deserializer.Deserialize(reader);
-        _pathData = (PathData)obj;
-        reader.Close();
-    }
-
-    public void OnSavePressed(string propPath)
-    {
-        SaveToXML();
-    }
-
-    public void OnLoadPressed(string propPath)
-    {
-       LoadFromXML();
-    }
-
-    public void OnStartEditPressed(string propPath)
-    {
-        if (!Application.isPlaying)
-        {
-            Debug.LogError("Can't end path unless you are in play mode!");
-            return;
-        }
-
-        _isEditting = true;
-        Nights2Mgr.Instance.SetIsPathEditting(true);
-
-        //start with fresh data
-        _pathData = new PathData();
-        RefreshPreview();
-
-        ShowPreview(true);
-
-        Debug.Log("Editting path began!  Hit the save button when you are done...");
-    }
-
-    public void OnEndEditPressed(string propPath)
-    {
-        Nights2Mgr.Instance.SetIsPathEditting(false);
-        _isEditting = false;
-        ShowPreview(false);
-    }
 
     public void ShowPreview(bool b)
     {
@@ -427,18 +372,15 @@ public class Nights2Path : MonoBehaviour
             previewObj.transform.localPosition = Vector3.zero;
         }
 
-        if (_pathData == null)
-            LoadFromXML();
-
         //populate from data...
         Debug.Assert(_previewRenderer);
-        if ((_pathData != null) && (_pathData.Points.Length > 0))
+        if ((Path != null) && (Path.Points.Length > 0))
         {
-            int numPoints = _pathData.Points.Length;
+            int numPoints = Path.Points.Length;
             _previewRenderer.SetVertexCount(numPoints);
             for (int i = 0; i < numPoints; i++)
             {
-                _previewRenderer.SetPosition(i, _pathData.Points[i].Point);
+                _previewRenderer.SetPosition(i, Path.Points[i].GetPos());
             }
         }
     }
@@ -446,19 +388,16 @@ public class Nights2Path : MonoBehaviour
     //draw debug line version of path when selected in the editor...
     void OnDrawGizmosSelected()
     {
-        if (_pathData == null)
-            LoadFromXML();
-
-        if ((_pathData == null) || (_pathData.Points.Length <= 1))
+        if ((Path == null) || (Path.Points.Length <= 1))
             return;
 
         const float kSphereRadius = .05f;
-        Vector3 prevPt = _pathData.Points[0].Point;
+        Vector3 prevPt = Path.Points[0].GetPos();
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(prevPt, kSphereRadius);
-        for (int i = 1; i < _pathData.Points.Length; i++)
+        for (int i = 1; i < Path.Points.Length; i++)
         {
-            Vector3 curPt = _pathData.Points[i].Point;
+            Vector3 curPt = Path.Points[i].GetPos();
             Gizmos.DrawSphere(curPt, kSphereRadius);
             Gizmos.DrawLine(prevPt, curPt);
 
@@ -478,11 +417,12 @@ public class Nights2Path : MonoBehaviour
     
     Vector3 GetWorldPoint(int idx)
     {
-        return transform.TransformPoint(_pathData.Points[idx].Point);
+        //return transform.TransformPoint(Path.Points[idx].GetPos());
+        return Path.Points[idx].GetPos();
     }
 
     //add point at whatever location the torch is right now
-    void TriggerAddPoint()
+    /*void TriggerAddPoint()
     {
         if (!_isEditting)
             return;
@@ -512,5 +452,5 @@ public class Nights2Path : MonoBehaviour
 
             RefreshPreview();
         }
-    }
+    }*/
 }

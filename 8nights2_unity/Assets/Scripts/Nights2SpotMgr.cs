@@ -10,7 +10,7 @@ using System;
 public class Nights2SpotMgr : MonoBehaviour 
 {
    public GameObject SpotPrefab = null; //expected to be a prefab with the Nightsa2Spot script on it
-   public Transform[] SpotLocations = new Transform[0];
+   public Nights2Spot[] Spots = new Nights2Spot[0];
 
    public event SpotEventHandler OnLanternArrived;
    public class SpotEventArgs : EventArgs
@@ -20,10 +20,27 @@ public class Nights2SpotMgr : MonoBehaviour
    }
    public delegate void SpotEventHandler(object sender, SpotEventArgs e);
 
-   private Nights2Spot[] _spots = null;
+   private GameObject[] _spawned = null; //spawned for each Spot
    private Nights2Spot _activeSpot = null;
 
    public static Nights2SpotMgr Instance { get; private set; }
+
+   public Nights2Spot FindClosestSpotTo(Vector3 p)
+   {
+      float closestDist = float.MaxValue;
+      Nights2Spot closestSpot = null;
+      for (int i = 0; i < Spots.Length; i++)
+      {
+          float curDist = (Spots[i].GetPos() - p).sqrMagnitude;
+         if (curDist < closestDist)
+         {
+            closestDist = curDist;
+            closestSpot = Spots[i];
+         }
+      }
+
+      return closestSpot;
+   }
 
    void Awake()
    {
@@ -33,20 +50,22 @@ public class Nights2SpotMgr : MonoBehaviour
 	void Start () 
    {
       //spawn into each location
-      _spots = new Nights2Spot[SpotLocations.Length];
-      for (int i = 0; i < _spots.Length; i++)
+       _spawned = new GameObject[Spots.Length];
+       for (int i = 0; i < _spawned.Length; i++)
       {
          GameObject spawnedObj = Instantiate(SpotPrefab) as GameObject;
          Debug.Assert(spawnedObj != null);
 
-         spawnedObj.transform.parent = SpotLocations[i];
+         Nights2Spot spot = Spots[i];
+         Debug.Assert(spot != null);
+         spot.SetSpawned(spawnedObj);
+         spot.MakeActive(false);
+
+         spawnedObj.transform.parent = spot.transform;
          spawnedObj.transform.localPosition = Vector3.zero;
          spawnedObj.transform.localRotation = Quaternion.identity;
 
-         Nights2Spot spot = spawnedObj.GetComponent<Nights2Spot>();
-         Debug.Assert(spot != null);
-         spot.MakeActive(false);
-         _spots[i] = spot;
+         _spawned[i] = spawnedObj;
       }
 
       _activeSpot = null;
@@ -70,16 +89,6 @@ public class Nights2SpotMgr : MonoBehaviour
       return _activeSpot;
    }
 
-   //given a trans, find the corresponding spawned spot
-   public Nights2Spot FindSpotForLocation(Transform loc)
-   {
-      for (int i = 0; i < SpotLocations.Length; i++)
-      {
-         if (loc == SpotLocations[i])
-            return _spots[i];
-      }
-      return null;
-   }
 
    public void NotifyLanternArrived(Nights2Spot spot)
    {
@@ -89,13 +98,13 @@ public class Nights2SpotMgr : MonoBehaviour
 
    void OnDrawGizmosSelected()
    {
-      for (int i = 0; i < SpotLocations.Length; i++)
+      for (int i = 0; i < Spots.Length; i++)
       {
          const float kSphereRadius = .1f;
          Gizmos.color = Color.blue;
-         Gizmos.DrawSphere(SpotLocations[i].position, kSphereRadius);
+         Gizmos.DrawSphere(Spots[i].GetPos(), kSphereRadius);
 
-         drawString(SpotLocations[i].gameObject.name, SpotLocations[i].position, Color.yellow);
+         drawString(Spots[i].gameObject.name, Spots[i].GetPos(), Color.yellow);
       }
    }
 
@@ -110,6 +119,7 @@ public class Nights2SpotMgr : MonoBehaviour
       Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
       GUIStyle s = new GUIStyle();
       s.fontSize = 15;
+      s.normal.textColor = Color.white;
       GUI.Label(new Rect(screenPos.x - (size.x / 2), -screenPos.y + view.position.height + 4, size.x, size.y), text, s);
       GUI.color = oldColor;
       UnityEditor.Handles.EndGUI();

@@ -43,6 +43,7 @@ public class Nights2Torch : MonoBehaviour
                 if (!transform.parent.gameObject.activeInHierarchy)
                     transform.parent = null;
                 transform.localPosition = Vector3.zero;
+                transform.localRotation = Quaternion.identity;
             }
         }
 	}

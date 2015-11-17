@@ -19,6 +19,7 @@ public class Nights2Beacon : MonoBehaviour
     private int _beaconIdx = -1;
     private Animator _animator = null;
     private bool _playerIsNear = false;
+    private Nights2Spot _closestSpot = null;
 
     public bool IsLit() { return _isLit; } 
     public void SetLit(bool b)
@@ -31,6 +32,11 @@ public class Nights2Beacon : MonoBehaviour
             //TODO: events?
         }
     }
+
+    public Nights2Spot ClosestSpot()
+    {
+        return _closestSpot;
+    }    
 
     public bool IsNext() { return _isNextBeacon; }
     public void SetIsNext(bool b)
@@ -47,6 +53,9 @@ public class Nights2Beacon : MonoBehaviour
 
 	void Start () 
     {
+        if (Nights2SpotMgr.Instance != null)
+            _closestSpot = Nights2SpotMgr.Instance.FindClosestSpotTo(transform.position);
+
         _animator = gameObject.GetComponent<Animator>();
 
         SetIsNext(false);

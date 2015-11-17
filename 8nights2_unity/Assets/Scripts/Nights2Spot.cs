@@ -12,10 +12,21 @@ public class Nights2Spot : MonoBehaviour
    private bool _isSpotActive = false;
    private bool _lanternArrived = false;
    private Collider _collider = null;
+   private GameObject _spawned = null;
+
+   public Vector3 GetPos()
+   {
+      return transform.position;
+   }
+
+   public void SetSpawned(GameObject go)
+   {
+       _spawned = go;
+       _collider = (go != null) ? go.GetComponent<Collider>() : null;
+   }
 
    void Awake()
    {
-      _collider = gameObject.GetComponent<Collider>();
       MakeActive(false);
    }
 
@@ -46,7 +57,7 @@ public class Nights2Spot : MonoBehaviour
          return;
 
       //see if the lantern carrier is near
-      if ((other != null) && (other.GetComponent<Nights2Lantern>() != null))
+      if ((other != null) && (other == _collider) && (other.GetComponent<Nights2Lantern>() != null))
       {
          //Debug.Log("Lantern is NEAR active spot!!");
 
