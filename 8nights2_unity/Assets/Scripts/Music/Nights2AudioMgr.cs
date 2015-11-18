@@ -13,6 +13,18 @@ public class Nights2AudioMgr : MonoBehaviour
 
    [Space(10)]
    public EightNightsMusicPlayerFMod MusicPlayer;
+
+   [Space(10)]
+
+   public FMOD_StudioEventEmitter ShamashAmbience;
+   public FMOD_StudioEventEmitter BeaconAmbience;
+   public FMOD_StudioEventEmitter CaveWorldTheme;
+   public FMOD_StudioEventEmitter OpenWorldTheme;
+
+   [Space(10)] 
+
+   public FMOD_StudioEventEmitter BeaconLitOneOff;
+
    [Space(10)]
    public MusicTestData MusicTester = new MusicTestData();
 
@@ -119,6 +131,31 @@ public class Nights2AudioMgr : MonoBehaviour
          return MusicPlayer.GetVolumeForGroup(g);
       }
       return 0.0f;
+   }
+
+   public enum BackingLoops
+   {
+       kShamashAmbience,
+       kBeaconAmbience,
+       kCaveWorldTheme,
+       kOpenWorldTheme
+   };
+
+   public void ActivateBackingLoop(BackingLoops l)
+   {
+       ShamashAmbience.Stop();
+       BeaconAmbience.Stop();
+       CaveWorldTheme.Stop();
+       OpenWorldTheme.Stop();
+
+       switch (l)
+       {
+           case BackingLoops.kBeaconAmbience: BeaconAmbience.Play(); break;
+           case BackingLoops.kShamashAmbience: ShamashAmbience.Play(); break;
+           case BackingLoops.kCaveWorldTheme: CaveWorldTheme.Play(); break;
+           case BackingLoops.kOpenWorldTheme: OpenWorldTheme.Play(); break;
+           default: break;
+       }
    }
 
 

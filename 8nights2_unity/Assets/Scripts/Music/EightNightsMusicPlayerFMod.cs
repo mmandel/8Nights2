@@ -87,6 +87,9 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
 
     public void SetBackingLoopVolume(float volume)
     {
+        if (BackingLoopFModParam.Length == 0)
+            return;
+
         FMOD.Studio.ParameterInstance param = FModEvent.getParameter(BackingLoopFModParam);
         if (param != null)
         {
@@ -97,6 +100,8 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
     public float GetBackingLoopVolume()
     {
         float paramVal = 0.0f;
+        if (BackingLoopFModParam.Length == 0)
+            return paramVal;
         FMOD.Studio.ParameterInstance param = FModEvent.getParameter(BackingLoopFModParam);
         if (param != null)
             param.getValue(out paramVal);
@@ -106,6 +111,8 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
 
     public void SetPeakLoopVolume(float volume)
     {
+        if (PeakLoopFModParam.Length == 0)
+            return;
         FMOD.Studio.ParameterInstance param = FModEvent.getParameter(PeakLoopFModParam);
         if (param != null)
         {
@@ -116,6 +123,8 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
     public float GetPeakLoopVolume()
     {
         float paramVal = 0.0f;
+        if (PeakLoopFModParam.Length == 0)
+            return 0.0f;     
         FMOD.Studio.ParameterInstance param = FModEvent.getParameter(PeakLoopFModParam);
         if (param != null)
             param.getValue(out paramVal);

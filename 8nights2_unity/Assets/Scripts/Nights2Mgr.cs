@@ -87,7 +87,21 @@ public class Nights2Mgr : MonoBehaviour
 
     public void NotifyInWorld(WorldID newWorld)
     {
+        WorldID prevWorld = _curWorld;
+
         _curWorld = newWorld;
+        if(newWorld == WorldID.AltWorld1)
+            Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kCaveWorldTheme);
+        else if(newWorld == WorldID.AltWorld2)
+            Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kOpenWorldTheme);
+        else if (newWorld == WorldID.RoomWorld)
+        {
+            //came through return portal
+            if ((prevWorld == WorldID.AltWorld1) || (prevWorld == WorldID.AltWorld2))
+            {
+                Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kBeaconAmbience);
+            }
+        }
     }
 
     public Nights2State GetState() { return _curState; }
@@ -115,10 +129,18 @@ public class Nights2Mgr : MonoBehaviour
             if ((_curState != Nights2State.SeekingBeacon) && (_curState != Nights2State.NearBeacon))
                 LightCurrentPath(false);
 
+            if (_curState == Nights2State.SeekingShamash)
+            {
+                Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kShamashAmbience);
+            }
+
             //update tracking lists if a beacon is lit
             if (_curState == Nights2State.BeaconLit)
             {
                Debug.Assert(_nextBeacon != null);
+
+               if (Nights2AudioMgr.Instance.BeaconLitOneOff != null)
+                   Nights2AudioMgr.Instance.BeaconLitOneOff.Play();
 
                //update state of next beacon
                _nextBeacon.SetLit(true);
@@ -169,11 +191,13 @@ public class Nights2Mgr : MonoBehaviour
 
 	void Start () 
     {
-        ResetInstallation();    
+        ResetInstallation();
 	}
 
     public void ResetInstallation()
     {
+        Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kShamashAmbience);
+
         SetState(Nights2State.GettingReady);
 
         ResetBeacons();
