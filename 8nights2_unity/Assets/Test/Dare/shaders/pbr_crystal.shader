@@ -118,8 +118,8 @@ Shader "Shader Forge/pbr_crystal" {
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;
 ///////// Gloss:
-                float4 node_6414 = _Time + _TimeEditor;
-                float2 node_3938 = ((i.uv0+node_6414.g*float2(0,0))*float2(2,1));
+                float4 node_4923 = _Time + _TimeEditor;
+                float2 node_3938 = ((i.uv0+node_4923.g*float2(0,0))*float2(2,1));
                 float4 _noise_copy = tex2D(_Noise,TRANSFORM_TEX(node_3938, _Noise));
                 float gloss = 1.0 - saturate(( (_noise_copy.r*0.2+0.45) > 0.5 ? (1.0-(1.0-2.0*((_noise_copy.r*0.2+0.45)-0.5))*(1.0-_Roughness)) : (2.0*(_noise_copy.r*0.2+0.45)*_Roughness) )); // Convert roughness to gloss
                 float specPow = exp2( gloss * 10.0+1.0);
@@ -162,7 +162,7 @@ Shader "Shader Forge/pbr_crystal" {
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));
                 float LdotH = max(0.0,dot(lightDirection, halfDirection));
-                float node_7483_ang = node_6414.g;
+                float node_7483_ang = node_4923.g;
                 float node_7483_spd = 0.01;
                 float node_7483_cos = cos(node_7483_spd*node_7483_ang);
                 float node_7483_sin = sin(node_7483_spd*node_7483_ang);
@@ -175,7 +175,7 @@ Shader "Shader Forge/pbr_crystal" {
                 float2 node_5159 = (i.uv0 + float2(node_5159_tx, node_5159_ty)) * node_5159_tc_rcp;
                 float2 node_7483 = (mul(node_5159-node_7483_piv,float2x2( node_7483_cos, -node_7483_sin, node_7483_sin, node_7483_cos))+node_7483_piv);
                 float4 _facets_var = tex2D(_facets,TRANSFORM_TEX(node_7483, _facets));
-                float2 node_4303 = (_facets_var.rgb.rg+node_6414.g*float2(0.01,0.02));
+                float2 node_4303 = (_facets_var.rgb.rg+node_4923.g*float2(0.01,0.02));
                 float4 node_3372 = tex2D(_Noise,TRANSFORM_TEX(node_4303, _Noise));
                 float3 diffuseColor = (_Color.rgb*node_3372.g); // Need this for specular when using metallic
                 float specularMonochrome;
@@ -309,15 +309,15 @@ Shader "Shader Forge/pbr_crystal" {
                 float Pi = 3.141592654;
                 float InvPi = 0.31830988618;
 ///////// Gloss:
-                float4 node_417 = _Time + _TimeEditor;
-                float2 node_3938 = ((i.uv0+node_417.g*float2(0,0))*float2(2,1));
+                float4 node_2015 = _Time + _TimeEditor;
+                float2 node_3938 = ((i.uv0+node_2015.g*float2(0,0))*float2(2,1));
                 float4 _noise_copy = tex2D(_Noise,TRANSFORM_TEX(node_3938, _Noise));
                 float gloss = 1.0 - saturate(( (_noise_copy.r*0.2+0.45) > 0.5 ? (1.0-(1.0-2.0*((_noise_copy.r*0.2+0.45)-0.5))*(1.0-_Roughness)) : (2.0*(_noise_copy.r*0.2+0.45)*_Roughness) )); // Convert roughness to gloss
                 float specPow = exp2( gloss * 10.0+1.0);
 ////// Specular:
                 float NdotL = max(0, dot( normalDirection, lightDirection ));
                 float LdotH = max(0.0,dot(lightDirection, halfDirection));
-                float node_7483_ang = node_417.g;
+                float node_7483_ang = node_2015.g;
                 float node_7483_spd = 0.01;
                 float node_7483_cos = cos(node_7483_spd*node_7483_ang);
                 float node_7483_sin = sin(node_7483_spd*node_7483_ang);
@@ -330,7 +330,7 @@ Shader "Shader Forge/pbr_crystal" {
                 float2 node_5159 = (i.uv0 + float2(node_5159_tx, node_5159_ty)) * node_5159_tc_rcp;
                 float2 node_7483 = (mul(node_5159-node_7483_piv,float2x2( node_7483_cos, -node_7483_sin, node_7483_sin, node_7483_cos))+node_7483_piv);
                 float4 _facets_var = tex2D(_facets,TRANSFORM_TEX(node_7483, _facets));
-                float2 node_4303 = (_facets_var.rgb.rg+node_417.g*float2(0.01,0.02));
+                float2 node_4303 = (_facets_var.rgb.rg+node_2015.g*float2(0.01,0.02));
                 float4 node_3372 = tex2D(_Noise,TRANSFORM_TEX(node_4303, _Noise));
                 float3 diffuseColor = (_Color.rgb*node_3372.g); // Need this for specular when using metallic
                 float specularMonochrome;
@@ -435,8 +435,8 @@ Shader "Shader Forge/pbr_crystal" {
                 float node_9473_d = node_9473_q.x - min(node_9473_q.w, node_9473_q.y);
                 float node_9473_e = 1.0e-10;
                 float3 node_9473 = float3(abs(node_9473_q.z + (node_9473_q.w - node_9473_q.y) / (6.0 * node_9473_d + node_9473_e)), node_9473_d / (node_9473_q.x + node_9473_e), node_9473_q.x);;
-                float4 node_4218 = _Time + _TimeEditor;
-                float node_7483_ang = node_4218.g;
+                float4 node_5407 = _Time + _TimeEditor;
+                float node_7483_ang = node_5407.g;
                 float node_7483_spd = 0.01;
                 float node_7483_cos = cos(node_7483_spd*node_7483_ang);
                 float node_7483_sin = sin(node_7483_spd*node_7483_ang);
@@ -449,7 +449,7 @@ Shader "Shader Forge/pbr_crystal" {
                 float2 node_5159 = (i.uv0 + float2(node_5159_tx, node_5159_ty)) * node_5159_tc_rcp;
                 float2 node_7483 = (mul(node_5159-node_7483_piv,float2x2( node_7483_cos, -node_7483_sin, node_7483_sin, node_7483_cos))+node_7483_piv);
                 float4 _facets_var = tex2D(_facets,TRANSFORM_TEX(node_7483, _facets));
-                float2 node_4303 = (_facets_var.rgb.rg+node_4218.g*float2(0.01,0.02));
+                float2 node_4303 = (_facets_var.rgb.rg+node_5407.g*float2(0.01,0.02));
                 float4 node_3372 = tex2D(_Noise,TRANSFORM_TEX(node_4303, _Noise));
                 float3 node_7636 = ((lerp(float3(1,1,1),saturate(3.0*abs(1.0-2.0*frac((node_9473.r+(_coloroffset*node_3372.r))+float3(0.0,-1.0/3.0,1.0/3.0)))-1),node_9473.r)*node_9473.r)*(1.0 - i.uv0.g)*(1.0 - (1.0-max(0,dot(normalDirection, viewDirection)))));
                 o.Emission = node_7636;
@@ -457,7 +457,7 @@ Shader "Shader Forge/pbr_crystal" {
                 float3 diffColor = (_Color.rgb*node_3372.g);
                 float specularMonochrome;
                 float3 specColor;
-                float2 node_3938 = ((i.uv0+node_4218.g*float2(0,0))*float2(2,1));
+                float2 node_3938 = ((i.uv0+node_5407.g*float2(0,0))*float2(2,1));
                 float4 _noise_copy = tex2D(_Noise,TRANSFORM_TEX(node_3938, _Noise));
                 diffColor = DiffuseAndSpecularFromMetallic( diffColor, saturate(( (_noise_copy.g*0.2+0.45) > 0.5 ? (1.0-(1.0-2.0*((_noise_copy.g*0.2+0.45)-0.5))*(1.0-_Metallic)) : (2.0*(_noise_copy.g*0.2+0.45)*_Metallic) )), specColor, specularMonochrome );
                 float roughness = saturate(( (_noise_copy.r*0.2+0.45) > 0.5 ? (1.0-(1.0-2.0*((_noise_copy.r*0.2+0.45)-0.5))*(1.0-_Roughness)) : (2.0*(_noise_copy.r*0.2+0.45)*_Roughness) ));
