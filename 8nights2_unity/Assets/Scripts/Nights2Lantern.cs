@@ -19,6 +19,16 @@ public class Nights2Lantern : MonoBehaviour
         SetAnimatorBool(LanternOnBool, false);
     }
 
+    void OnEnable()
+    {
+       Debug.Log("Lantern enabled");
+    }
+
+    void OnDisable()
+    {
+       Debug.Log("Lantern disabled");
+    }
+
     void SetAnimatorBool(string boolName, bool val)
     {
         if (_animator != null)

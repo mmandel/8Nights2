@@ -103,7 +103,7 @@ public class Nights2CamMgr : MonoBehaviour
         if (flyCam != null)
             flyCam.enabled = !IsVRActive();
 
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Y"))
             SwapControllers();
 	}
 }

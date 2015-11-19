@@ -336,12 +336,12 @@ public class Nights2TorchPlayer : MonoBehaviour
                     else
                     {
                         //if we're off the path long enough, we fail the player
-                        float timeOffPath = (Time.time - _outsidePathStartTime);
+                        /*float timeOffPath = (Time.time - _outsidePathStartTime);
                         if (timeOffPath >= OutsidePathFailureSecs)
                         {
                             _outsidePathStartTime = -1.0f;
                             Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.FlameExtinguished);
-                        }
+                        }*/
                     }
                 }
             }

@@ -328,12 +328,6 @@ public class Nights2Mgr : MonoBehaviour
                 SetState(Nights2State.GettingReady);
         }
 
-        //button cheat for swapping lantern  + torch
-        if (Input.GetButtonDown("Y"))
-        {
-            Nights2CamMgr.Instance.SwapControllers();
-        }
-
         //'r' key resets everything
         if (Input.GetKeyDown(KeyCode.R))
             ResetInstallation();
