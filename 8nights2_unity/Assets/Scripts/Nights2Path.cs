@@ -63,7 +63,7 @@ public class Nights2Path : MonoBehaviour
     public Vector3 GetPortalDir(PortalType portal)
     {
         if (portal == PortalType.EntrancePortal)
-            return GetSegmentDirection(_entrancePortalSegment);
+            return GetSegmentDirection(_entrancePortalSegment-1);
         else if (portal == PortalType.EntrancePortal2)
             return GetSegmentDirection(_entrancePortal2Segment);
         else

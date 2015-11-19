@@ -6,7 +6,7 @@
 Shader "FX/Portal" {
 Properties {
 	_Color("Fallback color", Color) = (0, 0, 0, 1)
-	_Brightness("Brightness", Float)= .25
+	_Brightness("Brightness", Float)= .4
 	_PortalTex("Rendered Portal", 2D) = "" {}
 	_Scale("Scale center, mode, scale", vector) = (
 		//x/y center of scaling

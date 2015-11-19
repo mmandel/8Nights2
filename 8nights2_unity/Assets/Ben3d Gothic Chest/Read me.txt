@@ -1,0 +1,18 @@
+Gothic chest with a magic horn popping out.
+
+Contains 5 prefabs. Using 3 materials.
+
+Chest: 1430 tris
+Low Poly Chest: 242 tris
+Key: 880 tris
+Horn: 620 tris
+
+Specifications:
+
+Openning Animation (drag in the scene and press play)
+
+Specular Bump material with Normal, Diffuse and Specular textures.
+
+Textures: 1024, 512 and 256 px
+
+
