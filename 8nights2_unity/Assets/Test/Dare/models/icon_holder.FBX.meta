@@ -1,58 +1,22 @@
 fileFormatVersion: 2
-guid: e7a4712601acbf24b97e28b9bac05471
-timeCreated: 1447904454
+guid: 5f74bfceb10a5554f8cf7ccfa7009572
+timeCreated: 1447987004
 licenseType: Pro
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: lantern_glass
-    100002: lantern_handle
-    100004: lantern_wood
-    100006: Torch_crystal
-    100008: //RootNode
-    100010: torch_cuff
-    100012: torch_handle
-    100014: torch_trans
-    100016: icon_holder_trans
-    100018: icon_hoop
-    100020: icon_plane
-    100022: lantern_trans
-    400000: lantern_glass
-    400002: lantern_handle
-    400004: lantern_wood
-    400006: Torch_crystal
-    400008: //RootNode
-    400010: torch_cuff
-    400012: torch_handle
-    400014: torch_trans
-    400016: icon_holder_trans
-    400018: icon_hoop
-    400020: icon_plane
-    400022: lantern_trans
-    2300000: lantern_glass
-    2300002: lantern_handle
-    2300004: lantern_wood
-    2300006: Torch_crystal
-    2300008: torch_cuff
-    2300010: torch_handle
-    2300012: icon_hoop
-    2300014: icon_plane
-    3300000: lantern_glass
-    3300002: lantern_handle
-    3300004: lantern_wood
-    3300006: Torch_crystal
-    3300008: torch_cuff
-    3300010: torch_handle
-    3300012: icon_hoop
-    3300014: icon_plane
-    4300000: torch_handle
-    4300002: torch_cuff
-    4300004: Torch_crystal
-    4300006: lantern_wood
-    4300008: lantern_glass
-    4300010: lantern_handle
-    4300012: icon_plane
-    4300014: icon_hoop
+    100000: //RootNode
+    100002: icon_hoop
+    100004: icon_plane
+    400000: //RootNode
+    400002: icon_hoop
+    400004: icon_plane
+    2300000: icon_hoop
+    2300002: icon_plane
+    3300000: icon_hoop
+    3300002: icon_plane
+    4300000: icon_plane
+    4300002: icon_hoop
     9500000: //RootNode
   materials:
     importMaterials: 1

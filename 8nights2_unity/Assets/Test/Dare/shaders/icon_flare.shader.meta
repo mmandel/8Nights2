@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 7624bfec8c3408348a498c21419f6ae6
+timeCreated: 1447991533
+licenseType: Pro
+ShaderImporter:
+  defaultTextures:
+  - _flaretex: {fileID: 2800000, guid: 1a83f200746603247acf9762ff97e7d4, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
