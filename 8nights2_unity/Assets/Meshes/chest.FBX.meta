@@ -1,0 +1,127 @@
+fileFormatVersion: 2
+guid: 978f10db45c04ff4388eb591e6244db3
+timeCreated: 1447995098
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: chest
+    100004: chest_lid
+    100006: Group11895
+    100008: Group44002
+    100010: Group44003
+    100012: Group44004
+    100014: chest 1
+    100016: lock01_body
+    100018: lock01_loop
+    100020: lock02_body
+    100022: lock02_loop
+    400000: //RootNode
+    400002: chest
+    400004: chest_lid
+    400006: Group11895
+    400008: Group44002
+    400010: Group44003
+    400012: Group44004
+    400014: chest 1
+    400016: lock01_body
+    400018: lock01_loop
+    400020: lock02_body
+    400022: lock02_loop
+    2300000: chest
+    2300002: chest_lid
+    2300004: Group11895
+    2300006: Group44002
+    2300008: Group44003
+    2300010: Group44004
+    2300012: chest 1
+    2300014: lock01_body
+    2300016: lock01_loop
+    2300018: lock02_body
+    2300020: lock02_loop
+    3300000: chest
+    3300002: chest_lid
+    3300004: Group11895
+    3300006: Group44002
+    3300008: Group44003
+    3300010: Group44004
+    3300012: chest 1
+    3300014: lock01_body
+    3300016: lock01_loop
+    3300018: lock02_body
+    3300020: lock02_loop
+    4300000: chest
+    4300002: Group11895
+    4300004: Group44002
+    4300006: chest_lid
+    4300008: Group44003
+    4300010: Group44004
+    4300012: lock02_loop
+    4300014: lock01_loop
+    4300016: lock01_body
+    4300018: lock02_body
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
