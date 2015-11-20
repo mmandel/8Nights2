@@ -6,6 +6,13 @@ public class Nights2Shamash : MonoBehaviour
     public Transform TunnelPivot; //turn this towards the player to make the tunnel aim at him/her
     public float MinTimeBeforeClose = 2.0f; //wait this many seconds before you allow the player to be close, this is to keep the tunnel from going away too fast when coming from a close vantage point
     public float TunnelPivotSpeed = 30.0f;
+
+    [Space(10)]
+
+   //TODO
+    public Transform TorchIconSpot;
+    public GameObject TorchIconPrefab;
+
     [Space(10)]
 
     public string ShamashOnBool = "on";
@@ -25,6 +32,8 @@ public class Nights2Shamash : MonoBehaviour
 
     private Quaternion _defaultTunnelRot = Quaternion.identity;
     private Nights2Spot _closestSpot = null;
+
+    private Nights2Icon _torchIcon;
 
     void Awake()
     {
@@ -80,9 +89,10 @@ public class Nights2Shamash : MonoBehaviour
 
     bool ShamashIsOn()
     {
-        return (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingShamash) ||
+       return _playerIsClose &&  //we only show shamash ones lantern reveals it
+            ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingShamash) ||
             (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash) ||
-            (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.FlameExtinguished);
+            (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.FlameExtinguished));
     }
 	
 
@@ -96,7 +106,7 @@ public class Nights2Shamash : MonoBehaviour
         bool cantBeClose = (_closeTimerLeft >= 0.0f);
 
         SetAnimatorBool(ShamashHiddenBool, (curNightsState != Nights2Mgr.Nights2State.SeekingShamash) && (curNightsState != Nights2Mgr.Nights2State.NearShamash));
-        SetAnimatorBool(ShamashOnBool, ShamashIsOn());
+        SetAnimatorBool(ShamashOnBool, ShamashIsOn()); 
         SetAnimatorBool(PlayerCloseBool, _playerIsClose && !cantBeClose);
         SetAnimatorBool(FlameExtinguishedBool, (curNightsState == Nights2Mgr.Nights2State.FlameExtinguished));
 

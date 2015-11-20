@@ -20,7 +20,7 @@ public class Nights2NearShamash : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         //see if the player is near
-        if ((other != null) && (other.GetComponent<Nights2TorchPlayer>() != null) || (other.GetComponent<Nights2Torch>() != null))
+        if ((other != null) && (other.GetComponent<Nights2Lantern>() != null))
         {
             //Debug.Log("PLAYER NEAR SHAMASH!!");
 
