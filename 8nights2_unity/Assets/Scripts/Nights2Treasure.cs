@@ -128,6 +128,12 @@ public class Nights2Treasure : MonoBehaviour
       {
          _animator.SetTrigger(UnlockedMagicTrigger);
 
+         //transition lantern + torch icons out
+         if (_lanternIcon != null)
+             _lanternIcon.Destroy();
+         if (_torchIcon != null)
+             _torchIcon.Destroy();
+
          //make magic fly up and then at torch, using PD tracker
          if (_magicTracker != null)
          {

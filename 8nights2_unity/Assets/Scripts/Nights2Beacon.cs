@@ -14,12 +14,20 @@ public class Nights2Beacon : MonoBehaviour
     public string IsNextBool = "is_next";
     public string PlayerCloseBool = "is_close";
 
+    [Space(10)]
+
+    //torch icon stuff
+    public Transform TorchIconSpot;
+    public GameObject TorchIconPrefab;
+
     private bool _isNextBeacon = false;
     private bool _isLit = false;
     private int _beaconIdx = -1;
     private Animator _animator = null;
     private bool _playerIsNear = false;
     private Nights2Spot _closestSpot = null;
+
+    private Nights2Icon _torchIcon;
 
     public bool IsLit() { return _isLit; } 
     public void SetLit(bool b)
@@ -68,6 +76,33 @@ public class Nights2Beacon : MonoBehaviour
             _animator.SetBool(boolName, val);
     }
 
+    void SpawnIcon()
+    {
+
+        //spawn lantern icon
+        if ((TorchIconPrefab != null) && (TorchIconSpot != null))
+        {
+            GameObject spawned = Instantiate(TorchIconPrefab) as GameObject;
+            if (spawned != null)
+            {
+                _torchIcon = spawned.GetComponent<Nights2Icon>();
+                spawned.transform.parent = TorchIconSpot;
+                spawned.transform.localPosition = Vector3.zero;
+                spawned.transform.localRotation = Quaternion.identity;
+            }
+        }
+    }
+
+    void DestroyIcon()
+    {
+        if (_torchIcon != null)
+        {
+            _torchIcon.Destroy();
+            _torchIcon = null;
+        }
+    }
+
+
     bool IsHiddenInWorld()
     {
         Nights2TorchPlayer.PortalState curPortalState = Nights2TorchPlayer.Instance.GetPortalState();
@@ -83,13 +118,30 @@ public class Nights2Beacon : MonoBehaviour
 
 	void Update () 
     {
+
         Nights2Mgr.Nights2State curState = Nights2Mgr.Instance.GetState();
 
         SetAnimatorBool(IsHiddenBool, IsHiddenInWorld());
         SetAnimatorBool(IsNextBool, _isNextBeacon && IsInSeekingState());
-        SetAnimatorBool(PlayerCloseBool, _playerIsNear);
+        //bool showNearState = _playerIsNear;
+        //once we show the beacon in near state, just leave it there till the task is completed
+        bool showNearState = IsNext() && (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon);
+        SetAnimatorBool(PlayerCloseBool, showNearState);
+
         if (_playerIsNear && (curState == Nights2Mgr.Nights2State.SeekingBeacon) && !Nights2TorchPlayer.Instance.IsPortalShowing())
             Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.NearBeacon);
+
+        //light beacon if torch has been placed in icon
+        if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon != null) && _torchIcon.RequiredPropIsNear())
+        {
+            TriggerTorchLitBeacon();
+        }
+
+        //to make sure icon is created/destroyed when cheating
+        if (IsNext() && (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon == null))
+            SpawnIcon();
+        else if ((Nights2Mgr.Instance.GetState() != Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon != null))
+            DestroyIcon();
 	}
 
     bool IsInSeekingState()
@@ -98,7 +150,8 @@ public class Nights2Beacon : MonoBehaviour
                              (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon);
     }
 
-    void OnTriggerEnter(Collider other)
+    //See Update(), lighting is handled by torch icon now...
+    /*void OnTriggerEnter(Collider other)
     {
         if (_isLit)
             return;
@@ -112,7 +165,7 @@ public class Nights2Beacon : MonoBehaviour
                TriggerTorchLitBeacon();
             }
         }
-    }
+    }*/
 
     public void TriggerTorchLitBeacon()
     {

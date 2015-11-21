@@ -7,7 +7,9 @@ public class Nights2Icon : MonoBehaviour
 
    [Space(10)]
 
-   public string PropNearbyBool = "prop_is_near"; //is required prop nearby
+   public string PropNearbyBool = ""; //is required prop nearby
+   public string ExitBool = ""; //trigger exit anim
+   public float DestroyDelay = 1.0f; //how long to wait for exit anim to play before destroying
 
    public enum PropTypes
    {
@@ -23,10 +25,29 @@ public class Nights2Icon : MonoBehaviour
       return _requiredPropNear;
    }
 
+   public void Destroy()
+   {
+       StartCoroutine(DelayedExit());
+   }
+
+   IEnumerator DelayedExit()
+   {
+       SetExitBool(true);
+       yield return new WaitForSeconds(DestroyDelay);
+       DestroyObject(this.gameObject);
+   }
+
 	void Start () 
    {
       _animator = gameObject.GetComponent<Animator>();
+      SetExitBool(false);
 	}
+
+    void SetExitBool(bool b)
+    {
+        if ((_animator != null) && (ExitBool.Length > 0))
+            _animator.SetBool(ExitBool, b);
+    }
 
    void Update()
    {
@@ -39,11 +60,11 @@ public class Nights2Icon : MonoBehaviour
       if(other == null)
          return false;
 
-      if (RequiredProp == PropTypes.Lantern)
+      if (RequiredProp == PropTypes.Torch)
       {
          return (other.GetComponent<Nights2TorchPlayer>() != null) || (other.GetComponent<Nights2Torch>() != null);
       }
-      else if (RequiredProp == PropTypes.Torch)
+      else if (RequiredProp == PropTypes.Lantern)
       {
          return (other.GetComponent<Nights2Lantern>() != null);
       }

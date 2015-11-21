@@ -9,7 +9,7 @@ public class Nights2Shamash : MonoBehaviour
 
     [Space(10)]
 
-   //TODO
+    //torch icon stuff
     public Transform TorchIconSpot;
     public GameObject TorchIconPrefab;
 
@@ -59,6 +59,32 @@ public class Nights2Shamash : MonoBehaviour
             Nights2Mgr.Instance.OnStateChanged += OnNights2StateChanged;
 	}
 
+   void SpawnIcon()
+   {
+
+      //spawn lantern icon
+      if ((TorchIconPrefab != null) && (TorchIconSpot != null))
+      {
+         GameObject spawned = Instantiate(TorchIconPrefab) as GameObject;
+         if (spawned != null)
+         {
+            _torchIcon = spawned.GetComponent<Nights2Icon>();
+            spawned.transform.parent = TorchIconSpot;
+            spawned.transform.localPosition = Vector3.zero;
+            spawned.transform.localRotation = Quaternion.identity;
+         }
+      }
+   }
+
+   void DestroyIcon()
+   {
+      if (_torchIcon != null)
+      {
+          _torchIcon.Destroy();
+         _torchIcon = null;
+      }
+   }
+
     public Nights2Spot ClosestSpot()
     {
         return _closestSpot;
@@ -94,30 +120,42 @@ public class Nights2Shamash : MonoBehaviour
             (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash) ||
             (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.FlameExtinguished));
     }
-	
 
-	void Update () 
+
+    void Update()
     {
 
-        Nights2Mgr.Nights2State curNightsState = Nights2Mgr.Instance.GetState();
+       Nights2Mgr.Nights2State curNightsState = Nights2Mgr.Instance.GetState();
 
-        if(_closeTimerLeft >= 0)
-            _closeTimerLeft -= Time.deltaTime;
-        bool cantBeClose = (_closeTimerLeft >= 0.0f);
+       if (_closeTimerLeft >= 0)
+          _closeTimerLeft -= Time.deltaTime;
+       bool cantBeClose = (_closeTimerLeft >= 0.0f);
 
-        SetAnimatorBool(ShamashHiddenBool, (curNightsState != Nights2Mgr.Nights2State.SeekingShamash) && (curNightsState != Nights2Mgr.Nights2State.NearShamash));
-        SetAnimatorBool(ShamashOnBool, ShamashIsOn()); 
-        SetAnimatorBool(PlayerCloseBool, _playerIsClose && !cantBeClose);
-        SetAnimatorBool(FlameExtinguishedBool, (curNightsState == Nights2Mgr.Nights2State.FlameExtinguished));
+       SetAnimatorBool(ShamashHiddenBool, (curNightsState != Nights2Mgr.Nights2State.SeekingShamash) && (curNightsState != Nights2Mgr.Nights2State.NearShamash));
+       SetAnimatorBool(ShamashOnBool, ShamashIsOn());
+       SetAnimatorBool(PlayerCloseBool, _playerIsClose && !cantBeClose);
+       SetAnimatorBool(FlameExtinguishedBool, (curNightsState == Nights2Mgr.Nights2State.FlameExtinguished));
 
-        //turn tunnel slowly towards player so they never clip into it
-        if ((TunnelPivot != null) && ((curNightsState == Nights2Mgr.Nights2State.SeekingShamash) || (curNightsState == Nights2Mgr.Nights2State.FlameExtinguished)))
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(GetTunnelTarget() - TunnelPivot.position);
-            targetRotation *= Quaternion.Euler(Vector3.up * 180.0f); //to fix error in data setup, where lookat will be 180 degrees off
+       //turn tunnel slowly towards player so they never clip into it
+       if ((TunnelPivot != null) && ((curNightsState == Nights2Mgr.Nights2State.SeekingShamash) || (curNightsState == Nights2Mgr.Nights2State.FlameExtinguished)))
+       {
+          Quaternion targetRotation = Quaternion.LookRotation(GetTunnelTarget() - TunnelPivot.position);
+          targetRotation *= Quaternion.Euler(Vector3.up * 180.0f); //to fix error in data setup, where lookat will be 180 degrees off
 
-            TunnelPivot.rotation = Quaternion.Slerp(TunnelPivot.rotation, targetRotation, TunnelPivotSpeed * Time.deltaTime);
-        }
+          TunnelPivot.rotation = Quaternion.Slerp(TunnelPivot.rotation, targetRotation, TunnelPivotSpeed * Time.deltaTime);
+       }
+
+       if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash) && (_torchIcon != null) && _torchIcon.RequiredPropIsNear())
+       {
+          Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.SeekingBeacon);
+          //DestroyIcon(); //(happens in below...)
+       }
+
+       //to make sure icon is created/destroyed when cheating
+       if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash) && (_torchIcon == null))
+          SpawnIcon();
+       else if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) && (_torchIcon != null))
+          DestroyIcon();
     }
 
     void SetAnimatorBool(string boolName, bool val)
@@ -126,7 +164,8 @@ public class Nights2Shamash : MonoBehaviour
             _animator.SetBool(boolName, val);
     }
 
-    void OnTriggerEnter(Collider other)
+   //MMANDEL: we no have the icon tell us when the torch is near (see Update())
+    /*void OnTriggerEnter(Collider other)
     {
         //see if the torch is colliding with us
         if ((other != null) && other.GetComponent<Nights2Torch>() != null)
@@ -139,7 +178,7 @@ public class Nights2Shamash : MonoBehaviour
                 Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.SeekingBeacon);
             }
         }
-    }
+    }*/
 
     //Nights2NearShamash will call this when the player is close
     public void NotifyPlayerNearby()
@@ -148,7 +187,10 @@ public class Nights2Shamash : MonoBehaviour
 
         _playerIsClose = true;
         if (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingShamash)
-            Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.NearShamash);
+        {
+           //SpawnIcon(); (happens in Update())
+           Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.NearShamash);
+        }
     }
     public void NotifyPlayerNotNearby()
     {
