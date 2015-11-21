@@ -5,7 +5,7 @@
             <value>CaveWorldTheme</value>
         </property>
         <property name="outputFormat">
-            <value>1</value>
+            <value>2</value>
         </property>
         <relationship name="mixer">
             <destination>{2590e3b3-58ce-4c68-8417-d886c9f5299a}</destination>
@@ -75,6 +75,12 @@
         </relationship>
     </object>
     <object class="EventMixerMaster" id="{15f47974-a421-4a79-8364-68644d026d0e}">
+        <property name="overridingInputFormat">
+            <value>2</value>
+        </property>
+        <property name="inputFormatOverridden">
+            <value>true</value>
+        </property>
         <relationship name="effectChain">
             <destination>{d3e89201-0a93-43e4-b5d8-8cc6d6885c78}</destination>
         </relationship>
@@ -134,24 +140,80 @@
         <relationship name="effects">
             <destination>{a3ca693e-9653-4374-9d72-c994ee7db477}</destination>
             <destination>{5ef7024b-5393-42c2-93ce-1636faf10e9b}</destination>
+            <destination>{9486abaf-8f62-4def-a30c-4d5155ece371}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{d6761615-4d63-4acc-95ce-160ec6f344e0}"/>
+    <object class="MixerBusPanner" id="{d6761615-4d63-4acc-95ce-160ec6f344e0}">
+        <property name="surroundPanDirection">
+            <value>-170.626205</value>
+        </property>
+        <property name="surroundLFELevel">
+            <value>1</value>
+        </property>
+        <property name="surroundStereoSeparation">
+            <value>-21.2393112</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{b58c35f1-2a81-42ad-bd9b-387dd2a8bf36}"/>
     <object class="MixerBusEffectChain" id="{5a67ea54-c46e-48ba-8220-27281d274ce1}">
         <relationship name="effects">
             <destination>{bc5f11bb-e07d-4fa1-b50b-a3e4e078a676}</destination>
+            <destination>{e983e298-c883-42f3-8890-66a8549ba785}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{053e2fc0-b17e-42fe-aa1c-402292f2c410}"/>
+    <object class="MixerBusPanner" id="{053e2fc0-b17e-42fe-aa1c-402292f2c410}">
+        <property name="surroundPanDirection">
+            <value>45</value>
+        </property>
+        <property name="surroundStereoSeparation">
+            <value>0</value>
+        </property>
+        <property name="surroundStereoAxis">
+            <value>-29.744873</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{a3ca693e-9653-4374-9d72-c994ee7db477}"/>
     <object class="MixerSend" id="{5ef7024b-5393-42c2-93ce-1636faf10e9b}">
         <property name="inputFormat">
-            <value>1</value>
+            <value>2</value>
         </property>
         <relationship name="mixerReturn">
             <destination>{96a16132-1a06-4a47-8249-2fbfd063a4c7}</destination>
         </relationship>
     </object>
+    <object class="ChannelMixEffect" id="{9486abaf-8f62-4def-a30c-4d5155ece371}">
+        <property name="gain00">
+            <value>-0.5</value>
+        </property>
+        <property name="gain04">
+            <value>1</value>
+        </property>
+        <property name="gain06">
+            <value>0.5</value>
+        </property>
+        <property name="gain07">
+            <value>0.5</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{bc5f11bb-e07d-4fa1-b50b-a3e4e078a676}"/>
+    <object class="ChannelMixEffect" id="{e983e298-c883-42f3-8890-66a8549ba785}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+        <property name="gain01">
+            <value>-0.5</value>
+        </property>
+    </object>
 </objects>

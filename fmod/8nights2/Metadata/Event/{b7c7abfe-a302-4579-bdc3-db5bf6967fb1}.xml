@@ -5,7 +5,7 @@
             <value>PortalActivated</value>
         </property>
         <property name="outputFormat">
-            <value>1</value>
+            <value>2</value>
         </property>
         <relationship name="mixer">
             <destination>{c3a234a0-b84f-4265-ac45-f6ab235ef360}</destination>
@@ -128,17 +128,30 @@
     <object class="MixerBusEffectChain" id="{748cefca-e519-4934-a9f2-c762d0433b33}">
         <relationship name="effects">
             <destination>{884f5cc5-0e39-491f-8fc7-7c722cd9cab0}</destination>
+            <destination>{10d26701-3fb6-4bac-988b-94b8a6a186f3}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{1c2c8e43-1e30-49b1-a1c0-7a5e0d30a262}"/>
+    <object class="MixerBusPanner" id="{1c2c8e43-1e30-49b1-a1c0-7a5e0d30a262}">
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{8a4c651f-3de0-43e7-93dd-5f5df3676128}"/>
     <object class="MixerSend" id="{2f74dd67-0a2d-4fb0-9955-35a4979bedf8}">
         <property name="inputFormat">
-            <value>1</value>
+            <value>2</value>
         </property>
         <relationship name="mixerReturn">
             <destination>{96a16132-1a06-4a47-8249-2fbfd063a4c7}</destination>
         </relationship>
     </object>
     <object class="MixerBusFader" id="{884f5cc5-0e39-491f-8fc7-7c722cd9cab0}"/>
+    <object class="ChannelMixEffect" id="{10d26701-3fb6-4bac-988b-94b8a6a186f3}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
 </objects>

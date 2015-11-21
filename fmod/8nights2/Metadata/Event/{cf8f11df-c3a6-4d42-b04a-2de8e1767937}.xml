@@ -133,8 +133,8 @@
     <object class="MixerBusEffectChain" id="{1952db4b-4d03-4799-924d-eebece53c238}">
         <relationship name="effects">
             <destination>{2d768646-c7ce-43b1-bdde-0e72a4107db4}</destination>
-            <destination>{566ede2f-d9f9-4737-9974-3609bd533293}</destination>
             <destination>{8bf2b908-1ca2-4313-8c9b-5bbb5a100db9}</destination>
+            <destination>{e65d6dd8-5170-4539-9cfc-91a78f743a55}</destination>
         </relationship>
     </object>
     <object class="MixerBusPanner" id="{76bb879e-7477-4c2a-9adb-4cfe636a4a80}"/>
@@ -142,11 +142,21 @@
     <object class="MixerBusEffectChain" id="{4ef4d19a-58a2-4764-9431-0287ef888c1f}">
         <relationship name="effects">
             <destination>{8decc5f2-bc61-4ffe-b56f-b2fad96fed1b}</destination>
+            <destination>{dfb0d3fe-7fcd-46e6-b4bf-bf896bba5b27}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{dbd0126e-6e0d-4263-8a6c-f28ab9ad1598}"/>
+    <object class="MixerBusPanner" id="{dbd0126e-6e0d-4263-8a6c-f28ab9ad1598}">
+        <property name="surroundStereoSeparation">
+            <value>0</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{2d768646-c7ce-43b1-bdde-0e72a4107db4}"/>
-    <object class="SpatialiserEffect" id="{566ede2f-d9f9-4737-9974-3609bd533293}"/>
     <object class="MixerSend" id="{8bf2b908-1ca2-4313-8c9b-5bbb5a100db9}">
         <property name="inputFormat">
             <value>2</value>
@@ -155,5 +165,11 @@
             <destination>{96a16132-1a06-4a47-8249-2fbfd063a4c7}</destination>
         </relationship>
     </object>
+    <object class="ChannelMixEffect" id="{e65d6dd8-5170-4539-9cfc-91a78f743a55}"/>
     <object class="MixerBusFader" id="{8decc5f2-bc61-4ffe-b56f-b2fad96fed1b}"/>
+    <object class="ChannelMixEffect" id="{dfb0d3fe-7fcd-46e6-b4bf-bf896bba5b27}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
 </objects>

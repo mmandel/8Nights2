@@ -174,6 +174,9 @@
             <destination>{c08ce7ca-129f-4b22-9893-cc6f07a99fa6}</destination>
             <destination>{5860c40c-ee69-4940-987f-d83f6dc91d2d}</destination>
         </relationship>
+        <relationship name="markers">
+            <destination>{71afc9bc-263a-4373-974b-d244d95c339f}</destination>
+        </relationship>
     </object>
     <object class="GameParameter" id="{f167f3f7-5c8b-4b5a-9d74-f9ef70f3b8dd}">
         <property name="name">
@@ -544,6 +547,20 @@
             <destination>{aad6ade7-2dde-4ceb-bf75-cf2ed601ad68}</destination>
         </relationship>
     </object>
+    <object class="LoopRegion" id="{71afc9bc-263a-4373-974b-d244d95c339f}">
+        <property name="position">
+            <value>0</value>
+        </property>
+        <property name="length">
+            <value>242.5469387755102</value>
+        </property>
+        <relationship name="timeline">
+            <destination>{38ea3477-2596-47cb-9433-e5bd06517e3a}</destination>
+        </relationship>
+        <relationship name="markerTrack">
+            <destination>{ead9b916-8494-49af-94bb-88268fb17bf4}</destination>
+        </relationship>
+    </object>
     <object class="AutomationCurve" id="{4aecafaa-2fea-48bd-bfb0-ca02a309e56a}">
         <relationship name="automationPoints">
             <destination>{ac444523-5475-4e9e-aa46-1e1d407ee69e}</destination>
@@ -595,8 +612,8 @@
     <object class="MixerBusEffectChain" id="{65259826-8e1e-4a8b-bd00-ab51ed264c95}">
         <relationship name="effects">
             <destination>{45a82f7b-2f0c-42bc-9bcc-88ba1d8d485d}</destination>
-            <destination>{2e3dfbc4-4055-4aad-a19c-3b25e9af5fc4}</destination>
             <destination>{d2345b69-6b5d-4dc8-8946-c6cff309d2a5}</destination>
+            <destination>{47cb3dc1-8b48-4327-aa77-04478fd70205}</destination>
         </relationship>
     </object>
     <object class="MixerBusPanner" id="{c6de3ba8-da47-4ea9-8bad-e8e429151d67}"/>
@@ -604,57 +621,187 @@
     <object class="MixerBusEffectChain" id="{e9164491-6c77-48a1-9ba8-c621e110e929}">
         <relationship name="effects">
             <destination>{236cf2e9-1c21-4276-8c29-53a33bd69223}</destination>
+            <destination>{cb57271f-bebe-4dd6-aff1-afaac6fc2db5}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{255893ff-acf3-4e17-b168-39d33e564311}"/>
+    <object class="MixerBusPanner" id="{255893ff-acf3-4e17-b168-39d33e564311}">
+        <property name="surroundPanExtent">
+            <value>0</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+        <property name="enabledSurroundSpeakers">
+            <value>12</value>
+        </property>
+    </object>
     <object class="MixerBusEffectChain" id="{7a2742aa-b345-493e-be8f-7b9b5905dc26}">
         <relationship name="effects">
             <destination>{d5a4d328-96e5-45ad-b3af-86d24a31588f}</destination>
+            <destination>{b00c8280-7b36-4f6b-9743-3c9aa8aca90b}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{658ad3ff-d9e8-4491-aaeb-a1e2f4b377f9}"/>
+    <object class="MixerBusPanner" id="{658ad3ff-d9e8-4491-aaeb-a1e2f4b377f9}">
+        <property name="surroundPanDirection">
+            <value>30</value>
+        </property>
+        <property name="surroundPanExtent">
+            <value>0</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+        <property name="enabledSurroundSpeakers">
+            <value>10</value>
+        </property>
+    </object>
     <object class="MixerBusEffectChain" id="{c0fe9c76-2877-4ba9-bcfd-d29debeac3be}">
         <relationship name="effects">
             <destination>{54def03b-08d2-4430-ac2e-91ad103f23fd}</destination>
+            <destination>{4e6ca88a-2f93-43f3-9ad4-2fd38333e2aa}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{06b3dd5a-f8bc-4184-806d-0a460b2eaf2e}"/>
+    <object class="MixerBusPanner" id="{06b3dd5a-f8bc-4184-806d-0a460b2eaf2e}">
+        <property name="surroundPanDirection">
+            <value>90</value>
+        </property>
+        <property name="surroundPanExtent">
+            <value>0</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+        <property name="enabledSurroundSpeakers">
+            <value>40</value>
+        </property>
+    </object>
     <object class="MixerBusEffectChain" id="{e7b3c512-2e71-496b-bb7c-4e3c2861abc6}">
         <relationship name="effects">
             <destination>{ac354a52-4e15-4436-a459-20cde48b1eec}</destination>
+            <destination>{a95691a3-ae1f-467a-b83e-90d55b4df7b3}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{a9dccdf6-9961-4786-88d1-427f62683930}"/>
+    <object class="MixerBusPanner" id="{a9dccdf6-9961-4786-88d1-427f62683930}">
+        <property name="surroundPanDirection">
+            <value>149.999985</value>
+        </property>
+        <property name="surroundPanExtent">
+            <value>0</value>
+        </property>
+        <property name="surroundStereoSeparation">
+            <value>0</value>
+        </property>
+        <property name="surroundStereoAxis">
+            <value>150.524109</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+        <property name="enabledSurroundSpeakers">
+            <value>136</value>
+        </property>
+    </object>
     <object class="MixerBusEffectChain" id="{53dad06a-5c20-4b85-84e0-49ef8d2ab392}">
         <relationship name="effects">
             <destination>{0903c7fb-e8e3-4a4e-95a9-c86678d00757}</destination>
+            <destination>{1158f171-d9f9-45cb-bfff-0edefb95f9bb}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{b9d5261e-89e8-453b-8e45-075bddedeb74}"/>
+    <object class="MixerBusPanner" id="{b9d5261e-89e8-453b-8e45-075bddedeb74}">
+        <property name="surroundPanDirection">
+            <value>-148.173157</value>
+        </property>
+        <property name="surroundPanExtent">
+            <value>8.75282288</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+        <property name="enabledSurroundSpeakers">
+            <value>72</value>
+        </property>
+    </object>
     <object class="MixerBusEffectChain" id="{8893b8bf-9846-4c59-a124-102b51d87b9e}">
         <relationship name="effects">
             <destination>{0c95260c-3c4c-406c-b9b8-9058802f6710}</destination>
+            <destination>{73d03f81-7dcc-493f-85b2-9f4ba5a7dd29}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{3843f2ce-d65d-4e86-8163-9d6c7bfe8e3a}"/>
+    <object class="MixerBusPanner" id="{3843f2ce-d65d-4e86-8163-9d6c7bfe8e3a}">
+        <property name="surroundPanDirection">
+            <value>-90</value>
+        </property>
+        <property name="surroundPanExtent">
+            <value>0</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+        <property name="enabledSurroundSpeakers">
+            <value>24</value>
+        </property>
+    </object>
     <object class="MixerBusEffectChain" id="{01ba547c-0589-48ba-a8ba-7cd92a338d93}">
         <relationship name="effects">
             <destination>{c5fd70b2-e1d4-489e-849c-1e1c0f196d49}</destination>
+            <destination>{30ccd388-b737-4219-8753-d3d2e8c03cbe}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{64cc10f5-a581-4428-bb4a-241e228018aa}"/>
+    <object class="MixerBusPanner" id="{64cc10f5-a581-4428-bb4a-241e228018aa}">
+        <property name="surroundPanDirection">
+            <value>-30</value>
+        </property>
+        <property name="surroundPanExtent">
+            <value>0</value>
+        </property>
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+        <property name="enabledSurroundSpeakers">
+            <value>9</value>
+        </property>
+    </object>
     <object class="MixerBusEffectChain" id="{c0a395eb-d52a-4851-bd56-5093840ac4e3}">
         <relationship name="effects">
             <destination>{947f6f08-a818-40ad-9ee0-b166da9c433f}</destination>
+            <destination>{88e6dfec-43a8-4e93-aae2-40d680f8d796}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{1944173d-7cc8-4333-bda3-f500d92c047f}"/>
+    <object class="MixerBusPanner" id="{1944173d-7cc8-4333-bda3-f500d92c047f}">
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+    </object>
     <object class="AutomationPoint" id="{ac444523-5475-4e9e-aa46-1e1d407ee69e}">
         <property name="position">
             <value>0</value>
         </property>
         <property name="value">
-            <value>-36.8800011</value>
+            <value>-80</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{3dedf814-d599-4098-8916-18df6ebdef6d}">
@@ -670,7 +817,7 @@
             <value>0</value>
         </property>
         <property name="value">
-            <value>-36.8800011</value>
+            <value>-80</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{402a84a4-a906-4f44-b3cb-3e356da6a418}">
@@ -678,7 +825,7 @@
             <value>0.99664991624790622</value>
         </property>
         <property name="value">
-            <value>9.99999905</value>
+            <value>0</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{6612f80b-0618-4646-9150-e84ffb6c5bea}">
@@ -686,7 +833,7 @@
             <value>0</value>
         </property>
         <property name="value">
-            <value>-36.8800011</value>
+            <value>-80</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{833677e7-d955-496b-9777-1121e4854ed7}">
@@ -702,7 +849,7 @@
             <value>0</value>
         </property>
         <property name="value">
-            <value>-36.8800011</value>
+            <value>-80</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{ee6a9ab2-1847-4b56-afdc-cd8f7b49baad}">
@@ -718,7 +865,7 @@
             <value>0</value>
         </property>
         <property name="value">
-            <value>-36.8800011</value>
+            <value>-80</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{4a6d944a-160a-420a-b51b-6c0012647121}">
@@ -734,7 +881,7 @@
             <value>0</value>
         </property>
         <property name="value">
-            <value>-36.8800011</value>
+            <value>-80</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{f92a183c-0d74-4c1a-b070-155821a59079}">
@@ -750,7 +897,7 @@
             <value>0</value>
         </property>
         <property name="value">
-            <value>-36.8800011</value>
+            <value>-80</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{8ac0008b-5264-4687-b2df-c766d538cab3}">
@@ -758,7 +905,7 @@
             <value>1</value>
         </property>
         <property name="value">
-            <value>9.99999905</value>
+            <value>9.93999958</value>
         </property>
     </object>
     <object class="AutomationPoint" id="{d219a1e2-b0b1-4869-8254-b720a41bb547}">
@@ -778,7 +925,6 @@
         </property>
     </object>
     <object class="MixerBusFader" id="{45a82f7b-2f0c-42bc-9bcc-88ba1d8d485d}"/>
-    <object class="SpatialiserEffect" id="{2e3dfbc4-4055-4aad-a19c-3b25e9af5fc4}"/>
     <object class="MixerSend" id="{d2345b69-6b5d-4dc8-8946-c6cff309d2a5}">
         <property name="inputFormat">
             <value>2</value>
@@ -787,12 +933,53 @@
             <destination>{96a16132-1a06-4a47-8249-2fbfd063a4c7}</destination>
         </relationship>
     </object>
+    <object class="ChannelMixEffect" id="{47cb3dc1-8b48-4327-aa77-04478fd70205}"/>
     <object class="MixerBusFader" id="{236cf2e9-1c21-4276-8c29-53a33bd69223}"/>
+    <object class="ChannelMixEffect" id="{cb57271f-bebe-4dd6-aff1-afaac6fc2db5}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{d5a4d328-96e5-45ad-b3af-86d24a31588f}"/>
+    <object class="ChannelMixEffect" id="{b00c8280-7b36-4f6b-9743-3c9aa8aca90b}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{54def03b-08d2-4430-ac2e-91ad103f23fd}"/>
+    <object class="ChannelMixEffect" id="{4e6ca88a-2f93-43f3-9ad4-2fd38333e2aa}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{ac354a52-4e15-4436-a459-20cde48b1eec}"/>
+    <object class="ChannelMixEffect" id="{a95691a3-ae1f-467a-b83e-90d55b4df7b3}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{0903c7fb-e8e3-4a4e-95a9-c86678d00757}"/>
+    <object class="ChannelMixEffect" id="{1158f171-d9f9-45cb-bfff-0edefb95f9bb}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{0c95260c-3c4c-406c-b9b8-9058802f6710}"/>
+    <object class="ChannelMixEffect" id="{73d03f81-7dcc-493f-85b2-9f4ba5a7dd29}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{c5fd70b2-e1d4-489e-849c-1e1c0f196d49}"/>
+    <object class="ChannelMixEffect" id="{30ccd388-b737-4219-8753-d3d2e8c03cbe}">
+        <property name="outputGrouping">
+            <value>1</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{947f6f08-a818-40ad-9ee0-b166da9c433f}"/>
+    <object class="ChannelMixEffect" id="{88e6dfec-43a8-4e93-aae2-40d680f8d796}">
+        <property name="outputGrouping">
+            <value>6</value>
+        </property>
+    </object>
 </objects>

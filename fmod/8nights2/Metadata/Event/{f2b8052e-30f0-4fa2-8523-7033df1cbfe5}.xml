@@ -5,7 +5,7 @@
             <value>LightCandleAmbience</value>
         </property>
         <property name="outputFormat">
-            <value>1</value>
+            <value>2</value>
         </property>
         <relationship name="mixer">
             <destination>{71cfe0be-6ea2-4c42-9bfe-b301365a211f}</destination>
@@ -134,6 +134,7 @@
         <relationship name="effects">
             <destination>{c1070a2d-fe70-453d-bfab-848868b90e34}</destination>
             <destination>{fc2b57bd-f00c-4811-9463-ce9b3481a5bf}</destination>
+            <destination>{8fa4bf62-9aa9-48be-a2a6-f5e3f9d142c5}</destination>
         </relationship>
     </object>
     <object class="MixerBusPanner" id="{bd2f7fa2-a5c5-45fe-9314-45926972b567}">
@@ -151,20 +152,28 @@
             <destination>{68919a25-9bdc-43bf-a5bc-b02b1d7ce11c}</destination>
         </relationship>
     </object>
-    <object class="MixerBusPanner" id="{3603171d-be4b-48ed-ad9b-347de9b22a57}"/>
+    <object class="MixerBusPanner" id="{3603171d-be4b-48ed-ad9b-347de9b22a57}">
+        <property name="overridingOutputFormat">
+            <value>2</value>
+        </property>
+        <property name="outputFormatOverridden">
+            <value>true</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{c1070a2d-fe70-453d-bfab-848868b90e34}"/>
     <object class="MixerSend" id="{fc2b57bd-f00c-4811-9463-ce9b3481a5bf}">
         <property name="inputFormat">
-            <value>1</value>
+            <value>2</value>
         </property>
         <relationship name="mixerReturn">
             <destination>{96a16132-1a06-4a47-8249-2fbfd063a4c7}</destination>
         </relationship>
     </object>
+    <object class="ChannelMixEffect" id="{8fa4bf62-9aa9-48be-a2a6-f5e3f9d142c5}"/>
     <object class="MixerBusFader" id="{b081be68-3ad5-44d8-855e-675f3d2ba362}"/>
     <object class="ChannelMixEffect" id="{68919a25-9bdc-43bf-a5bc-b02b1d7ce11c}">
         <property name="outputGrouping">
-            <value>2</value>
+            <value>1</value>
         </property>
     </object>
 </objects>
