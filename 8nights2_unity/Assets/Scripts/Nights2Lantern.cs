@@ -21,12 +21,12 @@ public class Nights2Lantern : MonoBehaviour
 
     void OnEnable()
     {
-       Debug.Log("Lantern enabled");
+       //Debug.Log("Lantern enabled");
     }
 
     void OnDisable()
     {
-       Debug.Log("Lantern disabled");
+       //Debug.Log("Lantern disabled");
     }
 
     void SetAnimatorBool(string boolName, bool val)

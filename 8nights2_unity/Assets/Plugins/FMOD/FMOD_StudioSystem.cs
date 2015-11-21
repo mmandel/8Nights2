@@ -136,6 +136,9 @@ public class FMOD_StudioSystem : MonoBehaviour
 	FMOD.Studio.System system;
 	Dictionary<string, FMOD.Studio.EventDescription> eventDescriptions = new Dictionary<string, FMOD.Studio.EventDescription>();
 	bool isInitialized = false;
+
+    //MMANDEL: adding flag that force ASIO surround mixing
+    public static bool MandelForceSurround = false;
 	
 	static FMOD_StudioSystem sInstance;
 	public static FMOD_StudioSystem instance
@@ -278,6 +281,16 @@ public class FMOD_StudioSystem : MonoBehaviour
 #endif
 
 		ERRCHECK(sys.setAdvancedSettings(ref advancedSettings));
+
+        //MMANDEL: setup 8 channel surround mode in FMod
+        //http://www.fmod.org/questions/question/no-surround-output-from-unity/
+        if (MandelForceSurround)
+        {
+            FMOD.System lowlevel;
+            ERRCHECK(system.getLowLevelSystem(out lowlevel));
+            ERRCHECK(lowlevel.setOutput(FMOD.OUTPUTTYPE.ASIO));
+            ERRCHECK(lowlevel.setSoftwareFormat(0, FMOD.SPEAKERMODE._7POINT1, 0));
+        }
 
 		#if FMOD_DEBUG
 			FMOD.Debug.Initialize(FMOD.DEBUG_FLAGS.LOG, FMOD.DEBUG_MODE.FILE, null, "fmod.log");

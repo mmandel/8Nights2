@@ -177,6 +177,7 @@ public class EightNightsAudioMgr : MonoBehaviour
       _roomSoloing.GroupsInGroup.Add(EightNightsMgr.GroupID.RoomGroup2);
       _roomSoloing.GroupsInGroup.Add(EightNightsMgr.GroupID.RoomGroup3);
       _roomSoloing.GroupsInGroup.Add(EightNightsMgr.GroupID.RoomGroup4);
+
    }
 
 	void Start () 

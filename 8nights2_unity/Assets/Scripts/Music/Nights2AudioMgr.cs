@@ -9,6 +9,7 @@ using System;
 
 public class Nights2AudioMgr : MonoBehaviour
 {
+    public bool Enable8ChannelMode = true;
    public bool ShowTestUI = true;
 
    [Space(10)]
@@ -96,6 +97,9 @@ public class Nights2AudioMgr : MonoBehaviour
    void Awake()
    {
       Instance = this;
+
+      //force surround sound on/off
+      FMOD_StudioSystem.MandelForceSurround = Enable8ChannelMode;
 
       //initialize group data for all 8 candles
       _allGroupNames = new EightNightsMgr.GroupID[] { EightNightsMgr.GroupID.Candle1, EightNightsMgr.GroupID.Candle2, EightNightsMgr.GroupID.Candle3, EightNightsMgr.GroupID.Candle4, EightNightsMgr.GroupID.Candle5, EightNightsMgr.GroupID.Candle6, EightNightsMgr.GroupID.Candle7, EightNightsMgr.GroupID.Candle8 };
