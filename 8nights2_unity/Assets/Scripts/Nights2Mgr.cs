@@ -121,8 +121,13 @@ public class Nights2Mgr : MonoBehaviour
             if (((prevState == Nights2State.SeekingShamash) || (prevState == Nights2State.NearShamash)) &&
                 (_curState == Nights2State.SeekingBeacon))
             {
-                PickNextBeacon();
                 LightCurrentPath(true);
+            }
+
+            //pick beacon when starting to seek shamash so it can sync up with the color of the new candle
+            if(_curState == Nights2State.SeekingShamash)
+            {
+                PickNextBeacon();
             }
 
             //turn off path

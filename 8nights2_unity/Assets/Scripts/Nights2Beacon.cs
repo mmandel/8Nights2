@@ -8,6 +8,11 @@ using System.Collections;
 
 public class Nights2Beacon : MonoBehaviour 
 {
+    public Color CandleColor = Color.cyan;
+    public Renderer CandleColorRend;
+    public string CandleColorProp = "_Color";
+
+    [Space(10)]
 
     public string IsLitBool = "on";
     public string IsHiddenBool = "hidden";
@@ -68,6 +73,10 @@ public class Nights2Beacon : MonoBehaviour
 
         SetIsNext(false);
         SetLit(false);
+
+        //set our color
+        if (CandleColorRend != null)
+            CandleColorRend.material.SetColor(CandleColorProp, CandleColor);
 	}
 
     void SetAnimatorBool(string boolName, bool val)

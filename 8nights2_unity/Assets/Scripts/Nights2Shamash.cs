@@ -9,6 +9,12 @@ public class Nights2Shamash : MonoBehaviour
 
     [Space(10)]
 
+    public Renderer ShamashColorRend;
+    public string   ShamashColorProp = "_Color";
+    public Par64Value HardwareValue;
+
+    [Space(10)]
+
     //torch icon stuff
     public Transform TorchIconSpot;
     public GameObject TorchIconPrefab;
@@ -130,6 +136,15 @@ public class Nights2Shamash : MonoBehaviour
        if (_closeTimerLeft >= 0)
           _closeTimerLeft -= Time.deltaTime;
        bool cantBeClose = (_closeTimerLeft >= 0.0f);
+
+       //set our color to match that of the active candle
+       if ((ShamashColorRend != null) && (Nights2Mgr.Instance.NextBeacon() != null))
+       {
+           ShamashColorRend.material.SetColor(ShamashColorProp, Nights2Mgr.Instance.NextBeacon().CandleColor);
+           //also set this on the physical light
+           if (HardwareValue != null)
+               HardwareValue.LightColor = Nights2Mgr.Instance.NextBeacon().CandleColor;
+       }
 
        SetAnimatorBool(ShamashHiddenBool, (curNightsState != Nights2Mgr.Nights2State.SeekingShamash) && (curNightsState != Nights2Mgr.Nights2State.NearShamash));
        SetAnimatorBool(ShamashOnBool, ShamashIsOn());
