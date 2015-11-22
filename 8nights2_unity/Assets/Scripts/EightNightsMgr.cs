@@ -75,7 +75,19 @@ public class EightNightsMgr : MonoBehaviour
       Path5,
       Path6,
       Path7,
-      Path8
+      Path8,
+      Spot1,
+      Spot2,
+      Spot3,
+      Spot4,
+      Spot5,
+      Spot6,
+      Spot7,
+      Spot8,
+      Spot9,
+      Spot10,
+      Spot11,
+      Spot12,      
    }
 
    //identifiers for each light within a group (up to 8)
