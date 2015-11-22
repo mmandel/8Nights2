@@ -1,17 +1,20 @@
 // Shader created with Shader Forge v1.21 
 // Shader Forge (c) Neat Corporation / Joachim Holmer - http://www.acegikmo.com/shaderforge/
 // Note: Manually altering this data may prevent you from opening it in Shader Forge
-/*SF_DATA;ver:1.21;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:2,rntp:3,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:2865,x:32719,y:32712,varname:node_2865,prsc:2|diff-6343-OUT,spec-358-OUT,gloss-1813-OUT,normal-5964-RGB,clip-6981-OUT;n:type:ShaderForge.SFN_Multiply,id:6343,x:32114,y:32712,varname:node_6343,prsc:2|A-7736-RGB,B-6665-RGB;n:type:ShaderForge.SFN_Color,id:6665,x:31921,y:32805,ptovrint:False,ptlb:Color,ptin:_Color,varname:_Color,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:0.5019608,c2:0.5019608,c3:0.5019608,c4:1;n:type:ShaderForge.SFN_Tex2d,id:7736,x:31921,y:32620,ptovrint:True,ptlb:Base Color,ptin:_MainTex,varname:_MainTex,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:5964,x:32407,y:32978,ptovrint:True,ptlb:Normal Map,ptin:_BumpMap,varname:_BumpMap,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,ntxv:3,isnm:True;n:type:ShaderForge.SFN_Slider,id:358,x:32250,y:32780,ptovrint:False,ptlb:Metallic,ptin:_Metallic,varname:node_358,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_Slider,id:1813,x:32250,y:32882,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:_Metallic_copy,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.8,max:1;n:type:ShaderForge.SFN_Tex2d,id:4468,x:32339,y:33355,ptovrint:False,ptlb:clipTexture,ptin:_clipTexture,varname:node_4468,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Add,id:6981,x:32500,y:33159,varname:node_6981,prsc:2|A-5574-OUT,B-4468-R;n:type:ShaderForge.SFN_Slider,id:2765,x:31998,y:33159,ptovrint:False,ptlb:dissolveAmount,ptin:_dissolveAmount,varname:node_2765,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_RemapRange,id:5574,x:32325,y:33159,varname:node_5574,prsc:2,frmn:0,frmx:1,tomn:-1,tomx:1|IN-2765-OUT;proporder:5964-6665-7736-358-1813-4468-2765;pass:END;sub:END;*/
+/*SF_DATA;ver:1.21;sub:START;pass:START;ps:flbk:,iptp:0,cusa:False,bamd:0,lico:1,lgpr:1,limd:3,spmd:1,trmd:0,grmd:0,uamb:True,mssp:True,bkdf:True,hqlp:False,rprd:True,enco:False,rmgx:True,rpth:0,vtps:0,hqsc:True,nrmq:1,nrsp:0,vomd:0,spxs:False,tesm:0,olmd:1,culm:0,bsrc:0,bdst:1,dpts:2,wrdp:True,dith:0,rfrpo:True,rfrpn:Refraction,coma:15,ufog:True,aust:True,igpj:False,qofs:0,qpre:2,rntp:3,fgom:False,fgoc:False,fgod:False,fgor:False,fgmd:0,fgcr:0.5,fgcg:0.5,fgcb:0.5,fgca:1,fgde:0.01,fgrn:0,fgrf:300,stcl:False,stva:128,stmr:255,stmw:255,stcp:6,stps:0,stfa:0,stfz:0,ofsf:0,ofsu:0,f2p0:False;n:type:ShaderForge.SFN_Final,id:2865,x:32719,y:32712,varname:node_2865,prsc:2|diff-6343-OUT,spec-358-OUT,gloss-1813-OUT,emission-2485-OUT,clip-6981-OUT;n:type:ShaderForge.SFN_Multiply,id:6343,x:32114,y:32712,varname:node_6343,prsc:2|A-7736-RGB,B-6665-RGB;n:type:ShaderForge.SFN_Color,id:6665,x:31921,y:32808,ptovrint:False,ptlb:Color,ptin:_Color,varname:_Color,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:0.2647059,c2:0.2504236,c3:0.2374568,c4:1;n:type:ShaderForge.SFN_Tex2d,id:7736,x:31921,y:32620,ptovrint:True,ptlb:Base Color,ptin:_MainTex,varname:_MainTex,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Slider,id:358,x:32250,y:32780,ptovrint:False,ptlb:Metallic,ptin:_Metallic,varname:node_358,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_Slider,id:1813,x:32250,y:32882,ptovrint:False,ptlb:Gloss,ptin:_Gloss,varname:_Metallic_copy,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0,max:1;n:type:ShaderForge.SFN_Tex2d,id:4468,x:32234,y:33653,ptovrint:False,ptlb:clipTexture,ptin:_clipTexture,varname:node_4468,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Add,id:6981,x:32395,y:33457,varname:node_6981,prsc:2|A-5574-OUT,B-4468-R;n:type:ShaderForge.SFN_Slider,id:2765,x:31893,y:33457,ptovrint:False,ptlb:dissolveAmount,ptin:_dissolveAmount,varname:node_2765,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:1,max:1;n:type:ShaderForge.SFN_RemapRange,id:5574,x:32220,y:33457,varname:node_5574,prsc:2,frmn:0,frmx:1,tomn:-1,tomx:1|IN-2765-OUT;n:type:ShaderForge.SFN_Tex2d,id:615,x:31933,y:33182,ptovrint:False,ptlb:emissiveMask,ptin:_emissiveMask,varname:node_615,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:d6fac5b637cb2154a8e484d8766febf3,ntxv:0,isnm:False;n:type:ShaderForge.SFN_Tex2d,id:4432,x:31933,y:33004,ptovrint:False,ptlb:emissive,ptin:_emissive,varname:node_4432,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,tex:28c7aad1372ff114b90d330f8a2dd938,ntxv:0,isnm:False|UVIN-6591-UVOUT;n:type:ShaderForge.SFN_Blend,id:4992,x:32165,y:33068,varname:node_4992,prsc:2,blmd:10,clmp:True|SRC-4432-R,DST-615-R;n:type:ShaderForge.SFN_Rotator,id:6591,x:31770,y:33004,varname:node_6591,prsc:2|SPD-6819-OUT;n:type:ShaderForge.SFN_Slider,id:6819,x:31444,y:33064,ptovrint:False,ptlb:emisRotateSpeed,ptin:_emisRotateSpeed,varname:node_6819,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,min:0,cur:0.3029866,max:1;n:type:ShaderForge.SFN_Color,id:8443,x:32165,y:33271,ptovrint:False,ptlb:emissiveColor,ptin:_emissiveColor,varname:node_8443,prsc:2,glob:False,taghide:False,taghdr:False,tagprd:False,tagnsco:False,tagnrm:False,c1:0.190744,c2:0.1135381,c3:0.7720588,c4:1;n:type:ShaderForge.SFN_Blend,id:2485,x:32328,y:33147,varname:node_2485,prsc:2,blmd:1,clmp:True|SRC-4992-OUT,DST-8443-RGB;proporder:6665-7736-358-1813-4468-2765-615-4432-6819-8443;pass:END;sub:END;*/
 
 Shader "JeffShaders/chest" {
     Properties {
-        _BumpMap ("Normal Map", 2D) = "bump" {}
-        _Color ("Color", Color) = (0.5019608,0.5019608,0.5019608,1)
+        _Color ("Color", Color) = (0.2647059,0.2504236,0.2374568,1)
         _MainTex ("Base Color", 2D) = "white" {}
         _Metallic ("Metallic", Range(0, 1)) = 0
-        _Gloss ("Gloss", Range(0, 1)) = 0.8
+        _Gloss ("Gloss", Range(0, 1)) = 0
         _clipTexture ("clipTexture", 2D) = "white" {}
-        _dissolveAmount ("dissolveAmount", Range(0, 1)) = 0
+        _dissolveAmount ("dissolveAmount", Range(0, 1)) = 1
+        _emissiveMask ("emissiveMask", 2D) = "white" {}
+        _emissive ("emissive", 2D) = "white" {}
+        _emisRotateSpeed ("emisRotateSpeed", Range(0, 1)) = 0.3029866
+        _emissiveColor ("emissiveColor", Color) = (0.190744,0.1135381,0.7720588,1)
         [HideInInspector]_Cutoff ("Alpha cutoff", Range(0,1)) = 0.5
     }
     SubShader {
@@ -44,13 +47,17 @@ Shader "JeffShaders/chest" {
             #pragma multi_compile_fog
             #pragma exclude_renderers gles3 metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
             #pragma target 3.0
+            uniform float4 _TimeEditor;
             uniform float4 _Color;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
-            uniform sampler2D _BumpMap; uniform float4 _BumpMap_ST;
             uniform float _Metallic;
             uniform float _Gloss;
             uniform sampler2D _clipTexture; uniform float4 _clipTexture_ST;
             uniform float _dissolveAmount;
+            uniform sampler2D _emissiveMask; uniform float4 _emissiveMask_ST;
+            uniform sampler2D _emissive; uniform float4 _emissive_ST;
+            uniform float _emisRotateSpeed;
+            uniform float4 _emissiveColor;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -102,9 +109,7 @@ Shader "JeffShaders/chest" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
 /////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 _BumpMap_var = UnpackNormal(tex2D(_BumpMap,TRANSFORM_TEX(i.uv0, _BumpMap)));
-                float3 normalLocal = _BumpMap_var.rgb;
-                float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
+                float3 normalDirection = i.normalDir;
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
                 float4 _clipTexture_var = tex2D(_clipTexture,TRANSFORM_TEX(i.uv0, _clipTexture));
                 clip(((_dissolveAmount*2.0+-1.0)+_clipTexture_var.r) - 0.5);
@@ -182,8 +187,19 @@ Shader "JeffShaders/chest" {
                 float3 indirectDiffuse = float3(0,0,0);
                 indirectDiffuse += gi.indirect.diffuse;
                 float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;
+////// Emissive:
+                float4 node_3402 = _Time + _TimeEditor;
+                float node_6591_ang = node_3402.g;
+                float node_6591_spd = _emisRotateSpeed;
+                float node_6591_cos = cos(node_6591_spd*node_6591_ang);
+                float node_6591_sin = sin(node_6591_spd*node_6591_ang);
+                float2 node_6591_piv = float2(0.5,0.5);
+                float2 node_6591 = (mul(i.uv0-node_6591_piv,float2x2( node_6591_cos, -node_6591_sin, node_6591_sin, node_6591_cos))+node_6591_piv);
+                float4 _emissive_var = tex2D(_emissive,TRANSFORM_TEX(node_6591, _emissive));
+                float4 _emissiveMask_var = tex2D(_emissiveMask,TRANSFORM_TEX(i.uv0, _emissiveMask));
+                float3 emissive = saturate((saturate(( _emissiveMask_var.r > 0.5 ? (1.0-(1.0-2.0*(_emissiveMask_var.r-0.5))*(1.0-_emissive_var.r)) : (2.0*_emissiveMask_var.r*_emissive_var.r) ))*_emissiveColor.rgb));
 /// Final Color:
-                float3 finalColor = diffuse + specular;
+                float3 finalColor = diffuse + specular + emissive;
                 fixed4 finalRGBA = fixed4(finalColor,1);
                 UNITY_APPLY_FOG(i.fogCoord, finalRGBA);
                 return finalRGBA;
@@ -216,13 +232,17 @@ Shader "JeffShaders/chest" {
             #pragma multi_compile_fog
             #pragma exclude_renderers gles3 metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
             #pragma target 3.0
+            uniform float4 _TimeEditor;
             uniform float4 _Color;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
-            uniform sampler2D _BumpMap; uniform float4 _BumpMap_ST;
             uniform float _Metallic;
             uniform float _Gloss;
             uniform sampler2D _clipTexture; uniform float4 _clipTexture_ST;
             uniform float _dissolveAmount;
+            uniform sampler2D _emissiveMask; uniform float4 _emissiveMask_ST;
+            uniform sampler2D _emissive; uniform float4 _emissive_ST;
+            uniform float _emisRotateSpeed;
+            uniform float4 _emissiveColor;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
@@ -263,9 +283,7 @@ Shader "JeffShaders/chest" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.bitangentDir, i.normalDir);
 /////// Vectors:
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
-                float3 _BumpMap_var = UnpackNormal(tex2D(_BumpMap,TRANSFORM_TEX(i.uv0, _BumpMap)));
-                float3 normalLocal = _BumpMap_var.rgb;
-                float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
+                float3 normalDirection = i.normalDir;
                 float4 _clipTexture_var = tex2D(_clipTexture,TRANSFORM_TEX(i.uv0, _clipTexture));
                 clip(((_dissolveAmount*2.0+-1.0)+_clipTexture_var.r) - 0.5);
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
@@ -394,10 +412,15 @@ Shader "JeffShaders/chest" {
             #pragma multi_compile_fog
             #pragma exclude_renderers gles3 metal d3d11_9x xbox360 xboxone ps3 ps4 psp2 
             #pragma target 3.0
+            uniform float4 _TimeEditor;
             uniform float4 _Color;
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
             uniform float _Metallic;
             uniform float _Gloss;
+            uniform sampler2D _emissiveMask; uniform float4 _emissiveMask_ST;
+            uniform sampler2D _emissive; uniform float4 _emissive_ST;
+            uniform float _emisRotateSpeed;
+            uniform float4 _emissiveColor;
             struct VertexInput {
                 float4 vertex : POSITION;
                 float2 texcoord0 : TEXCOORD0;
@@ -426,7 +449,16 @@ Shader "JeffShaders/chest" {
                 UnityMetaInput o;
                 UNITY_INITIALIZE_OUTPUT( UnityMetaInput, o );
                 
-                o.Emission = 0;
+                float4 node_1736 = _Time + _TimeEditor;
+                float node_6591_ang = node_1736.g;
+                float node_6591_spd = _emisRotateSpeed;
+                float node_6591_cos = cos(node_6591_spd*node_6591_ang);
+                float node_6591_sin = sin(node_6591_spd*node_6591_ang);
+                float2 node_6591_piv = float2(0.5,0.5);
+                float2 node_6591 = (mul(i.uv0-node_6591_piv,float2x2( node_6591_cos, -node_6591_sin, node_6591_sin, node_6591_cos))+node_6591_piv);
+                float4 _emissive_var = tex2D(_emissive,TRANSFORM_TEX(node_6591, _emissive));
+                float4 _emissiveMask_var = tex2D(_emissiveMask,TRANSFORM_TEX(i.uv0, _emissiveMask));
+                o.Emission = saturate((saturate(( _emissiveMask_var.r > 0.5 ? (1.0-(1.0-2.0*(_emissiveMask_var.r-0.5))*(1.0-_emissive_var.r)) : (2.0*_emissiveMask_var.r*_emissive_var.r) ))*_emissiveColor.rgb));
                 
                 float4 _MainTex_var = tex2D(_MainTex,TRANSFORM_TEX(i.uv0, _MainTex));
                 float3 diffColor = (_MainTex_var.rgb*_Color.rgb);

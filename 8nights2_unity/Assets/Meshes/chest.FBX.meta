@@ -17,6 +17,7 @@ ModelImporter:
     100018: lock01_loop
     100020: lock02_body
     100022: lock02_loop
+    100024: lock02_bodyUV
     400000: //RootNode
     400002: chest
     400004: chest_lid
@@ -29,6 +30,7 @@ ModelImporter:
     400018: lock01_loop
     400020: lock02_body
     400022: lock02_loop
+    400024: lock02_bodyUV
     2300000: chest
     2300002: chest_lid
     2300004: Group11895
@@ -40,6 +42,7 @@ ModelImporter:
     2300016: lock01_loop
     2300018: lock02_body
     2300020: lock02_loop
+    2300022: lock02_bodyUV
     3300000: chest
     3300002: chest_lid
     3300004: Group11895
@@ -51,6 +54,7 @@ ModelImporter:
     3300016: lock01_loop
     3300018: lock02_body
     3300020: lock02_loop
+    3300022: lock02_bodyUV
     4300000: chest
     4300002: Group11895
     4300004: Group44002
@@ -61,6 +65,7 @@ ModelImporter:
     4300014: lock01_loop
     4300016: lock01_body
     4300018: lock02_body
+    4300020: lock02_bodyUV
   materials:
     importMaterials: 1
     materialName: 0
