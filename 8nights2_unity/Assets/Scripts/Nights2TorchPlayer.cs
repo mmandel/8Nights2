@@ -51,9 +51,6 @@ public class Nights2TorchPlayer : MonoBehaviour
     public delegate void PortalChangedHandler(object sender, PortalChangedEventArgs e);
 
     private bool _wasDebugPathOn = false;
-    private bool _deadzoneActive = false;
-    private Vector3 _deadzoneCenter = Vector3.zero;
-    private float _outsidePathStartTime = -1.0f;
     private Nights2Portal _portalFX = null;
     private bool _portalShowing = false;
     private bool _waitTillBehindPortal = false;
@@ -132,10 +129,6 @@ public class Nights2TorchPlayer : MonoBehaviour
         //OK, starting to follow a path
         if (e.NewState == Nights2Mgr.Nights2State.SeekingBeacon)
         {
-            //record their position to allow for a small "dead zone" before they are required to stay super close
-            _deadzoneActive = true;
-            _deadzoneCenter = GetPlayerPosOnGround();
-
             //reset portal state
             SetPortalState(PortalState.NoProgress);
 
@@ -242,7 +235,7 @@ public class Nights2TorchPlayer : MonoBehaviour
             }
             else if (s == PortalState.ShowingEntrancePortal)
             {
-                _waitTillBehindPortal = false;
+                _waitTillBehindPortal = true;
                 Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
                 Debug.Assert(curPath != null);
 
@@ -264,7 +257,7 @@ public class Nights2TorchPlayer : MonoBehaviour
             }
             else if (s == PortalState.ShowingExitPortal)
             {
-                _waitTillBehindPortal = false;
+                _waitTillBehindPortal = true;
                 Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
                 Debug.Assert(curPath != null);
 
@@ -361,7 +354,7 @@ public class Nights2TorchPlayer : MonoBehaviour
             else //ooo, went wide, dont go through, wait till behind
                 _waitTillBehindPortal = true;
         }
-        else if (distToPortal > .02f) //reset when we're behind the portal again
+        else if ((distToPortal > .15f) && (distToPath <= .5f * PortalWidth))//reset when we're behind the portal again
             _waitTillBehindPortal = false;
 
         return false;
@@ -379,54 +372,16 @@ public class Nights2TorchPlayer : MonoBehaviour
             Vector3 curPlayerPos = GetPlayerPosOnGround();
             Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
 
-            //see if we're outside initial deadzone now
-            if (_deadzoneActive)
-            {
-                if ((curPlayerPos - _deadzoneCenter).magnitude >= InitialPathDeadzone)
-                {
-                    _deadzoneActive = false;
-                }
-            }
-
             int curPathSegment = -1;
             Vector3 closestPtOnPath = Vector3.zero;
             if (curPath != null)
                 closestPtOnPath = curPath.ClosestPointOnPath(curPlayerPos, out curPathSegment);
 
-            //make sure player stays on the path
-            closestPtOnPath.y = 0.0f; //project to ground, just in case
-            float distToPath = (closestPtOnPath - curPlayerPos).magnitude;
-            if (!_deadzoneActive && (curPath != null) && !curPath.IsEditting())
-            {
-                //are we too far off the path?
-                if ((distToPath > NearPathThresh) &&
-                   Nights2CamMgr.Instance.IsVRActive()) //<-- so we don't fail the player when cheating in non-VR mode...
-                {
-                    //reset timer if portal is open, dont care in that case
-                    if ((_curPortalState == PortalState.ShowingEntrancePortal) || (_curPortalState == PortalState.ShowingExitPortal))
-                        _outsidePathStartTime = Time.time;
-
-                    if (_outsidePathStartTime < 0.0f) //just fell off the path this frame, start timer
-                    {
-                        _outsidePathStartTime = Time.time;
-                    }
-                    else
-                    {
-                        //if we're off the path long enough, we fail the player
-                        /*float timeOffPath = (Time.time - _outsidePathStartTime);
-                        if (timeOffPath >= OutsidePathFailureSecs)
-                        {
-                            _outsidePathStartTime = -1.0f;
-                            Nights2Mgr.Instance.SetState(Nights2Mgr.Nights2State.FlameExtinguished);
-                        }*/
-                    }
-                }
-            }
-
-
             //update portal processing
             float distToEntrance = float.MaxValue;
             float distToExit = float.MaxValue;
+            float relativeDistForward = float.MaxValue;
+            float relativeDistSide = float.MaxValue;            
             switch (_curPortalState)
             {
                 case PortalState.NoProgress:
@@ -444,15 +399,14 @@ public class Nights2TorchPlayer : MonoBehaviour
                 case PortalState.ShowingEntrancePortal:
 
                     //detect when player walks through entrance portal                   
-                    distToEntrance = curPath.DistToPortal(Nights2Path.PortalType.EntrancePortal, GetPlayerPosOnGround());
+                    curPath.GetPortalRelativePos(Nights2Path.PortalType.EntrancePortal, GetPlayerPosOnGround(), out relativeDistForward, out relativeDistSide);
+                    //Debug.Log("Portal relative: " + relativeDistForward + " " + relativeDistSide);
                     //Debug.Log("Dist to entrance (showing): " + distToEntrance);
-                    if (isThroughPortal(distToEntrance, distToPath))
+                    if (isThroughPortal(relativeDistForward, Mathf.Abs(relativeDistSide)))
                     {
                         Debug.Log("   THROUGH ENTRANCE PORTAL!");
                         SetPortalState(PortalState.ThroughEntrancePortal);
                     }
-                    else if(distToEntrance > .02f) //reset when we're behind the portal again
-                        _waitTillBehindPortal = false;
  
                     break;
 
@@ -501,13 +455,15 @@ public class Nights2TorchPlayer : MonoBehaviour
                 case PortalState.ShowingExitPortal:
 
                     //detect when player walks through exit portal
-                    distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetPlayerPosOnGround());
+                    curPath.GetPortalRelativePos(Nights2Path.PortalType.ExitPortal, GetPlayerPosOnGround(), out relativeDistForward, out relativeDistSide);
                     //Debug.Log("Dist to exit (showing): " + distToExit);
-                    if (isThroughPortal(distToExit, distToPath))
+                    //Debug.Log("Portal relative: " + relativeDistForward + " " + relativeDistSide);
+                    if (isThroughPortal(relativeDistForward, Mathf.Abs(relativeDistSide)))
                     {
                         Debug.Log("   THROUGH EXIT PORTAL!");
                         SetPortalState(PortalState.ThroughExitPortal);
                     }
+
                     break;
 
                 default: break;

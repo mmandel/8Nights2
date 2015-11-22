@@ -138,7 +138,7 @@ public class Nights2Beacon : MonoBehaviour
         }
 
         //to make sure icon is created/destroyed when cheating
-        if (IsNext() && (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon == null))
+        if (IsNext() && !IsHiddenInWorld() && (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon == null))
             SpawnIcon();
         else if ((Nights2Mgr.Instance.GetState() != Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon != null))
             DestroyIcon();

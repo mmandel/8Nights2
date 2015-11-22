@@ -99,39 +99,35 @@ public class Nights2Path : MonoBehaviour
             return Vector3.zero;
     }
 
-    //find the distance along the path to the given portal.  Will be negative if already in front of the portal
+    //straight up distance from given position to portal pos
     public float DistToPortal(PortalType portal, Vector3 ptToTest)
     {
-       //dist along path of the portal
-        float portalDist = 0.0f;
-        if (portal == PortalType.EntrancePortal)
-            portalDist = _entrancePortalDist;
-        else if (portal == PortalType.EntrancePortal2)
-            portalDist = _entrancePortal2Dist;
-        else if (portal == PortalType.ExitPortal)
-            portalDist = _exitPortalDist;
+        ptToTest.y = 0.0f;
+        Vector3 portalPos = GetPortalPos(portal);
+        portalPos.y = 0.0f;
 
-       //ok, find out where the point is on the path (and which segment)
-       int ptSegment;
-       Vector3 ptOnPath = ClosestPointOnPath(ptToTest, out ptSegment);
+        return (portalPos - ptToTest).magnitude;
+    }
 
-       if (ptSegment == -1)
-          return float.MaxValue;
+    //get position relative to the portal, both along the vector in the forward direction of the portal, and normal to its direction
+    public void GetPortalRelativePos(PortalType portal, Vector3 ptToTest, out float forwardDist, out float sideDist)
+    {
+        ptToTest.y = 0.0f;
 
-       //now compute distance along path the pt we found on the path (looping up to the found segment)
-       float distAccum = 0.0f;
-       for (int i = 0; i <= ptSegment; i++)
-       {
-           Vector3 a = GetWorldPoint(i);
-           Vector3 b = GetWorldPoint(i + 1);
+        Vector3 portalPos = GetPortalPos(portal);
+        portalPos.y = 0.0f;
 
-          if (i == ptSegment) 
-             distAccum += (ptOnPath - a).magnitude;
-          else
-             distAccum += (b - a).magnitude;
-       }
+        Vector3 portalDir = GetPortalDir(portal);
 
-       return (portalDist - distAccum);
+        Vector3 fromPortal = (portalPos - ptToTest);
+        Vector3 projectedPos = Vector3.Project(fromPortal, portalDir);        
+        forwardDist = Mathf.Sign(Vector3.Dot(fromPortal, portalDir))*projectedPos.magnitude;
+        //Debug.Log("forward projected: " + projectedPos);
+
+        Vector3 sideDir = Vector3.Cross(portalDir, Vector3.up);
+        projectedPos = Vector3.Project(fromPortal, sideDir);
+        //Debug.Log("side projected: " + projectedPos);
+        sideDist = Mathf.Sign(Vector3.Dot(fromPortal, sideDir)) * projectedPos.magnitude;
     }
 
     public float ComputeTotalPathDist()
