@@ -403,6 +403,10 @@ public class Nights2AudioMgr : MonoBehaviour
          startPos.y = Screen.height - 30;
          LightMgr.Instance.TestLights = GUI.Toggle(new Rect(startPos.x, startPos.y, groupSize.x + 50, 20), LightMgr.Instance.TestLights, "Test Lights");
       }
+
+      //current lit up spot also in bottom right
+      startPos.y -=  30;
+      GUI.Label(new Rect(startPos.x, startPos.y, 225, 25), "Lit Spot:  " + ((Nights2SpotMgr.Instance.ActiveSpot() != null) ? Nights2SpotMgr.Instance.ActiveSpot().gameObject.name : "[none]"));
    }
 
    public GroupStateData GetStateForGroup(EightNightsMgr.GroupID group)

@@ -151,6 +151,13 @@ public class Nights2Beacon : MonoBehaviour
             SpawnIcon();
         else if ((Nights2Mgr.Instance.GetState() != Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon != null))
             DestroyIcon();
+
+        //if showing icon, light up spot
+        if ((_torchIcon != null) && (_closestSpot != null))
+        {
+            Nights2SpotMgr.Instance.MakeSpotActive(_closestSpot);
+        }
+
 	}
 
     bool IsInSeekingState()
@@ -181,6 +188,10 @@ public class Nights2Beacon : MonoBehaviour
        Debug.Assert(IsNext() && IsInSeekingState());
 
        Debug.Log("TORCH LIT BEACON!!");
+
+       //turn off spot
+       if(Nights2SpotMgr.Instance.ActiveSpot() == _closestSpot)
+          Nights2SpotMgr.Instance.MakeSpotActive(null);
 
        SetIsNext(false);
        SetLit(true);

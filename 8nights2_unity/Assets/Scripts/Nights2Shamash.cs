@@ -107,6 +107,10 @@ public class Nights2Shamash : MonoBehaviour
     {
         if ((e.NewState == Nights2Mgr.Nights2State.SeekingShamash) || (e.NewState == Nights2Mgr.Nights2State.FlameExtinguished))
         {
+            //light up shamash spot
+            if(Nights2SpotMgr.Instance != null)
+                Nights2SpotMgr.Instance.MakeSpotActive(_closestSpot);
+
             _closeTimerLeft = MinTimeBeforeClose;
 
             //aim tunnel at player

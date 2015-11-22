@@ -73,6 +73,22 @@ public class Nights2Path : MonoBehaviour
         return null;
     }
 
+    public Nights2Spot GetPortalSpot(PortalType portal)
+    {
+        int portalIdx = -1;
+        if (portal == PortalType.EntrancePortal)
+            portalIdx = _entrancePortalSegment;
+        else if (portal == PortalType.EntrancePortal2)
+            portalIdx = _entrancePortal2Segment;
+        else if (portal == PortalType.ExitPortal)
+            portalIdx = _exitPortalSegment;
+
+        if (portalIdx >= 0)
+            return Path.Points[portalIdx].Spot;
+        else
+            return null;
+    }
+
     public Vector3 GetPortalDir(PortalType portal)
     {
         if (portal == PortalType.EntrancePortal)

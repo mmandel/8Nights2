@@ -191,15 +191,21 @@ public class Nights2TorchPlayer : MonoBehaviour
 
             _curTreasureState = s;
 
+
+            //light up spot
+            Nights2Spot treasureSpot = GetTreasureSpot();
+            if ((treasureSpot != null) &&
+                (_curTreasureState != TreasureState.NoProgress) && (_curTreasureState != TreasureState.TreasureCompleted))
+            {
+                Nights2SpotMgr.Instance.MakeSpotActive(treasureSpot);
+            }
+
             if (_curTreasureState == TreasureState.WaitingForTreasureReveal)
             {
                 //TODO: light up spot!
             }
             else if (_curTreasureState == TreasureState.TreasureReveal)
             {
-                //get the treasure spot
-                Nights2Spot treasureSpot = GetTreasureSpot();
-
                 //spawn treasure at spot
                 Debug.Assert(TreasurePrefab != null);
                 GameObject spawnedTreasure = Instantiate(TreasurePrefab) as GameObject;
@@ -386,6 +392,11 @@ public class Nights2TorchPlayer : MonoBehaviour
             {
                 case PortalState.NoProgress:
 
+                    //light up location of entrance portal
+                    Nights2Spot entranceSpot = curPath.GetPortalSpot(Nights2Path.PortalType.EntrancePortal);
+                    if (entranceSpot != null)
+                        Nights2SpotMgr.Instance.MakeSpotActive(entranceSpot);
+
                     //OK, see when we're close to the entrance portal and show it
                     distToEntrance = curPath.DistToPortal(Nights2Path.PortalType.EntrancePortal, GetLanternPosOnGround());
                     //Debug.Log("Dist to entrance (not showing): " + distToEntrance);
@@ -414,6 +425,11 @@ public class Nights2TorchPlayer : MonoBehaviour
 
                     if (_curTreasureState == TreasureState.TreasureCompleted)
                     {
+                        //light up location of exit portal
+                        Nights2Spot exitSpot = curPath.GetPortalSpot(Nights2Path.PortalType.ExitPortal);
+                        if (exitSpot != null)
+                            Nights2SpotMgr.Instance.MakeSpotActive(exitSpot);
+
                         //OK, see when we're close to the exit portal and show it                    
                         distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetLanternPosOnGround());
                         //Debug.Log("Dist to exit (not showing): " + distToExit);

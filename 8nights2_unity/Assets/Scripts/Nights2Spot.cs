@@ -9,6 +9,8 @@ using System.Collections;
 public class Nights2Spot : MonoBehaviour 
 {
 
+   public EightNightsMgr.GroupID LightGroup = EightNightsMgr.GroupID.Spot1;
+
    private bool _isSpotActive = false;
    private bool _lanternArrived = false;
    private Collider _collider = null;
@@ -40,6 +42,10 @@ public class Nights2Spot : MonoBehaviour
    {
       _isSpotActive = b;
       _lanternArrived = false;
+
+      //turn physical light on/off
+      if (LightMgr.Instance != null)
+          LightMgr.Instance.SetLight(LightGroup, EightNightsMgr.LightID.Light1, b ? 1.0f : 0.0f);
 
       if (_collider != null)
          _collider.enabled = b;
