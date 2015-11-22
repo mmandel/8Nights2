@@ -176,6 +176,21 @@ public class Nights2Mgr : MonoBehaviour
         if ((path == null) || (leadsToBeacon == null))
             return;
 
+        //ignore if not in the current progression
+        //we allow multiple progressions, make sure we have the right one
+        bool found = false;
+        for (int i = 0; i < CandlePathOrderLength(); i++)
+        {
+            if (GetPath(i) == path)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+            return;
+
         _beaconToPathMap[leadsToBeacon] = path;
     }
 

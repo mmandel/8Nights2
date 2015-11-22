@@ -11,6 +11,8 @@ public class Nights2Beacon : MonoBehaviour
     public Color CandleColor = Color.cyan;
     public Renderer CandleColorRend;
     public string CandleColorProp = "_Color";
+    public Renderer CandleColorRend2;
+    public string CandleColorProp2 = "_Color";
 
     [Space(10)]
 
@@ -77,6 +79,8 @@ public class Nights2Beacon : MonoBehaviour
         //set our color
         if (CandleColorRend != null)
             CandleColorRend.material.SetColor(CandleColorProp, CandleColor);
+        if (CandleColorRend2 != null)
+            CandleColorRend2.material.SetColor(CandleColorProp2, CandleColor);
 	}
 
     void SetAnimatorBool(string boolName, bool val)
