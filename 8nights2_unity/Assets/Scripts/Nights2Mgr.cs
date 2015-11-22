@@ -10,7 +10,9 @@ using System.Collections.Generic;
 public class Nights2Mgr : MonoBehaviour 
 {
 
+    public bool UseDebugPathOrder = false; //set true for my half-size paths I can test in my apartment 
     public Nights2Path[] CandlePathOrder = new Nights2Path[0]; //the order we cycle through candles, will be random if this array isnt long enough
+    public Nights2Path[] DebugPathOrder = new Nights2Path[0]; //use these if UseDebugPathOrder is true
     public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
     public float BeaconLitSuccessTime = 3.0f; //how long we stay in the BeaconLit state before auto advancing to the next stage of the installation
@@ -246,6 +248,16 @@ public class Nights2Mgr : MonoBehaviour
         }
     }
 
+    int CandlePathOrderLength()
+    {
+        return UseDebugPathOrder ? DebugPathOrder.Length : CandlePathOrder.Length;
+    }
+
+    Nights2Path GetPath(int idx)
+    {
+        return UseDebugPathOrder ? DebugPathOrder[idx] : CandlePathOrder[idx];
+    }
+
     void PickNextBeacon()
     {
         if (_unlitBeacons.Count == 0)
@@ -256,9 +268,9 @@ public class Nights2Mgr : MonoBehaviour
 
         Nights2Beacon b = null;
         //first beacon, just use the one we're configured for
-        if (_litBeacons.Count < CandlePathOrder.Length)
+        if (_litBeacons.Count < CandlePathOrderLength())
         {
-            b = CandlePathOrder[_litBeacons.Count].LeadsToBeacon;
+            b = GetPath(_litBeacons.Count).LeadsToBeacon;
         }
 
         //pick randomly
@@ -284,9 +296,9 @@ public class Nights2Mgr : MonoBehaviour
         Nights2Path path = CurrentTorchPath();
         if (path != null)
         {
-            for (int i = 0; i < CandlePathOrder.Length; i++)
+            for (int i = 0; i < CandlePathOrderLength(); i++)
             {
-                if (CandlePathOrder[i] == path)
+                if (GetPath(i) == path)
                 {
                     curPathIdx = i;
                     break;
