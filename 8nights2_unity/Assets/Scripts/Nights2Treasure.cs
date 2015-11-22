@@ -63,6 +63,8 @@ public class Nights2Treasure : MonoBehaviour
       Hidden
    }
 
+   public bool IsUnlocked() { return _isUnlocked; }
+
 	void Start () 
    {
       _animator = gameObject.GetComponent<Animator>();
@@ -207,8 +209,13 @@ public class Nights2Treasure : MonoBehaviour
       _forceUnlock2 = true;
    }
 
+   public void ForceOpen()
+   {
+       _forceOpen = true;
+   }
+
    public void OnOpen(string propPath)
    {
-      _forceOpen = true;
+       ForceOpen();
    }  
 }

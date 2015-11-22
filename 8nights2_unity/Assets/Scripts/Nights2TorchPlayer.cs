@@ -30,6 +30,12 @@ public class Nights2TorchPlayer : MonoBehaviour
     public Vector3 PortalDestOffset = Vector3.zero;
 
     [Space(10)]
+    [Tooltip("Treasure prefab to spawn when in alt world")]
+    public GameObject TreasurePrefab;
+    [Tooltip("How close does lantern need to be to treasure spot to reveal it")]
+    public float TreasureRevealDist = .5f;
+
+    [Space(10)]
 
     [Tooltip("Set this flag true to draw some debug stuff for the path the torch carrier is walking down")]
     public bool DebugPathFollowing = true;
@@ -50,7 +56,8 @@ public class Nights2TorchPlayer : MonoBehaviour
     private float _outsidePathStartTime = -1.0f;
     private Nights2Portal _portalFX = null;
     private bool _portalShowing = false;
-    private bool _waitTillBehindPortal = false; 
+    private bool _waitTillBehindPortal = false;
+    private Nights2Treasure _treasure;  //spawned from time to time
 
     private PortalState _curPortalState = PortalState.NoProgress;
     public enum PortalState
@@ -62,11 +69,27 @@ public class Nights2TorchPlayer : MonoBehaviour
         ThroughExitPortal
     }
 
+    private TreasureState _curTreasureState = TreasureState.NoProgress;
+    public enum TreasureState
+    {
+        NoProgress,
+        WaitingForTreasureReveal,
+        TreasureReveal,
+        TreasureCompleted
+    }
+
     public static Nights2TorchPlayer Instance { get; private set; }
 
     public PortalState GetPortalState() { return _curPortalState; }
+    public TreasureState GetTreasureState() { return _curTreasureState; }
 
     public void CheatPortalState(PortalState s) { SetPortalState(s); }
+    public void CheateTreasureState(TreasureState s) 
+    {
+        if (s == TreasureState.TreasureCompleted)
+            _treasure.ForceOpen();
+        SetTreasureState(s); 
+    }
 
     void Awake()
     {
@@ -148,6 +171,60 @@ public class Nights2TorchPlayer : MonoBehaviour
 
         return (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) ||
                (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearBeacon);
+    }
+
+    Nights2Spot GetTreasureSpot()
+    {
+        Nights2Path curPath = Nights2Mgr.Instance.CurrentTorchPath();
+        Debug.Assert(curPath != null);
+        Nights2Spot treasureSpot = curPath.GetTreasureSpot();
+        Debug.Assert(treasureSpot != null);
+        return treasureSpot;
+    }
+
+    Vector3 GetTreasureSpotOnGround()
+    {
+        Nights2Spot spot = GetTreasureSpot();
+        Vector3 pos = spot.GetPos();
+        pos.y = 0.0f;
+        return pos;
+    }
+
+    void SetTreasureState(TreasureState s)
+    {
+        if (s != _curTreasureState)
+        {
+            TreasureState prevState = _curTreasureState;
+
+            _curTreasureState = s;
+
+            if (_curTreasureState == TreasureState.WaitingForTreasureReveal)
+            {
+                //TODO: light up spot!
+            }
+            else if (_curTreasureState == TreasureState.TreasureReveal)
+            {
+                //get the treasure spot
+                Nights2Spot treasureSpot = GetTreasureSpot();
+
+                //spawn treasure at spot
+                Debug.Assert(TreasurePrefab != null);
+                GameObject spawnedTreasure = Instantiate(TreasurePrefab) as GameObject;
+                Debug.Assert(spawnedTreasure != null);
+                _treasure = spawnedTreasure.GetComponent<Nights2Treasure>();
+                Debug.Assert(_treasure != null);
+
+                Vector3 treasurePos = GetTreasureSpotOnGround();
+                _treasure.gameObject.transform.position = treasurePos;
+                //face the torch carrier
+                _treasure.gameObject.transform.LookAt(GetPlayerPosOnGround());
+            }
+            else if (_curTreasureState == TreasureState.TreasureCompleted)
+            {
+                _treasure = null; //don't track it anymore, it will delete itself
+            }
+
+        }
     }
 
     void SetPortalState(PortalState s)
@@ -346,6 +423,7 @@ public class Nights2TorchPlayer : MonoBehaviour
                 }
             }
 
+
             //update portal processing
             float distToEntrance = float.MaxValue;
             float distToExit = float.MaxValue;
@@ -380,13 +458,43 @@ public class Nights2TorchPlayer : MonoBehaviour
 
                 case PortalState.ThroughEntrancePortal:
 
-                    //OK, see when we're close to the exit portal and show it                    
-                    distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetLanternPosOnGround());
-                    //Debug.Log("Dist to exit (not showing): " + distToExit);
-                    if ((distToExit >= 0.0f) && (distToExit <= ShowPortalDistThresh))
+                    if (_curTreasureState == TreasureState.TreasureCompleted)
                     {
-                        Debug.Log("   SHOWING ENTRANCE PORTAL!");
-                        SetPortalState(PortalState.ShowingExitPortal);
+                        //OK, see when we're close to the exit portal and show it                    
+                        distToExit = curPath.DistToPortal(Nights2Path.PortalType.ExitPortal, GetLanternPosOnGround());
+                        //Debug.Log("Dist to exit (not showing): " + distToExit);
+                        if ((distToExit >= 0.0f) && (distToExit <= ShowPortalDistThresh))
+                        {
+                            Debug.Log("   SHOWING ENTRANCE PORTAL!");
+                            SetPortalState(PortalState.ShowingExitPortal);
+                        }
+                    }
+                    else
+                    {
+                        //update treasure state
+                        switch (_curTreasureState)
+                        {
+                            case TreasureState.NoProgress: 
+                                //k, let's get started
+                                SetTreasureState(TreasureState.WaitingForTreasureReveal); 
+                                break;
+                            case TreasureState.WaitingForTreasureReveal:
+                                //is the lantern carrier close enough to the spot, then reveal!
+                                Vector3 treasurePos = GetTreasureSpotOnGround();
+                                Vector3 lanternPos = GetLanternPosOnGround();
+                                float distToTreasure = (treasurePos - lanternPos).magnitude;
+                                if (distToTreasure <= TreasureRevealDist)
+                                {
+                                    SetTreasureState(TreasureState.TreasureReveal);
+                                }
+                                break;
+                            case TreasureState.TreasureReveal:
+                                //wait for treasure sequence to complete
+                                if (_treasure.IsUnlocked())
+                                    SetTreasureState(TreasureState.TreasureCompleted);
+                                break;
+                            default: break;
+                        }                    
                     }
                     break;
 

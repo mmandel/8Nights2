@@ -365,12 +365,17 @@ public class Nights2AudioMgr : MonoBehaviour
       */
 
       //advance progression in bottom center
-      startPos.x = (Screen.width / 2) - 150;
+      startPos.x = (Screen.width / 2) - 175;
       startPos.y = Screen.height - 30;
       //display current state
-      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), "State:  " +  Nights2Mgr.Instance.GetState().ToString());
+      string stateStr = Nights2Mgr.Instance.GetState().ToString();
+      if ((Nights2TorchPlayer.Instance.GetTreasureState() != Nights2TorchPlayer.TreasureState.NoProgress) && (Nights2TorchPlayer.Instance.GetTreasureState() != Nights2TorchPlayer.TreasureState.TreasureCompleted))
+          stateStr = Nights2TorchPlayer.Instance.GetTreasureState().ToString();
+      else if ((Nights2TorchPlayer.Instance.GetPortalState() != Nights2TorchPlayer.PortalState.NoProgress) && (Nights2TorchPlayer.Instance.GetPortalState() != Nights2TorchPlayer.PortalState.ThroughExitPortal)) 
+          stateStr = Nights2TorchPlayer.Instance.GetPortalState().ToString();
+      GUI.Label(new Rect(startPos.x, startPos.y, 225, 25), "State:  " + stateStr);
       //display next button
-      startPos.x += 160;
+      startPos.x += 190;
       if (GUI.Button(new Rect(startPos.x, startPos.y, 30, 20), ">"))
       {
          Nights2Mgr.Instance.CheatToNextState();

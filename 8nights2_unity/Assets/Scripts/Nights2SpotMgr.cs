@@ -31,7 +31,7 @@ public class Nights2SpotMgr : MonoBehaviour
       Nights2Spot closestSpot = null;
       for (int i = 0; i < Spots.Length; i++)
       {
-          float curDist = (Spots[i].GetPos() - p).sqrMagnitude;
+         float curDist = (Spots[i].GetPos() - p).sqrMagnitude;
          if (curDist < closestDist)
          {
             closestDist = curDist;

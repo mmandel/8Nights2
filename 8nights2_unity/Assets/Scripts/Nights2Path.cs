@@ -52,13 +52,26 @@ public class Nights2Path : MonoBehaviour
         PortalToAltWorld2,
         PortalToRoom,
         Beacon,
-        Shamash
+        Shamash,
+        Treasure
     }
 
     private LineRenderer _previewRenderer = null;
     private bool _isEditting = false;
 
     public bool IsEditting() { return _isEditting; }
+
+    public Nights2Spot GetTreasureSpot()
+    {
+        //meh, should probably cache this instead of looking it up
+        for (int i = 0; i < Path.Points.Length - 1; i++)
+        {
+            if (Path.Points[i].Action == SpotAction.Treasure)
+                return Path.Points[i].Spot;
+        }
+
+        return null;
+    }
 
     public Vector3 GetPortalDir(PortalType portal)
     {

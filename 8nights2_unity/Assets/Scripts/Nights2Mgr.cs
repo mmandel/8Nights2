@@ -374,7 +374,14 @@ public class Nights2Mgr : MonoBehaviour
           else if (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.ShowingEntrancePortal)
               Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ThroughEntrancePortal);
           else if (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.ThroughEntrancePortal)
-              Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ShowingExitPortal);
+          {
+              if (Nights2TorchPlayer.Instance.GetTreasureState() == Nights2TorchPlayer.TreasureState.WaitingForTreasureReveal)
+                  Nights2TorchPlayer.Instance.CheateTreasureState(Nights2TorchPlayer.TreasureState.TreasureReveal);
+              else if (Nights2TorchPlayer.Instance.GetTreasureState() == Nights2TorchPlayer.TreasureState.TreasureReveal)
+                  Nights2TorchPlayer.Instance.CheateTreasureState(Nights2TorchPlayer.TreasureState.TreasureCompleted);
+              else if (Nights2TorchPlayer.Instance.GetTreasureState() == Nights2TorchPlayer.TreasureState.TreasureCompleted)
+                  Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ShowingExitPortal);
+          }
           else if (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.ShowingExitPortal)
           {
               Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ThroughExitPortal);
