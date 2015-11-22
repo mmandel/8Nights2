@@ -384,6 +384,12 @@ public class Nights2Mgr : MonoBehaviour
                     SetState(Nights2State.SeekingShamash);
             }
         }
+
+        //figure out if we should be in ducked mode
+        bool shouldAudioDuck = true;
+        if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.NearShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.BeaconLit) || (_curState == Nights2State.AllBeaconsLit))
+           shouldAudioDuck = false;
+        Nights2AudioMgr.Instance.SetDuckedMode(shouldAudioDuck);
 	}
 
    public void CheatToNextState()

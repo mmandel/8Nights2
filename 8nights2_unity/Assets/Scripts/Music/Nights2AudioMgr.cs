@@ -27,6 +27,11 @@ public class Nights2AudioMgr : MonoBehaviour
    public FMOD_StudioEventEmitter BeaconLitOneOff;
 
    [Space(10)]
+   public float DuckedStemsLevel = .25f;
+   public float DuckStemsTime = 1.0f;
+   public float UnduckStemsTime = .25f;
+
+   [Space(10)]
    public MusicTestData MusicTester = new MusicTestData();
 
    [Header("Tuning Values")]
@@ -40,6 +45,10 @@ public class Nights2AudioMgr : MonoBehaviour
    private GroupStateData[] _groupState = null;
    private EightNightsMgr.GroupID[] _allGroupNames;
    private bool _hadFirstUpdate = false;
+
+   private bool  _isDucked = false;
+   private float _duckedStemsFader = 1.0f;
+   private float _duckingStartTime = -1.0f;
 
    //backing loop's state
    public enum StemLoopState
@@ -135,6 +144,16 @@ public class Nights2AudioMgr : MonoBehaviour
          return MusicPlayer.GetVolumeForGroup(g);
       }
       return 0.0f;
+   }
+
+   //duck stems to lower volume level?
+   public void SetDuckedMode(bool b)
+   {
+      if (_isDucked != b)
+      {
+         _isDucked = b;
+         _duckingStartTime = Time.time;
+      }
    }
 
    public enum BackingLoops
@@ -477,6 +496,26 @@ public class Nights2AudioMgr : MonoBehaviour
          ShowTestUI = !ShowTestUI;
       }
 
+      //handle ducking audio
+      if (_duckingStartTime >= 0.0f)
+      {
+         float elapsed = (Time.time - _duckingStartTime);
+         float transishTime = _isDucked ? DuckStemsTime : UnduckStemsTime;
+         float u = Mathf.Clamp01(elapsed / transishTime);
+         u = _isDucked ? 1.0f - u : u;
+
+         _duckedStemsFader = Mathf.Lerp(DuckedStemsLevel, 1.0f, u);
+
+         if (Mathf.Approximately(u, 1.0f)) //done?
+         {
+            _duckingStartTime = -1.0f;
+         }
+      }
+      else
+      {
+         _duckedStemsFader = _isDucked ? DuckedStemsLevel : 1.0f;
+      }
+
 
       /*if (Input.GetKeyDown(KeyCode.KeypadPlus))
          BeatClock.Instance.LatencyMs += 1000;
@@ -541,7 +580,7 @@ public class Nights2AudioMgr : MonoBehaviour
             else if (d.LoopState == StemLoopState.Attacking)
             {
                float u = Mathf.Clamp01((Time.time - d.Timestamp()) / StemAttackTime);
-               MusicPlayer.SetVolumeForGroup(d.Group, d.MasterFader * u);
+               MusicPlayer.SetVolumeForGroup(d.Group, _duckedStemsFader * d.MasterFader * u);
 
                if (Mathf.Approximately(u, 1.0f))
                {
@@ -551,12 +590,12 @@ public class Nights2AudioMgr : MonoBehaviour
             }
             else if (d.LoopState == StemLoopState.Sustaining)
             {
-               MusicPlayer.SetVolumeForGroup(d.Group, d.MasterFader * 1.0f);
+                MusicPlayer.SetVolumeForGroup(d.Group, _duckedStemsFader*d.MasterFader * 1.0f);
             }
             else if (d.LoopState == StemLoopState.Releasing)
             {
                float u = Mathf.Clamp01((Time.time - d.Timestamp()) / StemReleaseTime);
-               MusicPlayer.SetVolumeForGroup(d.Group, d.MasterFader * (1.0f - u));
+               MusicPlayer.SetVolumeForGroup(d.Group, _duckedStemsFader*d.MasterFader * (1.0f - u));
 
                if (Mathf.Approximately(u, 1.0f))
                {
