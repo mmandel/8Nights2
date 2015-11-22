@@ -12,6 +12,7 @@ public class FFTLightEffect : MonoBehaviour
    public bool OutputToLight = true;
    public bool FadeWithStemVolume = true;
    public bool DisableDuringCrescendos = true;
+   public bool AllowNights2Override = true; //sometimes we want to show other things on the lights...
    [Range(0, 39)]
    public int MinFFTBin = 0;
    [Range(0, 39)]
@@ -79,6 +80,9 @@ public class FFTLightEffect : MonoBehaviour
          return;
 
       if ((ButtonSoundMgr.Instance != null) && DisableDuringCrescendos && ButtonSoundMgr.Instance.IsGroupCrescendoing(Group))
+         return;
+
+      if ((Nights2Mgr.Instance != null) && AllowNights2Override && Nights2Mgr.Instance.IsOverridingLights())
          return;
 
       SpectrogramMgr.SpectroConfig fftData =  SpectrogramMgr.Instance.GetSpectroDataForGroup(Group);

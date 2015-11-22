@@ -16,6 +16,7 @@ public class Nights2Mgr : MonoBehaviour
     public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
     public float BeaconLitSuccessTime = 3.0f; //how long we stay in the BeaconLit state before auto advancing to the next stage of the installation
+    public float BeaconLitBlastTime = 1.5f; //how long do all the beacons light the color of the newly lit beacon?
 
     public GameObject VRRig; //this gets teleported between worlds, all the VR stuff is a child of this
     public GameObject RoomWorld; 
@@ -47,6 +48,10 @@ public class Nights2Mgr : MonoBehaviour
     private int _curAltWorldIdx = 0;
     private float _stateActivateTime = 0.0f;
     private WorldID _curWorld = WorldID.RoomWorld;
+    private float _beaconBlastStart = -1.0f;
+    private Color _beaconBlastColor = Color.blue;
+
+    private bool _overridingLights = false;
 
     public enum Nights2State
     {
@@ -61,6 +66,11 @@ public class Nights2Mgr : MonoBehaviour
     };
 
     public static Nights2Mgr Instance { get; private set; }
+
+    public bool IsOverridingLights()
+    {
+       return _overridingLights;
+    }
 
     public int NumCandlesLit()
     {
@@ -148,6 +158,10 @@ public class Nights2Mgr : MonoBehaviour
 
                if (Nights2AudioMgr.Instance.BeaconLitOneOff != null)
                    Nights2AudioMgr.Instance.BeaconLitOneOff.Play();
+
+               //start blasting all the beacons the same color
+               _beaconBlastStart = Time.time;
+               _beaconBlastColor = _nextBeacon.CandleColor;
 
                //update state of next beacon
                _nextBeacon.SetLit(true);
@@ -385,9 +399,34 @@ public class Nights2Mgr : MonoBehaviour
             }
         }
 
+        //blasting all beacons together after a beacon is lit
+        if (_beaconBlastStart >= 0.0f)
+        {
+           _overridingLights = true;
+
+           float blastElapsed = Time.time - _beaconBlastStart;
+           float u = Mathf.Clamp01(blastElapsed / BeaconLitBlastTime);
+
+           //fade in for a bit
+           const float kFadeInTime = .35f;
+           float blendIntensityU = Mathf.Clamp01(blastElapsed / kFadeInTime);
+
+           for (int i = 0; i < 8; i++)
+           {
+              EightNightsMgr.GroupID candleGroup = (EightNightsMgr.GroupID)(EightNightsMgr.GroupID.Candle1 + i);
+              LightMgr.Instance.SetAllLightsInGroup(candleGroup, blendIntensityU, _beaconBlastColor);
+           }
+
+           if (Mathf.Approximately(u, 1.0f)) //done?
+           {
+              _overridingLights = false;
+              _beaconBlastStart = -1.0f;
+           }
+        }
+
         //figure out if we should be in ducked mode
         bool shouldAudioDuck = true;
-        if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.NearShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.BeaconLit) || (_curState == Nights2State.AllBeaconsLit))
+        if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.BeaconLit) || (_curState == Nights2State.AllBeaconsLit))
            shouldAudioDuck = false;
         Nights2AudioMgr.Instance.SetDuckedMode(shouldAudioDuck);
 	}
