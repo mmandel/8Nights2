@@ -10,6 +10,7 @@ using System;
 public class Nights2SpotMgr : MonoBehaviour 
 {
    public GameObject SpotPrefab = null; //expected to be a prefab with the Nightsa2Spot script on it
+   public bool ShowSpotDebugSpheres = false;
    public Nights2Spot[] Spots = new Nights2Spot[0];
 
    public event SpotEventHandler OnLanternArrived;

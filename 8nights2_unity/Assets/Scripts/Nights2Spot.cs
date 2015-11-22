@@ -16,6 +16,8 @@ public class Nights2Spot : MonoBehaviour
    private Collider _collider = null;
    private GameObject _spawned = null;
 
+   private Nights2SpotDebug _debugViz = null;
+
    public Vector3 GetPos()
    {
       return transform.position;
@@ -25,18 +27,28 @@ public class Nights2Spot : MonoBehaviour
    {
        _spawned = go;
        _collider = (go != null) ? go.GetComponent<Collider>() : null;
+
+       _debugViz = _spawned.GetComponentInChildren<Nights2SpotDebug>();
+       if (_debugViz != null)
+           _debugViz.gameObject.SetActive(Nights2SpotMgr.Instance.ShowSpotDebugSpheres);
    }
 
    void Awake()
    {
-      MakeActive(false);
    }
 
 
 	void Start () 
    {
-
+       MakeActive(false);
 	}
+
+    void Update()
+    {
+
+        if (_debugViz != null)
+            _debugViz.gameObject.SetActive(Nights2SpotMgr.Instance.ShowSpotDebugSpheres);
+    }
 
    public void MakeActive(bool b)
    {

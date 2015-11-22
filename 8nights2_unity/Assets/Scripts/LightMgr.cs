@@ -85,6 +85,8 @@ public class LightMgr : MonoBehaviour
 
         public void Set(Color color, float intensity, float transitionTime = 0.0f)
         {
+            if (_groupConfig == null)
+                Debug.Log("WTF!");
             if (!Enabled || !_groupConfig.Enabled)
                 return;
 
