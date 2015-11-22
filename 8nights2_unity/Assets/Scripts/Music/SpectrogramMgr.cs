@@ -40,6 +40,12 @@ public class SpectrogramMgr : MonoBehaviour
 
       public void Load()
       {
+         if (PathToSpecFile.Length == 0)
+         {
+            _spectroCurves = null;
+            return;
+         }
+
          string filePath = Application.streamingAssetsPath + "/" + PathToSpecFile;
 
          FileStream fs = File.OpenRead(filePath);
@@ -70,6 +76,8 @@ public class SpectrogramMgr : MonoBehaviour
       {
          if (!DebugDraw)
             return;
+         if (_spectroCurves == null)
+            return;
 
          Vector2 startPos = new Vector2(10, 150);
          float boxWidth = 20;
@@ -94,13 +102,32 @@ public class SpectrogramMgr : MonoBehaviour
          }
       }
 
-      public int NumBands() { return (_spectroCurves != null) ? _spectroCurves.Length : 0; }
+      public int NumBands() { return (_spectroCurves != null) ? _spectroCurves.Length : 1; }
 
       //get info on frequency range of the given band
       public float GetCenterFreq(int idx) { return _fftFreqBands[idx]; }
 
       //get the intensity of a particular band at the given time
-      public float GetBandValue(int idx, float time) { return _spectroCurves[idx].Evaluate(time); }
+      public float GetBandValue(int idx, float time) 
+      {
+         if (_spectroCurves == null) //fake spectrograme if we don't have one
+         {
+            float stemVolume = 0.0f;
+            if (EightNightsAudioMgr.Instance != null)
+               stemVolume = EightNightsAudioMgr.Instance.MusicPlayer.GetVolumeForGroup(Group);
+            else if (Nights2AudioMgr.Instance != null)
+               stemVolume = Nights2AudioMgr.Instance.MusicPlayer.GetVolumeForGroup(Group);
+
+            const float kHeightScale = .1f;
+            const float kTimeScale = 100.0f;
+            float noiseVal = kHeightScale * Mathf.PerlinNoise(Time.time * kTimeScale, 0.0F);
+            stemVolume = Mathf.Clamp01(stemVolume - noiseVal);
+
+            return stemVolume;
+         }
+         else
+            return _spectroCurves[idx].Evaluate(time); 
+      }
 
       AnimationCurve[] _spectroCurves;  //a curve for each bin of the FFT
       float[] _fftFreqBands;
