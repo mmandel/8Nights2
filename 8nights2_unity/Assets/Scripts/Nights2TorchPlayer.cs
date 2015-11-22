@@ -131,6 +131,8 @@ public class Nights2TorchPlayer : MonoBehaviour
         {
             //reset portal state
             SetPortalState(PortalState.NoProgress);
+            //reset treasure state too
+            SetTreasureState(TreasureState.NoProgress);
 
             ShowPortal(false);
         }
