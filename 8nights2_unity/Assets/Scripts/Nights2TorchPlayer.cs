@@ -200,6 +200,12 @@ public class Nights2TorchPlayer : MonoBehaviour
                   TreasureRevealSound.Play();
             }
 
+            if (_curTreasureState == TreasureState.TreasureCompleted)
+            {
+               if (Nights2SpotMgr.Instance != null)
+                  Nights2SpotMgr.Instance.TriggerSpotFX(Nights2SpotMgr.LightAction.TurnAllOn, 2.0f);
+            }
+
 
             //light up spot
             Nights2Spot treasureSpot = GetTreasureSpot();

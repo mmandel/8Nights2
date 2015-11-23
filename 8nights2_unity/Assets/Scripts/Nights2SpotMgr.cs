@@ -23,6 +23,15 @@ public class Nights2SpotMgr : MonoBehaviour
 
    private GameObject[] _spawned = null; //spawned for each Spot
    private Nights2Spot _activeSpot = null;
+   private float _overrideStartTime = -1.0f;
+   private float _overrideTime = 1.0f; //how long to override for
+   private LightAction _overrideAction = LightAction.TurnAllOn;
+
+   public enum LightAction
+   {
+      TurnAllOn,
+      Ping
+   }
 
    public static Nights2SpotMgr Instance { get; private set; }
 
@@ -42,6 +51,13 @@ public class Nights2SpotMgr : MonoBehaviour
 
       return closestSpot;
    }
+
+   public void TriggerSpotFX(LightAction l, float overrideTime = 1.0f)
+   {
+      _overrideStartTime = Time.time;
+      _overrideTime = overrideTime; //how long to override for
+      _overrideAction = l;
+   }   
 
    void Awake()
    {
@@ -71,6 +87,50 @@ public class Nights2SpotMgr : MonoBehaviour
 
       _activeSpot = null;
 	}
+
+   void Update()
+   {
+      //override behavior of spot lights?
+      if (_overrideStartTime > 0.0f)
+      {
+         float elapsed = Time.time - _overrideStartTime;
+         float u = Mathf.Clamp01(elapsed / _overrideTime);
+
+         switch (_overrideAction)
+         {
+            case LightAction.TurnAllOn:
+               for (int i = 0; i < Spots.Length; i++)
+               {
+                  Nights2Spot s = Spots[i];
+                  if (s != null)
+                     s.MakeActive(true);
+               }
+               break;
+            case LightAction.Ping:
+               //TODO!
+               break;
+            default: break;
+         }
+
+         if (Mathf.Approximately(u, 1.0f))
+         {
+            _overrideStartTime = -1.0f;
+
+            //restore state of spots
+            for (int i = 0; i < Spots.Length; i++)
+            {
+               Nights2Spot s = Spots[i];
+               if (s != null)
+               {
+                  s.MakeActive(false);
+               }
+            }
+
+            if (ActiveSpot() != null)
+               ActiveSpot().MakeActive(true);
+         }
+      }
+   }
 
    public void MakeSpotActive(Nights2Spot s)
    {
