@@ -84,7 +84,7 @@ public class OSCHandler : MonoBehaviour
 	
 	private const int _loglength = 25;
 
-    private OSCMessage[] _messagePool = new OSCMessage[1024];
+    private OSCMessage[] _messagePool = new OSCMessage[2048];
     private int _nextMsgIdx = 0;
 	#endregion
 	

@@ -34,6 +34,7 @@ public class Nights2TorchPlayer : MonoBehaviour
     public GameObject TreasurePrefab;
     [Tooltip("How close does lantern need to be to treasure spot to reveal it")]
     public float TreasureRevealDist = .5f;
+    public FMOD_StudioEventEmitter TreasureRevealSound;
 
     [Space(10)]
 
@@ -192,6 +193,12 @@ public class Nights2TorchPlayer : MonoBehaviour
             TreasureState prevState = _curTreasureState;
 
             _curTreasureState = s;
+
+            if (_curTreasureState == TreasureState.TreasureReveal)
+            {
+               if (TreasureRevealSound != null)
+                  TreasureRevealSound.Play();
+            }
 
 
             //light up spot
