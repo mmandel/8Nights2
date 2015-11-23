@@ -118,8 +118,8 @@ public class SpectrogramMgr : MonoBehaviour
             else if (Nights2AudioMgr.Instance != null)
                stemVolume = Nights2AudioMgr.Instance.MusicPlayer.GetVolumeForGroup(Group);
 
-            const float kHeightScale = .125f;
-            const float kTimeScale = 100.0f;
+            const float kHeightScale = .05f;
+            const float kTimeScale = 35.0f;
             float noiseVal = kHeightScale * Mathf.PerlinNoise(Time.time * kTimeScale, 0.0F);
             stemVolume = Mathf.Clamp01(stemVolume - noiseVal);
 
