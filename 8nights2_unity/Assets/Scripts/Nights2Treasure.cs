@@ -32,6 +32,11 @@ public class Nights2Treasure : MonoBehaviour
    public string LanternLockedBool = "lock2_locked";
    public string UnlockedMagicTrigger = "unlocked";
 
+   [Header("Sounds")]
+   public FMOD_StudioEventEmitter CompletedSound;
+   public FMOD_StudioEventEmitter RevealSound;
+   public FMOD_StudioEventEmitter UnlockSound;
+
    [Header("Debug")]
    [ScriptButton("Unlock 1!", "OnUnlock1")]
    public bool DummyTriggerLock1;
@@ -53,6 +58,8 @@ public class Nights2Treasure : MonoBehaviour
    private bool _forceUnlock1 = false;
    private bool _forceUnlock2 = false;
    private bool _forceOpen = false;
+   private int _lastNumUnlocked = 0;
+   private bool _firstUpdate = false;
 
    enum MagicPhase
    {
@@ -67,6 +74,9 @@ public class Nights2Treasure : MonoBehaviour
 
 	void Start () 
    {
+      _firstUpdate = true;
+      _lastNumUnlocked = 0;
+
       _animator = gameObject.GetComponent<Animator>();
       _isUnlocked = false;
 
@@ -110,8 +120,30 @@ public class Nights2Treasure : MonoBehaviour
 	
 	void Update () 
    {
+      if (_firstUpdate)
+      {
+         _firstUpdate = false;
+         if (RevealSound != null)
+            RevealSound.Play();
+      }
+
       bool torchUnlocked = (_torchIcon != null) ? (_forceUnlock1 || _torchIcon.RequiredPropIsNear()) : false;
       bool lanternUnlocked = (_lanternIcon != null) ? (_forceUnlock2 || _lanternIcon.RequiredPropIsNear()) : false;
+
+      int curNumUnlocked = 0;
+      if (torchUnlocked)
+         curNumUnlocked++;
+      if (lanternUnlocked)
+         curNumUnlocked++;
+
+      //first icon unlocked
+      if ((_lastNumUnlocked == 0) && (curNumUnlocked == 1))
+      {
+         if (UnlockSound != null)
+            UnlockSound.Play();
+      }
+
+      _lastNumUnlocked = curNumUnlocked;
          
       if((_animator != null) && (TorchLockedBool.Length > 0))
       {
@@ -128,6 +160,9 @@ public class Nights2Treasure : MonoBehaviour
 
       if (!wasUnlocked && _isUnlocked && (_animator != null))
       {
+         if (CompletedSound != null)
+            CompletedSound.Play();
+
          _animator.SetTrigger(UnlockedMagicTrigger);
 
          //transition lantern + torch icons out

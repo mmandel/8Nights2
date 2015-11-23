@@ -15,6 +15,11 @@ public class Nights2Shamash : MonoBehaviour
 
     [Space(10)]
 
+    public FMOD_StudioEventEmitter ShamashRevealSound;
+    public FMOD_StudioEventEmitter TorchLitSound;
+
+    [Space(10)]
+
     //torch icon stuff
     public Transform TorchIconSpot;
     public GameObject TorchIconPrefab;
@@ -172,9 +177,17 @@ public class Nights2Shamash : MonoBehaviour
 
        //to make sure icon is created/destroyed when cheating
        if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.NearShamash) && (_torchIcon == null))
+       {
           SpawnIcon();
+          if (ShamashRevealSound != null)
+             ShamashRevealSound.Play();
+       }
        else if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) && (_torchIcon != null))
+       {
           DestroyIcon();
+          if (TorchLitSound != null)
+             TorchLitSound.Play();
+       }
     }
 
     void SetAnimatorBool(string boolName, bool val)
