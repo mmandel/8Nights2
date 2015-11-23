@@ -364,14 +364,16 @@ public class Nights2AudioMgr : MonoBehaviour
       // Show cur MBT in bottom left corner
       startPos.x = 10;
       startPos.y = Screen.height - 30;
-      string MBTStr = "Beat Time: " + (BeatClock.Instance.curMeasure + 1) + ":" + (BeatClock.Instance.curBeat + 1) + ":" + BeatClock.Instance.curTick;
-      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), MBTStr);
+      //string MBTStr = "Beat Time: " + (BeatClock.Instance.curMeasure + 1) + ":" + (BeatClock.Instance.curBeat + 1) + ":" + BeatClock.Instance.curTick;
+      //GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), MBTStr);
       // Show elapsed time
       startPos.y -= 20;
-      int minutes = (int)(BeatClock.Instance.elapsedSecs / 60.0f);
-      int secs = (int)(BeatClock.Instance.elapsedSecs % 60.0f);
+      //float elapsedSecs = BeatClock.Instance.elapsedSecs;
+      float elapsedSecs = Nights2Mgr.Instance.GetTurnElapsedTime();
+      int minutes = (int)(elapsedSecs / 60.0f);
+      int secs = (int)(elapsedSecs % 60.0f);
       string secsStr = (secs < 10) ? "0" + secs : secs.ToString();
-      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), "Elapsed:    " + minutes + ":" + secsStr);
+      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), "Timer:    " + minutes + ":" + secsStr);
 
       //Restart Song Button
       //TODO: this code doesn't work yet, so disabling for now...

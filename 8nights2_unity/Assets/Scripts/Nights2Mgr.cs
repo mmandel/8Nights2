@@ -52,6 +52,8 @@ public class Nights2Mgr : MonoBehaviour
     private Color _beaconBlastColor = Color.blue;
 
     private bool _overridingLights = false;
+    private float _turnStartTime = -1.0f;
+    private float _turnEndTime = -1.0f;
 
     public enum Nights2State
     {
@@ -118,6 +120,16 @@ public class Nights2Mgr : MonoBehaviour
 
     public Nights2State GetState() { return _curState; }
 
+    public float GetTurnElapsedTime()
+    {
+       if (_turnStartTime < 0.0f)
+          return 0.0f;
+       else if (_turnEndTime < 0.0f)
+          return Time.time - _turnStartTime;
+       else //between rounds, display last turns time
+          return _turnEndTime - _turnStartTime;
+    }
+
     public void SetState(Nights2State s)
     {
         if (_curState != s)
@@ -134,6 +146,17 @@ public class Nights2Mgr : MonoBehaviour
                 (_curState == Nights2State.SeekingBeacon))
             {
                 LightCurrentPath(true);
+            }
+
+            //keep track of when this turn started, so we can display a timer
+            if (prevState == Nights2State.GettingReady)
+            {
+               _turnStartTime = Time.time;
+               _turnEndTime = -1.0f;
+            }
+            else if (_curState == Nights2State.GettingReady)
+            {
+               _turnEndTime = Time.time;
             }
 
             //pick beacon when starting to seek shamash so it can sync up with the color of the new candle
