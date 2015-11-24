@@ -933,7 +933,11 @@
             <destination>{96a16132-1a06-4a47-8249-2fbfd063a4c7}</destination>
         </relationship>
     </object>
-    <object class="ChannelMixEffect" id="{47cb3dc1-8b48-4327-aa77-04478fd70205}"/>
+    <object class="ChannelMixEffect" id="{47cb3dc1-8b48-4327-aa77-04478fd70205}">
+        <property name="outputGrouping">
+            <value>5</value>
+        </property>
+    </object>
     <object class="MixerBusFader" id="{236cf2e9-1c21-4276-8c29-53a33bd69223}"/>
     <object class="ChannelMixEffect" id="{cb57271f-bebe-4dd6-aff1-afaac6fc2db5}">
         <property name="outputGrouping">
