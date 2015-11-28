@@ -14,7 +14,7 @@ public class Nights2SpotMgr : MonoBehaviour
    public Nights2Spot[] Spots = new Nights2Spot[0];
 
    [Space(10)]
-   public float PingMaxRadius = 3.7f;
+   public float PingMaxRadius = 3.7f; //12ft
 
 
    public event SpotEventHandler OnLanternArrived;

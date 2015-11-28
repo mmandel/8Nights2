@@ -94,9 +94,9 @@ public class Nights2Path : MonoBehaviour
         if (portal == PortalType.EntrancePortal)
             return GetSegmentDirection(_entrancePortalSegment-1);
         else if (portal == PortalType.EntrancePortal2)
-            return GetSegmentDirection(_entrancePortal2Segment);
+            return GetSegmentDirection(_entrancePortal2Segment-1);
         else
-            return GetSegmentDirection(_exitPortalSegment);
+            return GetSegmentDirection(_exitPortalSegment-1);
     }
 
     public Vector3 GetPortalPos(PortalType portal)
@@ -303,14 +303,14 @@ public class Nights2Path : MonoBehaviour
     public Vector3 GetSegmentDirection(int pathSegment)
     {
         //if last point leads to beacon, we can form the segment by pointing at the beacon itself
-        if ((pathSegment == Path.Points.Length - 1) && ((Path.Points[pathSegment].Action == SpotAction.Beacon) || (Path.Points[pathSegment].Action == SpotAction.PortalToRoom)))
+       /* if ((pathSegment == Path.Points.Length - 1) && ((Path.Points[pathSegment].Action == SpotAction.Beacon) || (Path.Points[pathSegment].Action == SpotAction.PortalToRoom)))
         {
             Vector3 a = GetWorldPoint(pathSegment);
             Vector3 b = transform.TransformPoint(LeadsToBeacon.transform.position);
             b.y = a.y;
 
             return (b - a).normalized;
-        }
+        }*/
 
         if ((Path == null) || (pathSegment >= Path.Points.Length - 1))
         {
