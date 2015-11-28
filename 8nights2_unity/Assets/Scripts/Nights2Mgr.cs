@@ -15,6 +15,10 @@ public class Nights2Mgr : MonoBehaviour
     public Nights2Path[] DebugPathOrder = new Nights2Path[0]; //use these if UseDebugPathOrder is true
     public GameObject[] Candles = new GameObject[0]; //expected to have Nights2Beacon com on them
 
+    [Space(10)]
+
+    public Nights2Beacon[] ClockwiseCandleOrder = new Nights2Beacon[0]; //order to light things up in clockwise order
+
     public float BeaconLitSuccessTime = 3.0f; //how long we stay in the BeaconLit state before auto advancing to the next stage of the installation
     public float BeaconLitBlastTime = 1.5f; //how long do all the beacons light the color of the newly lit beacon?
 
@@ -48,12 +52,16 @@ public class Nights2Mgr : MonoBehaviour
     private int _curAltWorldIdx = 0;
     private float _stateActivateTime = 0.0f;
     private WorldID _curWorld = WorldID.RoomWorld;
-    private float _beaconBlastStart = -1.0f;
-    private Color _beaconBlastColor = Color.blue;
 
-    private bool _overridingLights = false;
     private float _turnStartTime = -1.0f;
     private float _turnEndTime = -1.0f;
+
+
+    private LightAction _curLightOverride = LightAction.None;
+    private float _lightActionStartTime = -1.0f;
+    private TurnOnInSequenceParams _turnOnSeqParams = null;
+    private TurnAllOnParams _turnOnAllParams = null;
+    private GradientCycleParams _gradCycleParams = null;
 
     public enum Nights2State
     {
@@ -67,11 +75,89 @@ public class Nights2Mgr : MonoBehaviour
         AllBeaconsLit       //final success state
     };
 
+    public enum LightAction
+    {
+       None,
+       TurnAllOn, //turn on for x seconds, optional color override
+       GradientCycle, //cycle through a gradient at the given spead with option fmod level meter to control brightness
+       TurnOnInSequence, //turn on one at a time using counter clockwise sequence, option to specify delay between each, and final hold time
+    }
+
+    public class TurnAllOnParams
+    {
+       public TurnAllOnParams(float duration, bool shouldOverrideColor, Color overrideColor)
+       {
+          Duration = duration;
+          ShouldOverrideColor = shouldOverrideColor;
+          OverrideColor = overrideColor;
+       }
+
+       public float Duration;
+       public bool ShouldOverrideColor;
+       public Color OverrideColor;
+    };
+
+    public class GradientCycleParams
+    {
+       public GradientCycleParams(float duration, Gradient gradient, float cycleSpeed, FModLevelMeter levelMeter = null, float levelMeterGain = 1.0f)
+       {
+          Duration = duration;
+          ColorGradient = gradient;
+          LevelMeter = levelMeter;
+          LevelMeterGain = levelMeterGain;
+          CycleSpeed = cycleSpeed;
+       }
+
+       public float Duration;
+       public Gradient ColorGradient;
+       public FModLevelMeter LevelMeter;
+       public float LevelMeterGain;
+       public float CycleSpeed; //cycles per second
+    }
+
+    public class TurnOnInSequenceParams
+    {
+       public TurnOnInSequenceParams(float holdDuration, float nextLightInterval, Nights2Beacon[] lightOrder)
+       {
+          HoldDuration = holdDuration;
+          NextLightInterval = nextLightInterval;
+          LightOrder = lightOrder;
+       }
+
+       public float HoldDuration;
+       public float NextLightInterval;
+       public Nights2Beacon[] LightOrder;
+    }
+
+    //trigger effect on lights that turns them on in sequence
+    public void FXTurnOnInSequence(TurnOnInSequenceParams paramDef)
+    {
+       _curLightOverride = LightAction.TurnOnInSequence;
+       _turnOnSeqParams = paramDef;
+       _lightActionStartTime = Time.time;
+    }
+
+    //trigger effect on lights that turns them on in sequence
+    public void FXGradientCycle(GradientCycleParams paramDef)
+    {
+       _curLightOverride = LightAction.GradientCycle;
+       _gradCycleParams = paramDef;
+       _lightActionStartTime = Time.time;
+    }
+
+    //trigger effect on lights that turns them on in sequence
+    public void FXTurnOnAll(TurnAllOnParams paramDef)
+    {
+       _curLightOverride = LightAction.TurnAllOn;
+       _turnOnAllParams = paramDef;
+       _lightActionStartTime = Time.time;
+    }
+
     public static Nights2Mgr Instance { get; private set; }
 
     public bool IsOverridingLights()
     {
-       return _overridingLights;
+       return _curLightOverride != LightAction.None;
     }
 
     public int NumCandlesLit()
@@ -183,8 +269,7 @@ public class Nights2Mgr : MonoBehaviour
                    Nights2AudioMgr.Instance.BeaconLitOneOff.Play();
 
                //start blasting all the beacons the same color
-               _beaconBlastStart = Time.time;
-               _beaconBlastColor = _nextBeacon.CandleColor;
+               FXTurnOnAll(new TurnAllOnParams(BeaconLitBlastTime, true, _nextBeacon.CandleColor));
 
                //update state of next beacon
                _nextBeacon.SetLit(true);
@@ -421,31 +506,9 @@ public class Nights2Mgr : MonoBehaviour
                     SetState(Nights2State.SeekingShamash);
             }
         }
-
-        //blasting all beacons together after a beacon is lit
-        if (_beaconBlastStart >= 0.0f)
-        {
-           _overridingLights = true;
-
-           float blastElapsed = Time.time - _beaconBlastStart;
-           float u = Mathf.Clamp01(blastElapsed / BeaconLitBlastTime);
-
-           //fade in for a bit
-           const float kFadeInTime = .35f;
-           float blendIntensityU = Mathf.Clamp01(blastElapsed / kFadeInTime);
-
-           for (int i = 0; i < 8; i++)
-           {
-              EightNightsMgr.GroupID candleGroup = (EightNightsMgr.GroupID)(EightNightsMgr.GroupID.Candle1 + i);
-              LightMgr.Instance.SetAllLightsInGroup(candleGroup, blendIntensityU, _beaconBlastColor);
-           }
-
-           if (Mathf.Approximately(u, 1.0f)) //done?
-           {
-              _overridingLights = false;
-              _beaconBlastStart = -1.0f;
-           }
-        }
+        
+        //special FX on lights
+        UpdateLightFX();
 
         //figure out if we should be in ducked mode
         bool shouldAudioDuck = true;
@@ -453,6 +516,76 @@ public class Nights2Mgr : MonoBehaviour
            shouldAudioDuck = false;
         Nights2AudioMgr.Instance.SetDuckedMode(shouldAudioDuck);
 	}
+
+   void UpdateLightFX()
+   {
+      if (_curLightOverride == LightAction.None)
+         return;
+
+      float u = 0.0f;
+      float actionElapsed = Time.time - _lightActionStartTime;
+
+      switch (_curLightOverride)
+      {
+         //turn on all lights together
+         case LightAction.TurnAllOn:
+            u = Mathf.Clamp01(actionElapsed / _turnOnAllParams.Duration);
+
+            //fade in for a bit
+            const float kFadeInTime = .35f;
+            float blendIntensityU = Mathf.Clamp01(actionElapsed / kFadeInTime);
+
+            for (int i = 0; i < 8; i++)
+            {
+               EightNightsMgr.GroupID candleGroup = (EightNightsMgr.GroupID)(EightNightsMgr.GroupID.Candle1 + i);
+               LightMgr.Instance.SetAllLightsInGroup(candleGroup, blendIntensityU, _turnOnAllParams.ShouldOverrideColor ? _turnOnAllParams.OverrideColor : LightMgr.Instance.GetDefaultColor(candleGroup));
+            }
+         break;
+
+         case LightAction.GradientCycle:
+            u = Mathf.Clamp01(actionElapsed / _gradCycleParams.Duration);
+
+            //sample the color gradient
+            float gradientSample = (actionElapsed * _gradCycleParams.CycleSpeed) % 1.0f;
+            Color gradColor = _gradCycleParams.ColorGradient.Evaluate(gradientSample);
+
+            float intensity = 1.0f;
+            if (_gradCycleParams.LevelMeter != null)
+               intensity = Mathf.Clamp01(_gradCycleParams.LevelMeter.CurLevel * _gradCycleParams.LevelMeterGain);
+
+            for (int i = 0; i < 8; i++)
+            {
+               EightNightsMgr.GroupID candleGroup = (EightNightsMgr.GroupID)(EightNightsMgr.GroupID.Candle1 + i);
+               LightMgr.Instance.SetAllLightsInGroup(candleGroup, intensity, gradColor);
+            }
+         break;
+
+         case LightAction.TurnOnInSequence:
+            float turnOnTime = (_turnOnSeqParams.LightOrder.Length * _turnOnSeqParams.NextLightInterval);
+            float totalTime = turnOnTime + _turnOnSeqParams.HoldDuration;
+
+            u = Mathf.Clamp01(actionElapsed / totalTime);
+
+            float turnOnU = Mathf.Clamp01(actionElapsed / turnOnTime);
+            int onIdxThresh = (int)(turnOnU * _turnOnSeqParams.LightOrder.Length);
+            for (int i = 0; i < _turnOnSeqParams.LightOrder.Length; i++)
+            {
+               Nights2Beacon candle = _turnOnSeqParams.LightOrder[i];
+               EightNightsMgr.GroupID candleGroup = Nights2AudioMgr.Instance.GetGroupForBeacon(candle);
+               LightMgr.Instance.SetAllLightsInGroup(candleGroup, (i <= onIdxThresh) ? 1.0f : 0.0f, LightMgr.Instance.GetDefaultColor(candleGroup));
+            }            
+
+         break;
+
+         default: break;
+      }
+
+      if (Mathf.Approximately(u, 1.0f)) //done?
+      {
+         _curLightOverride = LightAction.None;
+      }
+      
+   }
 
    public void CheatToNextState()
    {

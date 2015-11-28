@@ -8,6 +8,8 @@
 
 using UnityEngine;
 using System.Collections;
+using System;
+using System.Runtime.InteropServices;
 
 
 //8nights specific stuff for each audio layer
@@ -128,6 +130,12 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
         FMOD.Studio.ParameterInstance param = FModEvent.getParameter(PeakLoopFModParam);
         if (param != null)
             param.getValue(out paramVal);
+
+        /*FMOD.DSP spectrum;
+        IntPtr unmanagedData;
+        uint unmanagedDataLen = 0;
+        var result = spectrum.getParameterData((int)FMOD.DSP_FFT.SPECTRUMDATA, out unmanagedData, out unmanagedDataLen);
+        FMOD.DSP_PARAMETER_FFT waveFormBuffer = (FMOD.DSP_PARAMETER_FFT)Marshal.PtrToStructure(unmanagedData, typeof(FMOD.DSP_PARAMETER_FFT));*/
 
         return Mathf.InverseLerp(0.0f, PeakLoopMixVolume, paramVal);
     }

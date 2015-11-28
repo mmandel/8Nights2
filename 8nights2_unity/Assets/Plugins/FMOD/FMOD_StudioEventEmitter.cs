@@ -73,7 +73,8 @@ public class FMOD_StudioEventEmitter : MonoBehaviour
      	   int result;
      	   evt.getTimelinePosition(out result);
      	   return result;
-     	}	
+     	}
+      public FMOD.Studio.EventInstance getInstance() { return evt; }
 
 	void Start() 
 	{

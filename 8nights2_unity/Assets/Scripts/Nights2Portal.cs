@@ -11,6 +11,13 @@ public class Nights2Portal : MonoBehaviour
     public string ShowPortalTrigger = "show"; //show the portal
     public string CancelPortalTrigger = "cancel"; //hide the portal due to cancelling (player stepped off path)
     public string ActivatedTrigger = "activated"; //play effect with portal is activated, and then hide
+    [Header("Light FX")]
+    public Gradient LightFXGradient;
+    public float LightFXCycleSpeed = 2.0f;
+    public float PortalOpenLightFXTime = 4.0f;
+    public float PortalActivateLightFXTime = 4.0f;
+    public float PortalOpenLevelMeterGain = 1.0f;
+    public float PortalActivateLevelMeterGain = 1.0f;
 
     [Space(10)]
     public FMOD_StudioEventEmitter PortalOpenSound;
@@ -29,7 +36,13 @@ public class Nights2Portal : MonoBehaviour
             _animator.SetTrigger(ShowPortalTrigger);
 
         if (PortalOpenSound != null)
-            PortalOpenSound.Play();
+        {
+           PortalOpenSound.Play();
+
+           //trigger FX on the lights
+           Nights2Mgr.Instance.FXGradientCycle(new Nights2Mgr.GradientCycleParams(PortalOpenLightFXTime, LightFXGradient, LightFXCycleSpeed,
+                                                   PortalOpenSound.gameObject.GetComponent<FModLevelMeter>(), PortalOpenLevelMeterGain));
+        }
     }
 
     public void TriggerCancelPortal()
@@ -47,7 +60,13 @@ public class Nights2Portal : MonoBehaviour
             _animator.SetTrigger(ActivatedTrigger);
 
         if (PortalActivatedSound != null)
-            PortalActivatedSound.Play();
+        {
+           PortalActivatedSound.Play();
+
+           //trigger FX on the lights
+           Nights2Mgr.Instance.FXGradientCycle(new Nights2Mgr.GradientCycleParams(PortalActivateLightFXTime, LightFXGradient, LightFXCycleSpeed,
+                                                   PortalActivatedSound.gameObject.GetComponent<FModLevelMeter>(), PortalActivateLevelMeterGain));        
+        }
 
         if (PortalOpenSound != null)
             PortalOpenSound.Stop();

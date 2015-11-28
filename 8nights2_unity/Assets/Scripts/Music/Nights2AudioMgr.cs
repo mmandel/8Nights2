@@ -440,21 +440,42 @@ public class Nights2AudioMgr : MonoBehaviour
       return null;
    }
 
+   public Nights2Beacon GetBeaconForGroup(EightNightsMgr.GroupID group)
+   {
+      GroupStateData stateData = GetStateForGroup(group);
+      if (stateData != null)
+      {
+         Nights2Beacon b = Nights2Mgr.Instance.GetBeacon(stateData.CandleIdx);
+         return b;
+      }
+
+      return null;
+   }
+
+   public EightNightsMgr.GroupID GetGroupForBeacon(Nights2Beacon beacon)
+   {
+      foreach (GroupStateData d in _groupState)
+      {
+         if (Nights2Mgr.Instance.GetBeacon(d.CandleIdx) == beacon)
+            return d.Group;
+      }
+
+      Debug.LogWarning("Couldn't find group for beacon '" + beacon.gameObject.name + "'.  Defaulting to 'Candle1'.  Probably a bug!");
+      return EightNightsMgr.GroupID.Candle1;
+   }
+
 
    public void TriggerGroup(EightNightsMgr.GroupID group)
    {
       //we are going to exclusively sync with the state of each candle
       //so lets trigger the candle instead of the audio directly
-      GroupStateData stateData = GetStateForGroup(group);
-      if (stateData != null)
+      //toggle the light state, and the stem will respond next update
+      Nights2Beacon b = GetBeaconForGroup(group);
+      if (b != null)
       {
-         //toggle the light state, and the stem will respond next update
-         Nights2Beacon b = Nights2Mgr.Instance.GetBeacon(stateData.CandleIdx);
-         if (b != null)
-         {
-            b.SetLit(!b.IsLit());
-         }
+         b.SetLit(!b.IsLit());
       }
+
       /*GroupStateData stateData = GetStateForGroup(group);
       if (stateData != null)
       {

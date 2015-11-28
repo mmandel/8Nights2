@@ -16,6 +16,10 @@ public class Nights2Treasure : MonoBehaviour
    public Transform LanternIconSpot;
    public GameObject LanternIconPrefab;
 
+   [Header("Light FX")]
+   public float LightSeqInterval = .2f; //time between each light coming on
+   public float LightSeqHoldTime = 2.0f; //time to hold all lights on for, once they sequence in
+
    [Header("Destroy")]
    public float DelayToDestroy = 4.0f;
 
@@ -164,6 +168,9 @@ public class Nights2Treasure : MonoBehaviour
             CompletedSound.Play();
 
          _animator.SetTrigger(UnlockedMagicTrigger);
+
+         //trigger fx on the physical lights
+         Nights2Mgr.Instance.FXTurnOnInSequence(new Nights2Mgr.TurnOnInSequenceParams(LightSeqHoldTime, LightSeqInterval, Nights2Mgr.Instance.ClockwiseCandleOrder));
 
          //transition lantern + torch icons out
          if (_lanternIcon != null)
