@@ -181,6 +181,11 @@ public class Nights2Shamash : MonoBehaviour
           SpawnIcon();
           if (ShamashRevealSound != null)
              ShamashRevealSound.Play();
+
+          //ping from shamash spot when lantern is near
+          if (Nights2SpotMgr.Instance != null)
+             Nights2SpotMgr.Instance.TriggerSpotFX(Nights2SpotMgr.LightAction.Ping, 1.5f, _closestSpot, .5f);
+
        }
        else if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) && (_torchIcon != null))
        {

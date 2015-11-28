@@ -194,8 +194,14 @@ public class Nights2TorchPlayer : MonoBehaviour
 
             _curTreasureState = s;
 
+            Nights2Spot treasureSpot = GetTreasureSpot();
+
             if (_curTreasureState == TreasureState.TreasureReveal)
             {
+               //ping from treasure spot when its revealed
+               if (Nights2SpotMgr.Instance != null)
+                  Nights2SpotMgr.Instance.TriggerSpotFX(Nights2SpotMgr.LightAction.Ping, 1.5f, treasureSpot, .5f);
+
                if (TreasureRevealSound != null)
                   TreasureRevealSound.Play();
             }
@@ -208,7 +214,6 @@ public class Nights2TorchPlayer : MonoBehaviour
 
 
             //light up spot
-            Nights2Spot treasureSpot = GetTreasureSpot();
             if ((treasureSpot != null) &&
                 (_curTreasureState != TreasureState.NoProgress) && (_curTreasureState != TreasureState.TreasureCompleted))
             {
@@ -263,6 +268,10 @@ public class Nights2TorchPlayer : MonoBehaviour
                 Vector3 portalPos = curPath.GetPortalPos(Nights2Path.PortalType.EntrancePortal);
                 Vector3 portalDir = curPath.GetPortalDir(Nights2Path.PortalType.EntrancePortal);
 
+                //ping from entrance portal spot when its revealed
+                if (Nights2SpotMgr.Instance != null)
+                   Nights2SpotMgr.Instance.TriggerSpotFX(Nights2SpotMgr.LightAction.Ping, 1.5f, curPath.GetPortalSpot(Nights2Path.PortalType.EntrancePortal), .5f);
+
                 //put dest trans in the alt world, so camera is positioned correctly on portal
                 Transform destTrans = (_portalFX != null) ? _portalFX.PortalDestTrans : null;
                 if (destTrans != null)
@@ -284,6 +293,10 @@ public class Nights2TorchPlayer : MonoBehaviour
 
                 Vector3 portalPos = curPath.GetPortalPos(Nights2Path.PortalType.ExitPortal);
                 Vector3 portalDir = curPath.GetPortalDir(Nights2Path.PortalType.ExitPortal);
+
+                //ping from exit portal spot when its revealed
+                if (Nights2SpotMgr.Instance != null)
+                   Nights2SpotMgr.Instance.TriggerSpotFX(Nights2SpotMgr.LightAction.Ping, 1.5f, curPath.GetPortalSpot(Nights2Path.PortalType.ExitPortal), .5f);
 
                 //put dest trans in the alt world, so camera is positioned correctly on portal
                 Transform destTrans = (_portalFX != null) ? _portalFX.PortalDestTrans : null;

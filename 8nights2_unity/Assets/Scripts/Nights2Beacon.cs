@@ -160,6 +160,10 @@ public class Nights2Beacon : MonoBehaviour
            SpawnIcon();
            if (CandleRevealSound != null)
               CandleRevealSound.Play();
+
+           //ping from candle spot when lantern is near
+           if (Nights2SpotMgr.Instance != null)
+              Nights2SpotMgr.Instance.TriggerSpotFX(Nights2SpotMgr.LightAction.Ping, 1.5f, _closestSpot, .5f);
         }
         else if ((Nights2Mgr.Instance.GetState() != Nights2Mgr.Nights2State.NearBeacon) && (_torchIcon != null))
            DestroyIcon();

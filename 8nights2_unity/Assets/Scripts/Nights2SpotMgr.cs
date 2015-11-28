@@ -13,6 +13,10 @@ public class Nights2SpotMgr : MonoBehaviour
    public bool ShowSpotDebugSpheres = false;
    public Nights2Spot[] Spots = new Nights2Spot[0];
 
+   [Space(10)]
+   public float PingMaxRadius = 3.7f;
+
+
    public event SpotEventHandler OnLanternArrived;
    public class SpotEventArgs : EventArgs
    {
@@ -25,6 +29,8 @@ public class Nights2SpotMgr : MonoBehaviour
    private Nights2Spot _activeSpot = null;
    private float _overrideStartTime = -1.0f;
    private float _overrideTime = 1.0f; //how long to override for
+   private float _overrideHoldTime = .5f;
+   private Nights2Spot _actionSpot = null;
    private LightAction _overrideAction = LightAction.TurnAllOn;
 
    public enum LightAction
@@ -52,11 +58,13 @@ public class Nights2SpotMgr : MonoBehaviour
       return closestSpot;
    }
 
-   public void TriggerSpotFX(LightAction l, float overrideTime = 1.0f)
+   public void TriggerSpotFX(LightAction l, float overrideTime = 1.0f, Nights2Spot actionSpot = null, float optionalHoldTime = 0.50f)
    {
       _overrideStartTime = Time.time;
       _overrideTime = overrideTime; //how long to override for
+      _overrideHoldTime = optionalHoldTime;
       _overrideAction = l;
+      _actionSpot = actionSpot;
    }   
 
    void Awake()
@@ -107,7 +115,27 @@ public class Nights2SpotMgr : MonoBehaviour
                }
                break;
             case LightAction.Ping:
-               //TODO!
+
+               Vector3 centerPos = _actionSpot.GetPos();
+
+               //radius expands to PingMaxRadius over (total time - hold time)
+               float radiusTime = Mathf.Clamp(_overrideTime - _overrideHoldTime, .1f, 100.0f);
+               float radiusU = Mathf.Clamp01(elapsed  / radiusTime);
+               float curRadius = PingMaxRadius * radiusU;
+
+               //turn on spots as they are encompased by the growing radius
+               for (int i = 0; i < Spots.Length; i++)
+               {
+                  Nights2Spot s = Spots[i];
+                  if (s == _actionSpot)
+                     s.MakeActive(true);
+                  else
+                  {
+                     float dist = (s.GetPos() - centerPos).magnitude;
+                     s.MakeActive(dist <= curRadius);
+                  }
+               }
+
                break;
             default: break;
          }
