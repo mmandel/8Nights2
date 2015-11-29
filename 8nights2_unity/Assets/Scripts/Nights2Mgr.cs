@@ -255,9 +255,15 @@ public class Nights2Mgr : MonoBehaviour
             if ((_curState != Nights2State.SeekingBeacon) && (_curState != Nights2State.NearBeacon))
                 LightCurrentPath(false);
 
-            if (_curState == Nights2State.SeekingShamash)
+            //when torch is not lit, we play shamash ambience
+            if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.NearShamash) || (_curState == Nights2State.BeaconLit))
             {
                 Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kShamashAmbience);
+            }
+
+            if (_curState == Nights2State.SeekingBeacon)
+            {
+               Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kBeaconAmbience);
             }
 
             //update tracking lists if a beacon is lit
@@ -512,7 +518,9 @@ public class Nights2Mgr : MonoBehaviour
 
         //figure out if we should be in ducked mode
         bool shouldAudioDuck = true;
-        if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.BeaconLit) || (_curState == Nights2State.AllBeaconsLit))
+        //if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.BeaconLit) || (_curState == Nights2State.AllBeaconsLit))
+        //   shouldAudioDuck = false;
+        if (_curWorld == WorldID.RoomWorld)
            shouldAudioDuck = false;
         Nights2AudioMgr.Instance.SetDuckedMode(shouldAudioDuck);
 	}
