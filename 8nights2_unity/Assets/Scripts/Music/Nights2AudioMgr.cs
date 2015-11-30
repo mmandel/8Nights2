@@ -230,24 +230,62 @@ public class Nights2AudioMgr : MonoBehaviour
 
    void OnGUI()
    {
+
+      // Show elapsed time regardless of whether debug mode is on, we always want to see that
+      Vector3 startPos = new Vector2(10, Screen.height - 50);
+      float elapsedSecs = Nights2Mgr.Instance.GetTurnElapsedTime();
+      int minutes = (int)(elapsedSecs / 60.0f);
+      int secs = (int)(elapsedSecs % 60.0f);
+      string secsStr = (secs < 10) ? "0" + secs : secs.ToString();
+      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), "Timer:    " + minutes + ":" + secsStr);
+
       if (!ShowTestUI || (_allGroupNames == null) || !_hadFirstUpdate)
          return;
 
-      Vector2 startPos = new Vector2(10, 10);
+      startPos.x = 10;
+      startPos.y = 10;
       float buttonVSpacing = 30;
 
-      // Candle Triggers
+      // Progression Trigger
       Vector2 groupSize = new Vector2(100, buttonVSpacing * 8 + 30);
-      GUI.Box(new Rect(startPos.x, startPos.y, groupSize.x, groupSize.y), "Candle Triggers");
+      GUI.Box(new Rect(startPos.x, startPos.y, groupSize.x, groupSize.y), "Progression");
 
+      Color origGUIColor = GUI.color;
+
+      Color disabledGUIColor = origGUIColor;
+      disabledGUIColor.a = .5f;
+
+      int numCandlesLit = Nights2Mgr.Instance.NumCandlesLit();
       for (int i = 0; i < _allGroupNames.Length; i++)
       {
          int curCandle = i + 1;
-         if (GUI.Button(new Rect(startPos.x + 10, startPos.y + curCandle * buttonVSpacing, groupSize.x - 20, 20), "Candle " + curCandle))
+
+         bool isButDisabled = false;
+         if (curCandle <= numCandlesLit) //should be transparent to indicate its already been progressed past here
          {
-            TriggerGroup(_allGroupNames[i]);
+            GUI.color = disabledGUIColor;
+            isButDisabled = true;
+         }
+         else
+            GUI.color = origGUIColor;
+
+         string butString = "Light " + curCandle;
+
+         //if num lit == 0, put a * next to the further the progression got from the last launch of the app 
+         if ((numCandlesLit == 0) && (curCandle == Nights2Mgr.Instance.PrevLaunchCandleProgress()))
+         {
+            butString = "* " + butString;
+         }
+
+         if (GUI.Button(new Rect(startPos.x + 10, startPos.y + curCandle * buttonVSpacing, groupSize.x - 20, 20), butString))
+         {
+            //TriggerGroup(_allGroupNames[i]);
+            if (!isButDisabled)
+               Nights2Mgr.Instance.CheatCandlesLitTo(curCandle);
          }
       }
+
+      GUI.color = origGUIColor;
 
 
       //kill all button
@@ -259,7 +297,7 @@ public class Nights2AudioMgr : MonoBehaviour
       }
 
       // text fields for stem tuning params
-      startPos.x = Screen.width * .5f - 150;
+      /*startPos.x = Screen.width * .5f - 150;
       startPos.y = 10;
       groupSize = new Vector2(200, buttonVSpacing * 2 + 30);
       GUI.Box(new Rect(startPos.x, startPos.y, groupSize.x, groupSize.y), "Stem Behavior");
@@ -290,7 +328,7 @@ public class Nights2AudioMgr : MonoBehaviour
             StemReleaseTime = newRelease;
             ResetAllStemTimestamps();
          }
-      }
+      }*/
       //tweak sync (HACK!)
      /* startPos.y += buttonVSpacing;
       String signStr = (BeatClock.Instance.LatencyMs >= 0) ? "+" : "-";
@@ -317,7 +355,6 @@ public class Nights2AudioMgr : MonoBehaviour
 
       startPos.y += buttonVSpacing;
 
-      Color origGUIColor = GUI.color;
       Color curGUIColor = origGUIColor;
       if (!MusicTester.EnableTestMode)
          curGUIColor.a = .5f;
@@ -349,7 +386,9 @@ public class Nights2AudioMgr : MonoBehaviour
          startPos.y += buttonVSpacing;
 
          Rect sliderRect = new Rect(startPos.x, startPos.y, 170, 25);
-         GUI.Label(sliderRect, g.ToString() + ": ");
+         int stemIdx = MusicPlayer.GetSubstitutionIdxForGroup(g);
+         string groupName = g.ToString() + " (" + (stemIdx + 1) + "): ";
+         GUI.Label(sliderRect, groupName);
 
          sliderRect.x += 100;
 
@@ -362,7 +401,7 @@ public class Nights2AudioMgr : MonoBehaviour
       GUI.color = origGUIColor;
 
       // Show cur MBT in bottom left corner
-      startPos.x = 10;
+      /*startPos.x = 10;
       startPos.y = Screen.height - 30;
       //string MBTStr = "Beat Time: " + (BeatClock.Instance.curMeasure + 1) + ":" + (BeatClock.Instance.curBeat + 1) + ":" + BeatClock.Instance.curTick;
       //GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), MBTStr);
@@ -373,7 +412,7 @@ public class Nights2AudioMgr : MonoBehaviour
       int minutes = (int)(elapsedSecs / 60.0f);
       int secs = (int)(elapsedSecs % 60.0f);
       string secsStr = (secs < 10) ? "0" + secs : secs.ToString();
-      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), "Timer:    " + minutes + ":" + secsStr);
+      GUI.Label(new Rect(startPos.x, startPos.y, 170, 25), "Timer:    " + minutes + ":" + secsStr);*/
 
       //Restart Song Button
       //TODO: this code doesn't work yet, so disabling for now...
@@ -514,7 +553,7 @@ public class Nights2AudioMgr : MonoBehaviour
       _hadFirstUpdate = true;
 
       //toggle debug UI with a key
-      if (Input.GetKeyDown(KeyCode.D))
+      if (Input.GetKeyDown(KeyCode.D) || Input.GetButtonDown("LB"))
       {
          ShowTestUI = !ShowTestUI;
       }

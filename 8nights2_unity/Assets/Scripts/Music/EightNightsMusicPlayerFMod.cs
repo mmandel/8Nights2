@@ -20,7 +20,86 @@ public class EightNightsLayerDetailsFMod
     public string FModParamName; //param that controls volume of this group
     [Range(0, 1)]
     public float MixVolume = 1.0f;
+    public Nights2StemSubstitute[] Substitutions = new Nights2StemSubstitute[0];
+    
+    //set volume of param, accounting for substitutions that may need to happen
+    public void SetVolume(float vol, FMOD_StudioEventEmitter ev)
+    {
+       //if we have substitutions, just silence all at first so we don't leave any tracks on accidently
+       if (Substitutions.Length > 0)
+          SilenceAll(ev);
+
+       FMOD.Studio.ParameterInstance param = ev.getParameter(GetCurParam());
+       if (param != null)
+       {
+          param.setValue(Mathf.Lerp(0.0f, MixVolume, vol));
+       }
+    }
+    
+    //get volume of param, accounting for substitutions
+    public float GetVolume(FMOD_StudioEventEmitter ev)
+    {
+       float paramVal = 0.0f;
+       FMOD.Studio.ParameterInstance param = ev.getParameter(GetCurParam());
+       if (param != null)
+          param.getValue(out paramVal);
+       return paramVal;
+    }
+
+    string GetCurParam()
+    {
+       if(Substitutions.Length == 0)
+          return FModParamName;
+
+       //see if we have any substitutions based on # of beacons lit
+       int sIdx = CurSubstitutionIdx();
+       if (sIdx >= 0)
+          return Substitutions[sIdx].SubstituteParamName;
+
+       //use default param if none of the substitutions matched above
+       return FModParamName;
+    }
+
+    //returns -1 if no substitution, otherwise the index of the entry in the Substitutions list we should use right now
+    public int CurSubstitutionIdx()
+    {
+       if (Substitutions.Length == 0)
+          return -1;
+
+       //see if we have any substitutions based on # of beacons lit
+       int nb = (Nights2Mgr.Instance != null) ? Nights2Mgr.Instance.NumCandlesLit() : 0;
+       for (int i = 0; i < Substitutions.Length; i++)
+       {
+          if ((nb >= Substitutions[i].NumBeaconsMin) && (nb <= Substitutions[i].NumBeaconsMax))
+             return i;
+       }
+
+       return -1;
+    }
+
+    void SilenceAll(FMOD_StudioEventEmitter ev)
+    {
+       FMOD.Studio.ParameterInstance param = ev.getParameter(FModParamName);
+       if (param != null)
+          param.setValue(0.0f);
+
+       for (int i = 0; i < Substitutions.Length; i++)
+       {
+          FMOD.Studio.ParameterInstance sParm = ev.getParameter(Substitutions[i].SubstituteParamName);
+          if (sParm != null)
+             sParm.setValue(0.0f);          
+       }
+    }
 }
+
+//param substitution that begins for a given layer after a give # of beacons are lit
+[System.Serializable]
+public class Nights2StemSubstitute
+{
+   public string SubstituteParamName; //use this param to control the group instead
+   public int NumBeaconsMin = 4; //valid when this many beacons are active (min)
+   public int NumBeaconsMax = 7; //valid when this many beacons are active (max)
+};
 
 public class EightNightsMusicPlayerFMod : MonoBehaviour
 {
@@ -45,17 +124,25 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
     {
         return (FModEvent != null) ? FModEvent.getPlaybackPos() * .001f : 0.0f;
     }
+    
+    //-1 if not substituting, otherwise the index of the substitution
+    public int GetSubstitutionIdxForGroup(EightNightsMgr.GroupID group)
+    {
+        EightNightsLayerDetailsFMod layerDetails = GetLayerDetailsForGroup(group);
+        if (layerDetails != null)
+        {
+           return layerDetails.CurSubstitutionIdx();
+        }
+        return -1;
+    }
 
     public float GetVolumeForGroup(EightNightsMgr.GroupID group)
     {
         EightNightsLayerDetailsFMod layerDetails = GetLayerDetailsForGroup(group);
         if (layerDetails != null)
         {
-            float paramVal = 0.0f;
-            FMOD.Studio.ParameterInstance param = FModEvent.getParameter(layerDetails.FModParamName);
-            if (param != null)
-                param.getValue(out paramVal);
-            return Mathf.InverseLerp(0.0f, layerDetails.MixVolume, paramVal);
+           float paramVal = layerDetails.GetVolume(FModEvent);
+           return Mathf.InverseLerp(0.0f, layerDetails.MixVolume, paramVal);
         }
         return 0.0f;
     }
@@ -67,11 +154,7 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
 
         if (layerDetails != null)
         {
-            FMOD.Studio.ParameterInstance param = FModEvent.getParameter(layerDetails.FModParamName);
-            if (param != null)
-            {
-                param.setValue(Mathf.Lerp(0.0f, layerDetails.MixVolume, volume));
-            }
+           layerDetails.SetVolume(Mathf.Lerp(0.0f, layerDetails.MixVolume, volume), FModEvent);
         }
     }
 
@@ -154,6 +237,7 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
     {
 
     }
+   
 
     IEnumerator DelayedStart()
     {

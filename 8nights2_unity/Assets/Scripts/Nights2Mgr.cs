@@ -56,6 +56,9 @@ public class Nights2Mgr : MonoBehaviour
     private float _turnStartTime = -1.0f;
     private float _turnEndTime = -1.0f;
 
+    //how many candles were lit the last launch of the app
+    private int _prevLaunchCandleProgress = -1;
+
 
     private LightAction _curLightOverride = LightAction.None;
     private float _lightActionStartTime = -1.0f;
@@ -282,13 +285,15 @@ public class Nights2Mgr : MonoBehaviour
                _nextBeacon.SetIsNext(false);
 
                //pick alt world for next beacon
-               _curAltWorldIdx = (_curAltWorldIdx + 1) % AltWorlds.Length;
+               _curAltWorldIdx = NumCandlesLit() % AltWorlds.Length;
 
                //update bookkeeping
                if (_unlitBeacons.Contains(_nextBeacon))
                   _unlitBeacons.Remove(_nextBeacon);
                if (!_litBeacons.Contains(_nextBeacon))
                   _litBeacons.Add(_nextBeacon);
+
+               SaveProgression();
             }
 
             if (OnStateChanged != null)
@@ -342,6 +347,7 @@ public class Nights2Mgr : MonoBehaviour
 	void Start () 
     {
         ResetInstallation();
+        LoadProgression();
 	}
 
     public void ResetInstallation()
@@ -366,6 +372,23 @@ public class Nights2Mgr : MonoBehaviour
     public Nights2Beacon NextBeacon()
     {
         return _nextBeacon;
+    }
+
+    const string kCandleProgreshKey = "num candles lit";
+
+    void SaveProgression()
+    {
+       PlayerPrefs.SetInt(kCandleProgreshKey, NumCandlesLit());
+    }
+
+    void LoadProgression()
+    {
+       _prevLaunchCandleProgress = PlayerPrefs.GetInt(kCandleProgreshKey, -1);
+    }
+
+    public int PrevLaunchCandleProgress()
+    {
+       return _prevLaunchCandleProgress;
     }
 
     void ResetBeacons()
@@ -593,6 +616,33 @@ public class Nights2Mgr : MonoBehaviour
          _curLightOverride = LightAction.None;
       }
       
+   }
+
+   public void CheatCandlesLitTo(int desiredCandlesLit)
+   {
+      //OK, this is probably not full proof
+      Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.NoProgress);
+      Nights2TorchPlayer.Instance.CheateTreasureState(Nights2TorchPlayer.TreasureState.NoProgress);
+      
+      //reset all beacons to unlit
+      ResetBeacons();
+
+      desiredCandlesLit = Mathf.Min(Candles.Length,desiredCandlesLit);
+      for (int i = 0; i < desiredCandlesLit; i++)
+      {
+         Nights2Beacon b = GetPath(i).LeadsToBeacon;
+         _unlitBeacons.Remove(b);
+         _litBeacons.Add(b);
+
+         b.SetLit(true);
+         b.SetIsNext(false);
+      }
+
+      //start shamash sequence
+      SetState(Nights2State.SeekingShamash);
+
+      SaveProgression();
+      _curAltWorldIdx = NumCandlesLit() % AltWorlds.Length;
    }
 
    public void CheatToNextState()
