@@ -188,8 +188,8 @@ Shader "JeffShaders/chest" {
                 indirectDiffuse += gi.indirect.diffuse;
                 float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;
 ////// Emissive:
-                float4 node_3402 = _Time + _TimeEditor;
-                float node_6591_ang = node_3402.g;
+                float4 node_8350 = _Time + _TimeEditor;
+                float node_6591_ang = node_8350.g;
                 float node_6591_spd = _emisRotateSpeed;
                 float node_6591_cos = cos(node_6591_spd*node_6591_ang);
                 float node_6591_sin = sin(node_6591_spd*node_6591_ang);
@@ -449,8 +449,8 @@ Shader "JeffShaders/chest" {
                 UnityMetaInput o;
                 UNITY_INITIALIZE_OUTPUT( UnityMetaInput, o );
                 
-                float4 node_1736 = _Time + _TimeEditor;
-                float node_6591_ang = node_1736.g;
+                float4 node_1384 = _Time + _TimeEditor;
+                float node_6591_ang = node_1384.g;
                 float node_6591_spd = _emisRotateSpeed;
                 float node_6591_cos = cos(node_6591_spd*node_6591_ang);
                 float node_6591_sin = sin(node_6591_spd*node_6591_ang);
