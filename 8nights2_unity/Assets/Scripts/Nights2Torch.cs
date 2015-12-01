@@ -8,6 +8,7 @@ using System.Collections;
 public class Nights2Torch : MonoBehaviour 
 {
     public string TorchOnBool = "on";
+    public string TorchHasMagicBool = "has_magic";
     [Space(10)]
     public Renderer TorchColorRend;
     public string TorchColorProp = "_Color";
@@ -42,6 +43,9 @@ public class Nights2Torch : MonoBehaviour
         //update animator with status of torch
         SetAnimatorBool(TorchOnBool, IsFlameOn());
 
+        bool shouldHaveMagic = Nights2Mgr.Instance.TorchHasMagic() && IsFlameOn();
+        SetAnimatorBool(TorchHasMagicBool, shouldHaveMagic);
+
         if (TorchColorRend != null)
         {
             Color nextCandleColor = (Nights2Mgr.Instance.NextBeacon() != null) ? Nights2Mgr.Instance.NextBeacon().CandleColor : _offFlameColor;
@@ -51,11 +55,10 @@ public class Nights2Torch : MonoBehaviour
 	    //make sure we are parented to the right thing
         if (Nights2CamMgr.Instance != null)
         {
-            if (transform.parent != Nights2CamMgr.Instance.GetTorchParent())
+           Transform desiredParent = ((Nights2CamMgr.Instance.GetTorchParent() != null) && Nights2CamMgr.Instance.GetTorchParent().gameObject.activeInHierarchy) ? Nights2CamMgr.Instance.GetTorchParent() : null;
+           if (transform.parent != desiredParent)
             {
-                transform.parent = Nights2CamMgr.Instance.GetTorchParent();
-                if (!transform.parent.gameObject.activeInHierarchy)
-                    transform.parent = null;
+                transform.parent = desiredParent;
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
             }

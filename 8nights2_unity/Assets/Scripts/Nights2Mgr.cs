@@ -66,6 +66,8 @@ public class Nights2Mgr : MonoBehaviour
     private TurnAllOnParams _turnOnAllParams = null;
     private GradientCycleParams _gradCycleParams = null;
 
+    private bool _torchHasMagic = false;
+
     public enum Nights2State
     {
         GettingReady,      //participant is putting on the headset
@@ -158,6 +160,9 @@ public class Nights2Mgr : MonoBehaviour
 
     public static Nights2Mgr Instance { get; private set; }
 
+    public bool TorchHasMagic() { return _torchHasMagic; }
+    public void SetTorchHasMagic(bool b) { _torchHasMagic = b; }
+
     public bool IsOverridingLights()
     {
        return _curLightOverride != LightAction.None;
@@ -236,6 +241,10 @@ public class Nights2Mgr : MonoBehaviour
             {
                 LightCurrentPath(true);
             }
+
+            //reset magic state on torch
+            if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.BeaconLit))
+               _torchHasMagic = false;           
 
             //keep track of when this turn started, so we can display a timer
             if (prevState == Nights2State.GettingReady)
@@ -353,7 +362,7 @@ public class Nights2Mgr : MonoBehaviour
     public void ResetInstallation()
     {
         Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kShamashAmbience);
-
+        _torchHasMagic = false;
         SetState(Nights2State.GettingReady);
 
         ResetBeacons();

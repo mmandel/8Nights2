@@ -50,11 +50,10 @@ public class Nights2Lantern : MonoBehaviour
         //make sure we are parented to the right thing
         if (Nights2CamMgr.Instance != null)
         {
-            if (transform.parent != Nights2CamMgr.Instance.GetLanternParent())
+           Transform desiredParent = ((Nights2CamMgr.Instance.GetLanternParent() != null) && Nights2CamMgr.Instance.GetLanternParent().gameObject.activeInHierarchy) ? Nights2CamMgr.Instance.GetLanternParent() : null;
+           if (transform.parent != desiredParent)
             {
-                transform.parent = Nights2CamMgr.Instance.GetLanternParent();
-                if (!transform.parent.gameObject.activeInHierarchy)
-                    transform.parent = null;
+                transform.parent = desiredParent;
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
             }

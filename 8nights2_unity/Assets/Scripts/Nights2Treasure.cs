@@ -28,6 +28,7 @@ public class Nights2Treasure : MonoBehaviour
    public float MagicRiseAmount = 1.0f;
    public float MagicRiseTime = 1.0f;
    public float MagicToTorchTime = 1.5f;
+   public float HasMagicDistThresh = .05f; //2 inches
    //"magic" that is inside the treasure box and flies to the torch when the box is opened
    public Transform MagicTrans;
 
@@ -212,11 +213,19 @@ public class Nights2Treasure : MonoBehaviour
             case MagicPhase.Waiting:
                if (elapsed >= MagicInitialWaitTime)
                {
-                  _magicState = MagicPhase.Rising;
-
                   _magicTracker.enabled = true;
                   _magicTracker.UseOverride(true);
-                  _magicTracker.SetOverrideTargetPos(MagicTrans.transform.position + new Vector3(0.0f, MagicRiseAmount, 0.0f));
+
+                  if (MagicRiseAmount > float.Epsilon)
+                  {
+                     _magicState = MagicPhase.Rising;
+                     _magicTracker.SetOverrideTargetPos(MagicTrans.transform.position + new Vector3(0.0f, MagicRiseAmount, 0.0f));
+                  }
+                  else //skip straight to ToTorch state
+                  {
+                     _magicState = MagicPhase.ToTorch;
+                     _magicTracker.SetOverrideTargetPos(Nights2CamMgr.Instance.GetTorchParent().position);
+                  }
                   _magicTimer = Time.time;
                }
                break;
@@ -230,8 +239,13 @@ public class Nights2Treasure : MonoBehaviour
                break;
             case MagicPhase.ToTorch:
                _magicTracker.SetOverrideTargetPos(Nights2CamMgr.Instance.GetTorchParent().position);
-               if (elapsed >= MagicRiseTime)
+               float distToTorch = (Nights2CamMgr.Instance.GetTorchParent().position - MagicTrans.transform.position).magnitude;
+               //imbue torch when magic gets close
+               if (distToTorch <= HasMagicDistThresh)
+                  Nights2Mgr.Instance.SetTorchHasMagic(true);
+               if (elapsed >= MagicToTorchTime)
                {
+                  Nights2Mgr.Instance.SetTorchHasMagic(true); //just in case...
                   _magicState = MagicPhase.Hidden;
                   _magicTracker.gameObject.SetActive(false);
                }
