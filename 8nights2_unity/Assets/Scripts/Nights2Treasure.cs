@@ -183,6 +183,7 @@ public class Nights2Treasure : MonoBehaviour
          if (_magicTracker != null)
          {
             MagicTrans.gameObject.SetActive(true);
+            _magicTracker.gameObject.GetComponent<Rigidbody>().isKinematic = true;
             _magicTracker.enabled = false;
             _magicState = MagicPhase.Waiting;
             _magicTimer = Time.time;
@@ -214,6 +215,7 @@ public class Nights2Treasure : MonoBehaviour
                if (elapsed >= MagicInitialWaitTime)
                {
                   _magicTracker.enabled = true;
+                  _magicTracker.gameObject.GetComponent<Rigidbody>().isKinematic = false;
                   _magicTracker.UseOverride(true);
 
                   if (MagicRiseAmount > float.Epsilon)
