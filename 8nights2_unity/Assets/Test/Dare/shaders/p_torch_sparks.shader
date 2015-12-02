@@ -58,8 +58,8 @@ Shader "Shader Forge/p_torch_sparks" {
 /////// Vectors:
 ////// Lighting:
 ////// Emissive:
-                float4 node_8086 = _Time + _TimeEditor;
-                float2 node_9491 = ((float2(0,0)+node_8086.g*float2(0.1,0))+(3.2*(i.posWorld.r+i.posWorld.g+i.posWorld.b)));
+                float4 node_1870 = _Time + _TimeEditor;
+                float2 node_9491 = ((float2(0,0)+node_1870.g*float2(0.1,0))+(3.2*(i.posWorld.r+i.posWorld.g+i.posWorld.b)));
                 float4 _flickergradient_var = tex2D(_flickergradient,TRANSFORM_TEX(node_9491, _flickergradient));
                 float4 _particleshape_var = tex2D(_particleshape,TRANSFORM_TEX(i.uv0, _particleshape));
                 float3 emissive = (_Color.rgb*i.vertexColor.rgb*i.vertexColor.a*((_flickergradient_var.r*6.0)*_particleshape_var.r));
