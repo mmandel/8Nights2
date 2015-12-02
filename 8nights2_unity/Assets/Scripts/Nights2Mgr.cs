@@ -293,14 +293,14 @@ public class Nights2Mgr : MonoBehaviour
                _nextBeacon.SetLit(true);
                _nextBeacon.SetIsNext(false);
 
-               //pick alt world for next beacon
-               _curAltWorldIdx = NumCandlesLit() % AltWorlds.Length;
-
                //update bookkeeping
                if (_unlitBeacons.Contains(_nextBeacon))
                   _unlitBeacons.Remove(_nextBeacon);
                if (!_litBeacons.Contains(_nextBeacon))
                   _litBeacons.Add(_nextBeacon);
+
+               //pick alt world for next beacon
+               _curAltWorldIdx = NumCandlesLit() % AltWorlds.Length;
 
                SaveProgression();
             }
