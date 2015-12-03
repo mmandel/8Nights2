@@ -9,10 +9,14 @@ using System.Collections;
 public class Nights2Beacon : MonoBehaviour 
 {
     public Color CandleColor = Color.cyan;
-    public Renderer CandleColorRend;
-    public string CandleColorProp = "_Color";
-    public Renderer CandleColorRend2;
-    public string CandleColorProp2 = "_Color";
+    public ColorEntry[] DriveColors = new ColorEntry[0];
+
+    [System.Serializable]
+    public class ColorEntry
+    {
+       public Renderer Mesh;
+       public string ColorPropName = "_Color";
+    }
 
     [Space(10)]
 
@@ -81,10 +85,13 @@ public class Nights2Beacon : MonoBehaviour
         SetLit(false);
 
         //set our color
-        if (CandleColorRend != null)
-            CandleColorRend.material.SetColor(CandleColorProp, CandleColor);
-        if (CandleColorRend2 != null)
-            CandleColorRend2.material.SetColor(CandleColorProp2, CandleColor);
+        for (int i = 0; i < DriveColors.Length; i++)
+        {
+           Renderer r = DriveColors[i].Mesh;
+           string propName = DriveColors[i].ColorPropName;
+           if ((r != null) && (propName.Length > 0))
+              r.material.SetColor(propName, CandleColor);
+        }
 	}
 
     void SetAnimatorBool(string boolName, bool val)
