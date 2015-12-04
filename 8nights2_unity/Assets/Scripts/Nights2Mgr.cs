@@ -423,12 +423,12 @@ public class Nights2Mgr : MonoBehaviour
         }
     }
 
-    int CandlePathOrderLength()
+    public int CandlePathOrderLength()
     {
         return UseDebugPathOrder ? DebugPathOrder.Length : CandlePathOrder.Length;
     }
 
-    Nights2Path GetPath(int idx)
+    public Nights2Path GetPath(int idx)
     {
         return UseDebugPathOrder ? DebugPathOrder[idx] : CandlePathOrder[idx];
     }

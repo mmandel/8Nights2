@@ -76,6 +76,18 @@ public class Nights2Beacon : MonoBehaviour
 
 	void Start () 
     {
+        //print out color of each candle along with where in the progression it lives
+        /*int progreshIdx = -1;
+        for(int i = 0 ; i < Nights2Mgr.Instance.CandlePathOrderLength() ; i++)
+        {
+           if (Nights2Mgr.Instance.GetPath(i).LeadsToBeacon == this)
+           {
+              progreshIdx = i;
+              break;
+           }
+        }
+        Debug.Log("color " +  progreshIdx + ": ( " + CandleColor.r * 255.0f + ", " + CandleColor.g * 255.0f + ", " + CandleColor.b * 255.0f + " ) " + gameObject.name); */
+
         if (Nights2SpotMgr.Instance != null)
             _closestSpot = Nights2SpotMgr.Instance.FindClosestSpotTo(transform.position);
 

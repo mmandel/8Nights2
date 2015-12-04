@@ -24,6 +24,8 @@ public class Nights2Treasure : MonoBehaviour
    public float DelayToDestroy = 4.0f;
 
    [Header("Magic")]
+   public bool  CollectMagicWithIcon = false;
+   public Transform CollectMagicSpot;
    public float MagicInitialWaitTime = .75f;
    public float MagicRiseAmount = 1.0f;
    public float MagicRiseTime = 1.0f;
@@ -53,6 +55,7 @@ public class Nights2Treasure : MonoBehaviour
    private Animator _animator = null;
    private bool _isUnlocked = false;
    private Nights2Icon _torchIcon;
+   private Nights2Icon _collectIcon;
    private Nights2Icon _lanternIcon;
    private float _destroyTimerStart = -1.0f;
 
@@ -72,6 +75,7 @@ public class Nights2Treasure : MonoBehaviour
       Waiting,
       Rising,
       ToTorch,
+      WaitForCollect,
       Hidden
    }
 
