@@ -74,7 +74,7 @@ void loop()
       _isMagicOn = false;
     }
 
-    //Serial.write(c); //so we can see it on the Arduino serial monitor
+    Serial.write(c); //so we can see it on the Arduino serial monitor
   }  
 
   if(_isTorchOn)
@@ -96,6 +96,8 @@ void loop()
       strip.setPixelColor(i, 0);      
     }  
   }
+
+  strip.show();
 }
 
 
