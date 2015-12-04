@@ -147,20 +147,20 @@ public class Nights2Torch : MonoBehaviour
          if (ShowMagic())
          {
             char magic = (char)((int)'A' + numCandlesOn);
-            //Debug.Log("XBEE: " + magic.ToString());
+            Debug.Log("XBEE: " + magic.ToString());
             _xbeeCom.Write(magic.ToString());
          }
          //letters 1 through 9 say torch is on (without magic), for a particular part of the 8 step progression
          else
          {
             char magic = (char)((int)'1' + numCandlesOn);
-            //Debug.Log("XBEE: " + magic.ToString());
+            Debug.Log("XBEE: " + magic.ToString());
             _xbeeCom.Write(magic.ToString());
          }
       }
       else //torch off
       {
-         //Debug.Log("XBEE: 0" );
+         Debug.Log("XBEE: 0" );
          _xbeeCom.Write("0");
       }
    }
