@@ -116,7 +116,7 @@ void loop()
       _curColor = _colorProgresh[colorIdx];      
     }
 
-    //Serial.write(c); //so we can see it on the Arduino serial monitor
+    Serial.write(c); //so we can see it on the Arduino serial monitor
   }  
 
   //process transitions
@@ -196,6 +196,8 @@ void loop()
       strip.setPixelColor(i, 0);      
     }  
   }
+
+  strip.show();
 }
 
 
