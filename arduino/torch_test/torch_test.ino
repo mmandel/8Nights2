@@ -61,12 +61,14 @@ void loop()
       _isTorchOn = false;
       _isMagicOn = false;
     }
-    else if((c >= 'A') && (c <= 'H')) //torch on with magic
+    //else if((c >= 'A') && (c <= 'H')) //torch on with magic
+    else if(c == 'A')
     {
       _isTorchOn = true;
       _isMagicOn = true;
     }
-    else if((c >= '1') && (c <= '9')) //torch on, no magic
+    //else if((c >= '1') && (c <= '9')) //torch on, no magic
+    else if(c == '1')
     {
       _isTorchOn = true;
       _isMagicOn = false;
