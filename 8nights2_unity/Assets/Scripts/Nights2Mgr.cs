@@ -678,7 +678,9 @@ public class Nights2Mgr : MonoBehaviour
               if (Nights2TorchPlayer.Instance.GetTreasureState() == Nights2TorchPlayer.TreasureState.WaitingForTreasureReveal)
                   Nights2TorchPlayer.Instance.CheateTreasureState(Nights2TorchPlayer.TreasureState.TreasureReveal);
               else if (Nights2TorchPlayer.Instance.GetTreasureState() == Nights2TorchPlayer.TreasureState.TreasureReveal)
-                  Nights2TorchPlayer.Instance.CheateTreasureState(Nights2TorchPlayer.TreasureState.TreasureCompleted);
+                 Nights2TorchPlayer.Instance.CheateTreasureState(Nights2TorchPlayer.TreasureState.TreasureWaitForCollection);
+              else if (Nights2TorchPlayer.Instance.GetTreasureState() == Nights2TorchPlayer.TreasureState.TreasureWaitForCollection)
+                 Nights2TorchPlayer.Instance.CheateTreasureState(Nights2TorchPlayer.TreasureState.TreasureCompleted);
               else if (Nights2TorchPlayer.Instance.GetTreasureState() == Nights2TorchPlayer.TreasureState.TreasureCompleted)
                   Nights2TorchPlayer.Instance.CheatPortalState(Nights2TorchPlayer.PortalState.ShowingExitPortal);
           }

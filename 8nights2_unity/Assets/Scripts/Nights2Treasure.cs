@@ -19,18 +19,14 @@ public class Nights2Treasure : MonoBehaviour
    [Header("Light FX")]
    public float LightSeqInterval = .2f; //time between each light coming on
    public float LightSeqHoldTime = 2.0f; //time to hold all lights on for, once they sequence in
+   public float LightCollectTime = .5f; //how long to blast lights when magic is collected
 
    [Header("Destroy")]
    public float DelayToDestroy = 4.0f;
 
    [Header("Magic")]
-   public bool  CollectMagicWithIcon = false;
-   public Transform CollectMagicSpot;
-   public float MagicInitialWaitTime = .75f;
-   public float MagicRiseAmount = 1.0f;
-   public float MagicRiseTime = 1.0f;
-   public float MagicToTorchTime = 1.5f;
-   public float HasMagicDistThresh = .05f; //2 inches
+   public Transform CollectIconSpot;
+   public float MagicInitialWaitTime = .75f; //how long to wait before we show the collection icon
    //"magic" that is inside the treasure box and flies to the torch when the box is opened
    public Transform MagicTrans;
 
@@ -38,11 +34,13 @@ public class Nights2Treasure : MonoBehaviour
    public string TorchLockedBool = "lock1_locked";
    public string LanternLockedBool = "lock2_locked";
    public string UnlockedMagicTrigger = "unlocked";
+   public string MagicCollectTrigger = "magic_collect";
 
    [Header("Sounds")]
    public FMOD_StudioEventEmitter CompletedSound;
    public FMOD_StudioEventEmitter RevealSound;
    public FMOD_StudioEventEmitter UnlockSound;
+   public FMOD_StudioEventEmitter CollectedSound;
 
    [Header("Debug")]
    [ScriptButton("Unlock 1!", "OnUnlock1")]
@@ -51,21 +49,24 @@ public class Nights2Treasure : MonoBehaviour
    public bool DummyTriggerLock2;
    [ScriptButton("Open!", "OnOpen")]
    public bool DummyOpenBox;
+   [ScriptButton("Collect!", "OnCollect")]
+   public bool DummyCollect;
 
    private Animator _animator = null;
    private bool _isUnlocked = false;
+   private bool _isCollected = false;
    private Nights2Icon _torchIcon;
    private Nights2Icon _collectIcon;
    private Nights2Icon _lanternIcon;
    private float _destroyTimerStart = -1.0f;
 
    private float _magicTimer = -1.0f;
-   private PhysicsTracker _magicTracker = null;
    private MagicPhase _magicState = MagicPhase.Initial;
 
    private bool _forceUnlock1 = false;
    private bool _forceUnlock2 = false;
    private bool _forceOpen = false;
+   private bool _forceCollect = false;
    private int _lastNumUnlocked = 0;
    private bool _firstUpdate = false;
 
@@ -73,13 +74,12 @@ public class Nights2Treasure : MonoBehaviour
    {
       Initial,
       Waiting,
-      Rising,
-      ToTorch,
       WaitForCollect,
       Hidden
    }
 
    public bool IsUnlocked() { return _isUnlocked; }
+   public bool IsCollected() { return _isCollected; }
 
 	void Start () 
    {
@@ -92,9 +92,6 @@ public class Nights2Treasure : MonoBehaviour
       //setup magic obj with physics tracker
       if(MagicTrans != null)
       {
-         _magicTracker = MagicTrans.GetComponent<PhysicsTracker>();
-         if (_magicTracker == null)
-            _magicTracker = MagicTrans.gameObject.AddComponent<PhysicsTracker>();
          MagicTrans.gameObject.SetActive(false);
 
          _magicState = MagicPhase.Initial;
@@ -124,6 +121,14 @@ public class Nights2Treasure : MonoBehaviour
             spawned.transform.localPosition = Vector3.zero;
             spawned.transform.localRotation = Quaternion.identity;
          }
+      }
+
+      //turn off old physics tracker state, just in case its still there
+      PhysicsTracker tracker = MagicTrans.GetComponent<PhysicsTracker>();
+      if (tracker != null)
+      {
+         tracker.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+         tracker.enabled = false;
       }
 	}
 	
@@ -183,18 +188,10 @@ public class Nights2Treasure : MonoBehaviour
          if (_torchIcon != null)
              _torchIcon.Destroy();
 
-         //make magic fly up and then at torch, using PD tracker
-         if (_magicTracker != null)
-         {
-            MagicTrans.gameObject.SetActive(true);
-            _magicTracker.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            _magicTracker.enabled = false;
-            _magicState = MagicPhase.Waiting;
-            _magicTimer = Time.time;
-         }
-
-         //start destroy timer
-         _destroyTimerStart = Time.time;
+         //show magic and begin waiting for anim to complete
+         MagicTrans.gameObject.SetActive(true);
+         _magicState = MagicPhase.Waiting;
+         _magicTimer = Time.time;
       }
 
       if (_destroyTimerStart > 0.0f)
@@ -206,6 +203,8 @@ public class Nights2Treasure : MonoBehaviour
                DestroyObject(_torchIcon.gameObject);
             if (_lanternIcon != null)
                DestroyObject(_lanternIcon.gameObject);
+            if (_collectIcon != null)
+               DestroyObject(_collectIcon.gameObject);
             DestroyObject(this.gameObject);
          }
       }
@@ -218,24 +217,47 @@ public class Nights2Treasure : MonoBehaviour
             case MagicPhase.Waiting:
                if (elapsed >= MagicInitialWaitTime)
                {
-                  _magicTracker.enabled = true;
-                  _magicTracker.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-                  _magicTracker.UseOverride(true);
-
-                  if (MagicRiseAmount > float.Epsilon)
-                  {
-                     _magicState = MagicPhase.Rising;
-                     _magicTracker.SetOverrideTargetPos(MagicTrans.transform.position + new Vector3(0.0f, MagicRiseAmount, 0.0f));
-                  }
-                  else //skip straight to ToTorch state
-                  {
-                     _magicState = MagicPhase.ToTorch;
-                     _magicTracker.SetOverrideTargetPos(Nights2CamMgr.Instance.GetTorchParent().position);
-                  }
+                  _magicState = MagicPhase.WaitForCollect;
                   _magicTimer = Time.time;
+
+                  //spawn torch icon
+                  if (TorchIconPrefab != null)
+                  {
+                     GameObject spawned = Instantiate(TorchIconPrefab) as GameObject;
+                     if (spawned != null)
+                     {
+                        _collectIcon = spawned.GetComponent<Nights2Icon>();
+                        spawned.transform.parent = CollectIconSpot;
+                        spawned.transform.localPosition = Vector3.zero;
+                        spawned.transform.localRotation = Quaternion.identity;
+                     }
+                  }
                }
                break;
-            case MagicPhase.Rising:
+            case MagicPhase.WaitForCollect:
+               if (_collectIcon.RequiredPropIsNear() || _forceCollect)
+               {
+                  if (CollectedSound != null)
+                     CollectedSound.Play();
+                  //imbue torch with magic
+                  Nights2Mgr.Instance.SetTorchHasMagic(true);
+                  //hide magic
+                  //MagicTrans.gameObject.SetActive(false);
+                  //advance to next state
+                  _magicState = MagicPhase.Hidden;
+                  //transition icon out
+                  _collectIcon.Destroy();
+                  //animate magic out
+                  _animator.SetTrigger(MagicCollectTrigger);
+                  //start destroy timer
+                  _destroyTimerStart = Time.time;
+                  _isCollected = true;
+
+                  //light FX
+                  Nights2Mgr.Instance.FXTurnOnAll(new Nights2Mgr.TurnAllOnParams(LightCollectTime, true, Nights2Mgr.Instance.NextBeacon().CandleColor));
+               }
+               break;
+            /*case MagicPhase.Rising:
                if (elapsed >= MagicRiseTime)
                {
                   _magicState = MagicPhase.ToTorch;
@@ -255,7 +277,7 @@ public class Nights2Treasure : MonoBehaviour
                   _magicState = MagicPhase.Hidden;
                   _magicTracker.gameObject.SetActive(false);
                }
-               break;
+               break;*/
             default: break;
          }
       }
@@ -279,5 +301,17 @@ public class Nights2Treasure : MonoBehaviour
    public void OnOpen(string propPath)
    {
        ForceOpen();
+   }
+
+   public void ForceCollect()
+   {
+      _forceCollect = true;
+      if (_collectIcon != null)
+         _collectIcon.Destroy();
+   }
+
+   public void OnCollect(string propPath)
+   {
+      ForceCollect();
    }  
 }

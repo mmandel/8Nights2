@@ -73,6 +73,7 @@ public class Nights2TorchPlayer : MonoBehaviour
         NoProgress,
         WaitingForTreasureReveal,
         TreasureReveal,
+        TreasureWaitForCollection,
         TreasureCompleted
     }
 
@@ -84,8 +85,10 @@ public class Nights2TorchPlayer : MonoBehaviour
     public void CheatPortalState(PortalState s) { SetPortalState(s); }
     public void CheateTreasureState(TreasureState s) 
     {
-        if (s == TreasureState.TreasureCompleted)
-            _treasure.ForceOpen();
+       if (s == TreasureState.TreasureWaitForCollection)
+          _treasure.ForceOpen();
+       else if (s == TreasureState.TreasureCompleted)
+          _treasure.ForceCollect();
         SetTreasureState(s); 
     }
 
@@ -487,9 +490,14 @@ public class Nights2TorchPlayer : MonoBehaviour
                                 }
                                 break;
                             case TreasureState.TreasureReveal:
-                                //wait for treasure sequence to complete
+                                //wait for chest to be unlocked
                                 if (_treasure.IsUnlocked())
-                                    SetTreasureState(TreasureState.TreasureCompleted);
+                                   SetTreasureState(TreasureState.TreasureWaitForCollection);
+                                break;
+                            case TreasureState.TreasureWaitForCollection:
+                                //wait for player to take the magic
+                                if (_treasure.IsCollected())
+                                   SetTreasureState(TreasureState.TreasureCompleted);
                                 break;
                             default: break;
                         }                    
