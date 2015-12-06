@@ -21,6 +21,7 @@ public class Nights2Mgr : MonoBehaviour
 
     public float BeaconLitSuccessTime = 3.0f; //how long we stay in the BeaconLit state before auto advancing to the next stage of the installation
     public float BeaconLitBlastTime = 1.5f; //how long do all the beacons light the color of the newly lit beacon?
+    public float BeaconLitFadeTime = 1.0f;
 
     public GameObject VRRig; //this gets teleported between worlds, all the VR stuff is a child of this
     public GameObject RoomWorld; 
@@ -90,16 +91,18 @@ public class Nights2Mgr : MonoBehaviour
 
     public class TurnAllOnParams
     {
-       public TurnAllOnParams(float duration, bool shouldOverrideColor, Color overrideColor)
+       public TurnAllOnParams(float duration, float fadeOutTime, bool shouldOverrideColor, Color overrideColor)
        {
           Duration = duration;
           ShouldOverrideColor = shouldOverrideColor;
           OverrideColor = overrideColor;
+          FadeOutTime = fadeOutTime;
        }
 
        public float Duration;
        public bool ShouldOverrideColor;
        public Color OverrideColor;
+       public float FadeOutTime;
     };
 
     public class GradientCycleParams
@@ -289,7 +292,7 @@ public class Nights2Mgr : MonoBehaviour
                    Nights2AudioMgr.Instance.BeaconLitOneOff.Play();
 
                //start blasting all the beacons the same color
-               FXTurnOnAll(new TurnAllOnParams(BeaconLitBlastTime, true, _nextBeacon.CandleColor));
+               FXTurnOnAll(new TurnAllOnParams(BeaconLitBlastTime, BeaconLitFadeTime, true, _nextBeacon.CandleColor));
 
                //update state of next beacon
                _nextBeacon.SetLit(true);
@@ -597,11 +600,18 @@ public class Nights2Mgr : MonoBehaviour
       {
          //turn on all lights together
          case LightAction.TurnAllOn:
-            u = Mathf.Clamp01(actionElapsed / _turnOnAllParams.Duration);
+            float totalAllOnTime = (_turnOnAllParams.Duration + _turnOnAllParams.FadeOutTime);
+            u = Mathf.Clamp01(actionElapsed / totalAllOnTime);
 
             //fade in for a bit
-            const float kFadeInTime = .35f;
+            const float kFadeInTime = .25f;
             float blendIntensityU = Mathf.Clamp01(actionElapsed / kFadeInTime);
+
+            //fade out
+            if (actionElapsed >= _turnOnAllParams.Duration)
+            {
+               blendIntensityU = 1.0f - Mathf.InverseLerp(_turnOnAllParams.Duration, totalAllOnTime, actionElapsed);
+            }
 
             for (int i = 0; i < 8; i++)
             {

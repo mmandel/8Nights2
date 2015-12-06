@@ -52,7 +52,7 @@ int _flickerMaxPct = 100;  //max percent of brightness to apply to color (0 to 1
 //flicker runtime state
 int _lastFlickerTime = 0;
 int _nextFlickerDelay = 80;
-int _curFlickerPct = 0;
+int _curFlickerPct = 100;
 
 struct TorchColor
 {
@@ -223,7 +223,8 @@ void loop()
 
 int TakePercentOf(int percent, int value)
 {
-  return ((value * percent * 655) / 65536);
+  return value;
+  //return ((value * percent * 655) / 65536);
 }
 
 

@@ -20,6 +20,7 @@ public class Nights2Treasure : MonoBehaviour
    public float LightSeqInterval = .2f; //time between each light coming on
    public float LightSeqHoldTime = 2.0f; //time to hold all lights on for, once they sequence in
    public float LightCollectTime = .5f; //how long to blast lights when magic is collected
+   public float LightCollectFadeTime = 1.0f; 
    public float LightSeqFadeTime = 1.0f; //fade time after light up sequence
 
    [Header("Destroy")]
@@ -255,7 +256,7 @@ public class Nights2Treasure : MonoBehaviour
                   _isCollected = true;
 
                   //light FX
-                  Nights2Mgr.Instance.FXTurnOnAll(new Nights2Mgr.TurnAllOnParams(LightCollectTime, true, Nights2Mgr.Instance.NextBeacon().CandleColor));
+                  Nights2Mgr.Instance.FXTurnOnAll(new Nights2Mgr.TurnAllOnParams(LightCollectTime, LightCollectFadeTime, true, Nights2Mgr.Instance.NextBeacon().CandleColor));
                }
                break;
             /*case MagicPhase.Rising:
