@@ -46,13 +46,13 @@ int _specialScrollDelay = 25; //increase this to slow down scrolling of pixels f
 //flicker behavior params
 int _flickerMinDelay = 75; //min time we wait between changing the brightness
 int _flickerMaxDelay = 120; //max time we wait between changing the brightness
-int _flickerMinAmt = 0; //min amount we change the base color (from 0 to 255)
-int _flickerMaxAmt = 50;  //max amount we change the base color (from 0 to 255)
+int _flickerMinPct = 80; //min percent of brightness to apply to color (0 to 100)
+int _flickerMaxPct = 100;  //max percent of brightness to apply to color (0 to 100)
 
 //flicker runtime state
 int _lastFlickerTime = 0;
 int _nextFlickerDelay = 80;
-int _curFlickerOffset = 0;
+int _curFlickerPct = 0;
 
 struct TorchColor
 {
@@ -88,6 +88,8 @@ void setup() {
 
   _isTorchOn = false;
   _isMagicOn = false;
+  _isSpecialTransish = false;
+  _lastMagicOffetMS = 0;
   _curColor = _colorProgresh[0];
 
   // Set up both ports at 9600 baud. This value is most important
@@ -131,7 +133,7 @@ void loop()
   }  
 
   //process transitions
-  if(!wasTorchOn && _isTorchOn) //torch just went on!
+  /*if(!wasTorchOn && _isTorchOn) //torch just went on!
   {
     _isSpecialTransish = true;
     _specialEndMS = millis() + 1000;
@@ -140,14 +142,14 @@ void loop()
   {
     _isSpecialTransish = true;
     _specialEndMS = millis() + 500;    
-  }
+  }*/
 
   //deal with computing flicker
   if(millis() - _lastFlickerTime >= _nextFlickerDelay)
   {
     _nextFlickerDelay = random(_flickerMinDelay, _flickerMaxDelay);
     _lastFlickerTime = millis();
-    _curFlickerOffset = random(_flickerMinAmt, _flickerMaxAmt);
+    _curFlickerPct = random(_flickerMinPct, _flickerMaxPct);
   }
 
   if(_isTorchOn)
@@ -193,7 +195,7 @@ void loop()
         int pixelIdx = (i + _magicPixelOffset) % strip.numPixels();
         
         if((pixelIdx % 3) == 0) //every 3 gets the color
-           strip.setPixelColor(pixelIdx, strip.Color(_curColor.red - _curFlickerOffset, _curColor.blue - _curFlickerOffset, _curColor.green - _curFlickerOffset)); 
+           strip.setPixelColor(pixelIdx, strip.Color(TakePercentOf(_curFlickerPct, _curColor.red), TakePercentOf(_curFlickerPct, _curColor.green),TakePercentOf(_curFlickerPct, _curColor.blue))); 
         else
            strip.setPixelColor(pixelIdx, 0); //off
       }
@@ -203,7 +205,7 @@ void loop()
       //turn on a solid color
       for (int i=0; i < strip.numPixels(); i++) 
       {  
-        strip.setPixelColor(i, strip.Color(_curColor.red - _curFlickerOffset, _curColor.blue - _curFlickerOffset, _curColor.green - _curFlickerOffset));  //red for no magic
+        strip.setPixelColor(i, strip.Color(TakePercentOf(_curFlickerPct, _curColor.red), TakePercentOf(_curFlickerPct, _curColor.green),TakePercentOf(_curFlickerPct, _curColor.blue)));  
       } 
     }
   }
@@ -217,6 +219,11 @@ void loop()
   }
 
   strip.show();
+}
+
+int TakePercentOf(int percent, int value)
+{
+  return ((value * percent * 655) / 65536);
 }
 
 
