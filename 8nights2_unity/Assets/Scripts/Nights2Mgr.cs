@@ -122,15 +122,17 @@ public class Nights2Mgr : MonoBehaviour
 
     public class TurnOnInSequenceParams
     {
-       public TurnOnInSequenceParams(float holdDuration, float nextLightInterval, Nights2Beacon[] lightOrder)
+       public TurnOnInSequenceParams(float holdDuration, float fadeDuration, float nextLightInterval, Nights2Beacon[] lightOrder)
        {
           HoldDuration = holdDuration;
           NextLightInterval = nextLightInterval;
+          FadeDuration = fadeDuration;
           LightOrder = lightOrder;
        }
 
        public float HoldDuration;
        public float NextLightInterval;
+       public float FadeDuration;
        public Nights2Beacon[] LightOrder;
     }
 
@@ -633,17 +635,18 @@ public class Nights2Mgr : MonoBehaviour
 
          case LightAction.TurnOnInSequence:
             float turnOnTime = (_turnOnSeqParams.LightOrder.Length * _turnOnSeqParams.NextLightInterval);
-            float totalTime = turnOnTime + _turnOnSeqParams.HoldDuration;
+            float totalTime = turnOnTime + _turnOnSeqParams.HoldDuration + _turnOnSeqParams.FadeDuration;
 
             u = Mathf.Clamp01(actionElapsed / totalTime);
 
             float turnOnU = Mathf.Clamp01(actionElapsed / turnOnTime);
             int onIdxThresh = (int)(turnOnU * _turnOnSeqParams.LightOrder.Length);
+            float fadeAmt = 1.0f - Mathf.InverseLerp(turnOnTime + _turnOnSeqParams.HoldDuration, totalTime, actionElapsed);
             for (int i = 0; i < _turnOnSeqParams.LightOrder.Length; i++)
             {
                Nights2Beacon candle = _turnOnSeqParams.LightOrder[i];
                EightNightsMgr.GroupID candleGroup = Nights2AudioMgr.Instance.GetGroupForBeacon(candle);
-               LightMgr.Instance.SetAllLightsInGroup(candleGroup, (i <= onIdxThresh) ? 1.0f : 0.0f, LightMgr.Instance.GetDefaultColor(candleGroup));
+               LightMgr.Instance.SetAllLightsInGroup(candleGroup, (i <= onIdxThresh) ? fadeAmt : 0.0f, LightMgr.Instance.GetDefaultColor(candleGroup));
             }            
 
          break;
