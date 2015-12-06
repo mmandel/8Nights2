@@ -22,6 +22,9 @@ public class Par64Value : MonoBehaviour
 
     public SpecialMode Mode = SpecialMode.None;
 
+    public bool DriveLightMgrGroup = false;
+    public EightNightsMgr.GroupID LightMgrGroup = EightNightsMgr.GroupID.Shamash;
+
     [Space(10)]
 
     //RGB val of the light - only applies if SpecialMode = None
@@ -94,9 +97,15 @@ public class Par64Value : MonoBehaviour
         if (LightJamsMgr.Instance == null)
             return;
 
+        if ((LightMgr.Instance != null) && LightMgr.Instance.TestLights)
+           return;
+
         if (Mode == SpecialMode.None)
         {
-            SetPar64Color(StartChannel, MasterDimmer, LightColor);
+           if (DriveLightMgrGroup) //use light mgr to drive light?
+              LightMgr.Instance.SetLight(LightMgrGroup, EightNightsMgr.LightID.Light1, MasterDimmer, LightColor);
+           else
+              SetPar64Color(StartChannel, MasterDimmer, LightColor);
         }
         else
         {
