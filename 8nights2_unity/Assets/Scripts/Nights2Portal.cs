@@ -40,8 +40,9 @@ public class Nights2Portal : MonoBehaviour
            PortalOpenSound.Play();
 
            //trigger FX on the lights
-           Nights2Mgr.Instance.FXGradientCycle(new Nights2Mgr.GradientCycleParams(PortalOpenLightFXTime, LightFXGradient, LightFXCycleSpeed,
-                                                   PortalOpenSound.gameObject.GetComponent<FModLevelMeter>(), PortalOpenLevelMeterGain));
+           //meh, this is too extreme for just showing portal
+           //Nights2Mgr.Instance.FXGradientCycle(new Nights2Mgr.GradientCycleParams(PortalOpenLightFXTime, LightFXGradient, LightFXCycleSpeed,
+           //                                        PortalOpenSound.gameObject.GetComponent<FModLevelMeter>(), PortalOpenLevelMeterGain));
         }
     }
 

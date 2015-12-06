@@ -118,9 +118,13 @@ public class Nights2SpotMgr : MonoBehaviour
 
                Vector3 centerPos = _actionSpot.GetPos();
 
-               //radius expands to PingMaxRadius over (total time - hold time)
-               float radiusTime = Mathf.Clamp(_overrideTime - _overrideHoldTime, .1f, 100.0f);
+               //radius expands to PingMaxRadius over first half and then back to 0 over second half
+               float radiusTime = Mathf.Clamp(_overrideTime, .1f, 100.0f);
                float radiusU = Mathf.Clamp01(elapsed  / radiusTime);
+               if (radiusU <= .5f)
+                  radiusU = Mathf.InverseLerp(0.0f, .5f, radiusU);
+               else
+                  radiusU = 1.0f - Mathf.InverseLerp(0.5f, 1.0f, radiusU);
                float curRadius = PingMaxRadius * radiusU;
 
                //turn on spots as they are encompased by the growing radius

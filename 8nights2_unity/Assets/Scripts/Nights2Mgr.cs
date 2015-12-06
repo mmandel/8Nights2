@@ -591,7 +591,12 @@ public class Nights2Mgr : MonoBehaviour
 
             float intensity = 1.0f;
             if (_gradCycleParams.LevelMeter != null)
+            {
                intensity = Mathf.Clamp01(_gradCycleParams.LevelMeter.CurLevel * _gradCycleParams.LevelMeterGain);
+
+               //lights are flickery when value is low, so remap into better range
+               intensity = Mathf.Lerp(.2f, .80f, intensity);
+            }
 
             for (int i = 0; i < 8; i++)
             {
