@@ -545,6 +545,32 @@ public class Nights2Mgr : MonoBehaviour
             }
         }
         
+        //only show worlds when they are relevant
+        if (_curWorld == WorldID.RoomWorld)
+        {
+           RoomWorld.SetActive(true);
+
+           for (int i = 0; i < AltWorlds.Length; i++)
+           {
+              AltWorlds[i].SetActive(false);
+           }
+
+           if (Nights2TorchPlayer.Instance.IsPortalShowing())
+              AltWorlds[_curAltWorldIdx].SetActive(true);
+        }
+        else //in an alt world
+        {
+           AltWorlds[_curAltWorldIdx].SetActive(true);
+           for (int i = 0; i < AltWorlds.Length; i++)
+           {
+              if(i != _curAltWorldIdx)
+                 AltWorlds[i].SetActive(false);
+           }
+
+           //only show room if portal is open
+           RoomWorld.SetActive(Nights2TorchPlayer.Instance.IsPortalShowing());
+        }
+        
         //special FX on lights
         UpdateLightFX();
 
