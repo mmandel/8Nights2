@@ -43,6 +43,17 @@ int _specialPixelOffset = 0;
 int _lastSpecialOffetMS = 0;
 int _specialScrollDelay = 25; //increase this to slow down scrolling of pixels for special state changes
 
+//flicker behavior params
+int _flickerMinDelay = 75; //min time we wait between changing the brightness
+int _flickerMaxDelay = 120; //max time we wait between changing the brightness
+int _flickerMinAmt = 0; //min amount we change the base color (from 0 to 255)
+int _flickerMaxAmt = 50;  //max amount we change the base color (from 0 to 255)
+
+//flicker runtime state
+int _lastFlickerTime = 0;
+int _nextFlickerDelay = 80;
+int _curFlickerOffset = 0;
+
 struct TorchColor
 {
   int red;
@@ -131,6 +142,14 @@ void loop()
     _specialEndMS = millis() + 500;    
   }
 
+  //deal with computing flicker
+  if(millis() - _lastFlickerTime >= _nextFlickerDelay)
+  {
+    _nextFlickerDelay = random(_flickerMinDelay, _flickerMaxDelay);
+    _lastFlickerTime = millis();
+    _curFlickerOffset = random(_flickerMinAmt, _flickerMaxAmt);
+  }
+
   if(_isTorchOn)
   {
     if(_isSpecialTransish)
@@ -174,9 +193,9 @@ void loop()
         int pixelIdx = (i + _magicPixelOffset) % strip.numPixels();
         
         if((pixelIdx % 3) == 0) //every 3 gets the color
-           strip.setPixelColor(pixelIdx, strip.Color(_curColor.red, _curColor.blue, _curColor.green)); 
+           strip.setPixelColor(pixelIdx, strip.Color(_curColor.red - _curFlickerOffset, _curColor.blue - _curFlickerOffset, _curColor.green - _curFlickerOffset)); 
         else
-           strip.setPixelColor(pixelIdx, strip.Color(0, 255, 0)); //off
+           strip.setPixelColor(pixelIdx, 0); //off
       }
     }
     else
@@ -184,7 +203,7 @@ void loop()
       //turn on a solid color
       for (int i=0; i < strip.numPixels(); i++) 
       {  
-        strip.setPixelColor(i, strip.Color(_curColor.red, _curColor.blue, _curColor.green));  //red for no magic
+        strip.setPixelColor(i, strip.Color(_curColor.red - _curFlickerOffset, _curColor.blue - _curFlickerOffset, _curColor.green - _curFlickerOffset));  //red for no magic
       } 
     }
   }
