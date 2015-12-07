@@ -119,8 +119,20 @@ public class Nights2Beacon : MonoBehaviour
 
         //subscribe to state changed events
         if (Nights2Mgr.Instance != null)
+        {
            Nights2Mgr.Instance.OnTeleported += OnTeleported;
+           Nights2Mgr.Instance.OnStateChanged += OnNights2StateChanged;
+        }
 	}
+
+   void OnNights2StateChanged(object sender, Nights2Mgr.StateChangedEventArgs e)
+   {
+      if ((e.OldState == Nights2Mgr.Nights2State.GettingReady) && IsNarrationPlaying())
+      {
+         _narrationSound.Stop();
+         _narrationStartTime = -1; //done tracking narration
+      }
+   }
 
    void OnTeleported(object sender, Nights2Mgr.TeleportedEventArgs e)
    {

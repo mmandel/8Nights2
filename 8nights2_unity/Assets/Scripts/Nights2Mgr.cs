@@ -27,6 +27,9 @@ public class Nights2Mgr : MonoBehaviour
     public GameObject RoomWorld; 
     public GameObject[] AltWorlds = new GameObject[0];
 
+    [Space(10)]
+    public FMOD_StudioEventEmitter ShamashNarrationEvent;
+
     public enum WorldID
     {
         RoomWorld,
@@ -65,6 +68,8 @@ public class Nights2Mgr : MonoBehaviour
 
     private float _turnStartTime = -1.0f;
     private float _turnEndTime = -1.0f;
+
+    private bool _hasPlayedShamashIntroThisTurn = false;
 
     //how many candles were lit the last launch of the app
     private int _prevLaunchCandleProgress = -1;
@@ -226,9 +231,19 @@ public class Nights2Mgr : MonoBehaviour
                 Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kBeaconAmbience);
             }
         }
+        
+        //stop shamash narration when player teleports
+        if (_curWorld != WorldID.RoomWorld)
+           StopShamashNarration();
 
         if (OnTeleported != null)
            OnTeleported(this, new TeleportedEventArgs(prevWorld, _curWorld));
+    }
+
+    void StopShamashNarration()
+    {
+      if((ShamashNarrationEvent != null) && (ShamashNarrationEvent.getPlaybackState() == FMOD.Studio.PLAYBACK_STATE.PLAYING))
+           ShamashNarrationEvent.Stop();
     }
 
     public Nights2State GetState() { return _curState; }
@@ -270,6 +285,7 @@ public class Nights2Mgr : MonoBehaviour
             {
                _turnStartTime = Time.time;
                _turnEndTime = -1.0f;
+               _hasPlayedShamashIntroThisTurn = false;
             }
             else if (_curState == Nights2State.GettingReady)
             {
@@ -285,6 +301,18 @@ public class Nights2Mgr : MonoBehaviour
             //turn off path
             if ((_curState != Nights2State.SeekingBeacon) && (_curState != Nights2State.NearBeacon))
                 LightCurrentPath(false);
+
+            if (!_hasPlayedShamashIntroThisTurn && (_curState == Nights2State.NearShamash))
+            {
+               if (ShamashNarrationEvent != null)
+                  ShamashNarrationEvent.Play();
+               _hasPlayedShamashIntroThisTurn = true;
+            }
+
+            //make sure we cut off previous shamash narration when a turn starts (this is an end case!)
+            if (prevState == Nights2State.GettingReady)
+               StopShamashNarration();
+
 
             //when torch is not lit, we play shamash ambience
             if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.NearShamash) || (_curState == Nights2State.BeaconLit))
@@ -393,6 +421,7 @@ public class Nights2Mgr : MonoBehaviour
     {
         Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kShamashAmbience);
         _torchHasMagic = false;
+        _hasPlayedShamashIntroThisTurn = false;
         SetState(Nights2State.GettingReady);
 
         ResetBeacons();

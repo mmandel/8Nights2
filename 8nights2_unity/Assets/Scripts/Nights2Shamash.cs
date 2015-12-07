@@ -187,7 +187,7 @@ public class Nights2Shamash : MonoBehaviour
              Nights2SpotMgr.Instance.TriggerSpotFX(Nights2SpotMgr.LightAction.Ping, 1.5f, _closestSpot, .5f);
 
        }
-       else if ((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) && (_torchIcon != null))
+       else if (((Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) || (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.GettingReady)) && (_torchIcon != null))
        {
           DestroyIcon();
           if (TorchLitSound != null)
