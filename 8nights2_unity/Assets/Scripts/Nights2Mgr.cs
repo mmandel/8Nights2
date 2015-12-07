@@ -367,6 +367,17 @@ public class Nights2Mgr : MonoBehaviour
         return null;
     }
 
+    public bool IsNarrationPlaying()
+    {
+       for (int i = 0; i < Candles.Length; i++)
+       {
+          if (Candles[i].GetComponent<Nights2Beacon>().IsNarrationPlaying())
+             return true;
+       }
+
+       return false;
+    }
+
     void Awake()
     {
         Instance = this;
@@ -594,12 +605,12 @@ public class Nights2Mgr : MonoBehaviour
         UpdateLightFX();
 
         //figure out if we should be in ducked mode
-        bool shouldAudioDuck = true;
-        //if ((_curState == Nights2State.SeekingShamash) || (_curState == Nights2State.GettingReady) || (_curState == Nights2State.BeaconLit) || (_curState == Nights2State.AllBeaconsLit))
-        //   shouldAudioDuck = false;
-        if (_curWorld == WorldID.RoomWorld)
-           shouldAudioDuck = false;
-        Nights2AudioMgr.Instance.SetDuckedMode(shouldAudioDuck);
+        Nights2AudioMgr.DuckedMode curDuckedMode = Nights2AudioMgr.DuckedMode.Off;
+        if (_curWorld != WorldID.RoomWorld)
+           curDuckedMode = Nights2AudioMgr.DuckedMode.InAltWorld;
+        else if (IsNarrationPlaying())
+           curDuckedMode = Nights2AudioMgr.DuckedMode.ForNarration;
+        Nights2AudioMgr.Instance.SetDuckedMode(curDuckedMode);
 	}
 
    void UpdateLightFX()

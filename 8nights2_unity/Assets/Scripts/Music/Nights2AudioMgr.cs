@@ -27,7 +27,8 @@ public class Nights2AudioMgr : MonoBehaviour
    public FMOD_StudioEventEmitter BeaconLitOneOff;
 
    [Space(10)]
-   public float DuckedStemsLevel = .25f;
+   public float DuckedAltWorldLevel = .45f;
+   public float DuckedNarrationLevel = .75f;
    public float DuckStemsTime = 1.0f;
    public float UnduckStemsTime = .25f;
 
@@ -46,9 +47,10 @@ public class Nights2AudioMgr : MonoBehaviour
    private EightNightsMgr.GroupID[] _allGroupNames;
    private bool _hadFirstUpdate = false;
 
-   private bool  _isDucked = false;
+   private DuckedMode _curDuckedMode = DuckedMode.Off;
    private float _duckedStemsFader = 1.0f;
    private float _duckingStartTime = -1.0f;
+   private float _fromDuckedLevel = 1.0f;
 
    //backing loop's state
    public enum StemLoopState
@@ -103,9 +105,20 @@ public class Nights2AudioMgr : MonoBehaviour
       public float Candle8Volume = 0.0f;
    }
 
+   //we duck all the stems for a couple reasons, which
+   //all want (potentially) different mix levels
+   public enum DuckedMode
+   {
+      Off,
+      InAltWorld,  //participants have teleported away
+      ForNarration //spoken narration happening right now
+   }
+
    void Awake()
    {
       Instance = this;
+
+      _curDuckedMode = DuckedMode.Off;
 
       //force surround sound on/off
       FMOD_StudioSystem.MandelForceSurround = Enable8ChannelMode;
@@ -147,13 +160,30 @@ public class Nights2AudioMgr : MonoBehaviour
    }
 
    //duck stems to lower volume level?
-   public void SetDuckedMode(bool b)
+   public void SetDuckedMode(DuckedMode dm)
    {
-      if (_isDucked != b)
+      if (_curDuckedMode != dm)
       {
-         _isDucked = b;
+         _curDuckedMode = dm;
          _duckingStartTime = Time.time;
+         _fromDuckedLevel = _duckedStemsFader;
       }
+   }
+
+   //what level should the stems be at for the given ducked mode?
+   float GetLevelForDuckedMode(DuckedMode dm)
+   {
+      switch (dm)
+      {
+         case DuckedMode.Off:
+            return 1.0f;
+         case DuckedMode.InAltWorld:
+            return DuckedAltWorldLevel;
+         case DuckedMode.ForNarration:
+            return DuckedNarrationLevel;
+         default: break;
+      }
+      return 1.0f;
    }
 
    public enum BackingLoops
@@ -570,12 +600,12 @@ public class Nights2AudioMgr : MonoBehaviour
       //handle ducking audio
       if (_duckingStartTime >= 0.0f)
       {
+         bool isDucked = _curDuckedMode != DuckedMode.Off;
          float elapsed = (Time.time - _duckingStartTime);
-         float transishTime = _isDucked ? DuckStemsTime : UnduckStemsTime;
+         float transishTime = isDucked ? DuckStemsTime : UnduckStemsTime;
          float u = Mathf.Clamp01(elapsed / transishTime);
-         u = _isDucked ? 1.0f - u : u;
 
-         _duckedStemsFader = Mathf.Lerp(DuckedStemsLevel, 1.0f, u);
+         _duckedStemsFader = Mathf.Lerp(_fromDuckedLevel, GetLevelForDuckedMode(_curDuckedMode), u);
 
          if (Mathf.Approximately(u, 1.0f)) //done?
          {
@@ -584,7 +614,7 @@ public class Nights2AudioMgr : MonoBehaviour
       }
       else
       {
-         _duckedStemsFader = _isDucked ? DuckedStemsLevel : 1.0f;
+         _duckedStemsFader = GetLevelForDuckedMode(_curDuckedMode);
       }
 
 
