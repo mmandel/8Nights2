@@ -8,6 +8,7 @@ using System.Collections;
 
 public class Nights2Beacon : MonoBehaviour 
 {
+    [Header("Color")]
     public Color CandleColor = Color.cyan;
     public ColorEntry[] DriveColors = new ColorEntry[0];
 
@@ -18,22 +19,26 @@ public class Nights2Beacon : MonoBehaviour
        public string ColorPropName = "_Color";
     }
 
-    [Space(10)]
+    [Header("Animator")]
 
     public string IsLitBool = "on";
     public string IsHiddenBool = "hidden";
     public string IsNextBool = "is_next";
     public string PlayerCloseBool = "is_close";
 
-    [Space(10)]
+
+    [Header("Torch Icon")]
 
     //torch icon stuff
     public Transform TorchIconSpot;
     public GameObject TorchIconPrefab;
 
-    [Space(10)]
+    [Header("Audio")]
 
     public FMOD_StudioEventEmitter CandleRevealSound;
+    [Space(10)]
+    public FMOD_StudioEventEmitter CandleNarrationSound;
+    public float NarrationLength = 5.0f;
 
     private bool _isNextBeacon = false;
     private bool _isLit = false;
