@@ -36,9 +36,6 @@ public class Nights2Beacon : MonoBehaviour
     [Header("Audio")]
 
     public FMOD_StudioEventEmitter CandleRevealSound;
-    [Space(10)]
-    public FMOD_StudioEventEmitter CandleNarrationSound;
-    public float NarrationLength = 5.0f;
 
     private bool _isNextBeacon = false;
     private bool _isLit = false;
@@ -47,7 +44,13 @@ public class Nights2Beacon : MonoBehaviour
     private bool _playerIsNear = false;
     private Nights2Spot _closestSpot = null;
 
+    private FMOD_StudioEventEmitter _narrationSound = null;
+    private float _narrationStartTime = -1.0f;
+    private float _narrationDuration = 20.0f;
+
     private Nights2Icon _torchIcon;
+
+    //public bool IsNarrationPlaying() { return (_narrationStartTime >= 0.0f); }
 
     public bool IsLit() { return _isLit; } 
     public void SetLit(bool b)
@@ -97,6 +100,10 @@ public class Nights2Beacon : MonoBehaviour
             _closestSpot = Nights2SpotMgr.Instance.FindClosestSpotTo(transform.position);
 
         _animator = gameObject.GetComponent<Animator>();
+
+        EightNightsMgr.GroupID group = Nights2AudioMgr.Instance.GetGroupForBeacon(this);
+        _narrationSound = Nights2AudioMgr.Instance.GetNarrationForGroup(group);
+        _narrationDuration = Nights2AudioMgr.Instance.GetNarrationTimeForGroup(group);
 
         SetIsNext(false);
         SetLit(false);
@@ -232,6 +239,12 @@ public class Nights2Beacon : MonoBehaviour
        //turn off spot
        if(Nights2SpotMgr.Instance.ActiveSpot() == _closestSpot)
           Nights2SpotMgr.Instance.MakeSpotActive(null);
+       
+       if (_narrationSound != null)
+       {
+          _narrationSound.Play();
+          _narrationStartTime = Time.time;
+       }
 
        SetIsNext(false);
        SetLit(true);

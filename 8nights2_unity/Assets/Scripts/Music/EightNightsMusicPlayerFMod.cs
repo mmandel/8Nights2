@@ -18,6 +18,8 @@ public class EightNightsLayerDetailsFMod
 {
     public EightNightsMgr.GroupID Group;
     public string FModParamName; //param that controls volume of this group
+    public FMOD_StudioEventEmitter NarrationEvent; //spoken text for this group
+    public float NarrationTime; //how long the narration lasts
     [Range(0, 1)]
     public float MixVolume = 1.0f;
     public Nights2StemSubstitute[] Substitutions = new Nights2StemSubstitute[0];
@@ -134,6 +136,26 @@ public class EightNightsMusicPlayerFMod : MonoBehaviour
            return layerDetails.CurSubstitutionIdx();
         }
         return -1;
+    }
+
+    public FMOD_StudioEventEmitter GetNarrationForGroup(EightNightsMgr.GroupID group)
+    {
+       EightNightsLayerDetailsFMod layerDetails = GetLayerDetailsForGroup(group);
+       if (layerDetails != null)
+       {
+          return layerDetails.NarrationEvent;
+       }
+       return null;
+    }
+
+    public float GetNarrationTimeForGroup(EightNightsMgr.GroupID group)
+    {
+       EightNightsLayerDetailsFMod layerDetails = GetLayerDetailsForGroup(group);
+       if (layerDetails != null)
+       {
+          return layerDetails.NarrationTime;
+       }
+       return 20.0f;
     }
 
     public float GetVolumeForGroup(EightNightsMgr.GroupID group)

@@ -686,7 +686,7 @@ public class Nights2Mgr : MonoBehaviour
          Nights2Beacon b = GetPath(i).LeadsToBeacon;
          _unlitBeacons.Remove(b);
          _litBeacons.Add(b);
-
+         
          b.SetLit(true);
          b.SetIsNext(false);
       }

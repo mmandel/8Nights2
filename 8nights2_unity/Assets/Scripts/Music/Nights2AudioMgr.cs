@@ -503,6 +503,15 @@ public class Nights2AudioMgr : MonoBehaviour
       return EightNightsMgr.GroupID.Candle1;
    }
 
+   public FMOD_StudioEventEmitter GetNarrationForGroup(EightNightsMgr.GroupID group)
+   {
+      return MusicPlayer.GetNarrationForGroup(group);
+   }
+
+   public float GetNarrationTimeForGroup(EightNightsMgr.GroupID group)
+   {
+      return MusicPlayer.GetNarrationTimeForGroup(group);
+   }
 
    public void TriggerGroup(EightNightsMgr.GroupID group)
    {
