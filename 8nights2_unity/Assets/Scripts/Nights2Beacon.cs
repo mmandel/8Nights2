@@ -182,7 +182,7 @@ public class Nights2Beacon : MonoBehaviour
     {
         Nights2TorchPlayer.PortalState curPortalState = Nights2TorchPlayer.Instance.GetPortalState();
         Nights2Mgr.Nights2State curState = Nights2Mgr.Instance.GetState();
-        bool showIt = (IsLit() && ((curState == Nights2Mgr.Nights2State.BeaconLit) || (curState == Nights2Mgr.Nights2State.SeekingShamash))) || (_isNextBeacon && (curPortalState == Nights2TorchPlayer.PortalState.ThroughExitPortal));
+        bool showIt = (curState == Nights2Mgr.Nights2State.AllBeaconsLit) || (IsLit() && ((curState == Nights2Mgr.Nights2State.BeaconLit) || (curState == Nights2Mgr.Nights2State.SeekingShamash))) || (_isNextBeacon && (curPortalState == Nights2TorchPlayer.PortalState.ThroughExitPortal));
         return !showIt;
     }
 

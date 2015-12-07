@@ -22,6 +22,7 @@ public class Nights2Mgr : MonoBehaviour
     public float BeaconLitSuccessTime = 3.0f; //how long we stay in the BeaconLit state before auto advancing to the next stage of the installation
     public float BeaconLitBlastTime = 1.5f; //how long do all the beacons light the color of the newly lit beacon?
     public float BeaconLitFadeTime = 1.0f;
+    public float FinalDelayToFinale = 15.0f; //after lighting finale candle this is how long we wait until triggering the finale
 
     public GameObject VRRig; //this gets teleported between worlds, all the VR stuff is a child of this
     public GameObject RoomWorld; 
@@ -29,6 +30,7 @@ public class Nights2Mgr : MonoBehaviour
 
     [Space(10)]
     public FMOD_StudioEventEmitter ShamashNarrationEvent;
+    public FMOD_StudioEventEmitter FinaleEvent;
 
     public enum WorldID
     {
@@ -290,6 +292,12 @@ public class Nights2Mgr : MonoBehaviour
             else if (_curState == Nights2State.GettingReady)
             {
                _turnEndTime = Time.time;
+            }
+
+            if (_curState == Nights2State.AllBeaconsLit)
+            {
+               if (FinaleEvent != null)
+                  FinaleEvent.Play();
             }
 
             //pick beacon when starting to seek shamash so it can sync up with the color of the new candle
@@ -595,7 +603,9 @@ public class Nights2Mgr : MonoBehaviour
         {
             //stay in beacon lit state for a bit, then auto advance to next thing
             float elapsed = Time.time - _stateActivateTime;
-            if (elapsed > BeaconLitSuccessTime)
+            bool allBeaconsLit = (_unlitBeacons.Count == 0);
+            float beaconLitDelay = allBeaconsLit ? FinalDelayToFinale : BeaconLitSuccessTime;
+            if (elapsed > beaconLitDelay)
             {
                 if (_unlitBeacons.Count == 0) //we're done, all beacons are lit!
                     SetState(Nights2State.AllBeaconsLit);
@@ -635,7 +645,9 @@ public class Nights2Mgr : MonoBehaviour
 
         //figure out if we should be in ducked mode
         Nights2AudioMgr.DuckedMode curDuckedMode = Nights2AudioMgr.DuckedMode.Off;
-        if (_curWorld != WorldID.RoomWorld)
+        if (_curState == Nights2State.AllBeaconsLit)
+           curDuckedMode = Nights2AudioMgr.DuckedMode.Finale;
+        else if (_curWorld != WorldID.RoomWorld)
            curDuckedMode = Nights2AudioMgr.DuckedMode.InAltWorld;
         else if (IsNarrationPlaying())
            curDuckedMode = Nights2AudioMgr.DuckedMode.ForNarration;
@@ -746,7 +758,10 @@ public class Nights2Mgr : MonoBehaviour
       }
 
       //start shamash sequence
-      SetState(Nights2State.SeekingShamash);
+      if (_unlitBeacons.Count > 0)
+         SetState(Nights2State.SeekingShamash);
+      else
+         SetState(Nights2State.AllBeaconsLit);
 
       SaveProgression();
       _curAltWorldIdx = NumCandlesLit() % AltWorlds.Length;

@@ -111,7 +111,8 @@ public class Nights2AudioMgr : MonoBehaviour
    {
       Off,
       InAltWorld,  //participants have teleported away
-      ForNarration //spoken narration happening right now
+      ForNarration, //spoken narration happening right now
+      Finale //all candles are lit
    }
 
    void Awake()
@@ -181,6 +182,8 @@ public class Nights2AudioMgr : MonoBehaviour
             return DuckedAltWorldLevel;
          case DuckedMode.ForNarration:
             return DuckedNarrationLevel;
+         case DuckedMode.Finale:
+            return 0.0f; //stems are silent in finale because we have a special track with all the voices
          default: break;
       }
       return 1.0f;
