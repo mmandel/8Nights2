@@ -43,6 +43,15 @@ public class Nights2Mgr : MonoBehaviour
     }
     public delegate void StateChangedHandler(object sender, StateChangedEventArgs e);
 
+    public event TeleportedHandler OnTeleported;
+    public class TeleportedEventArgs : EventArgs
+    {
+       public TeleportedEventArgs(WorldID oldWorld, WorldID newWorld) { OldWorld = oldWorld; NewWorld = newWorld; }
+       public WorldID OldWorld;
+       public WorldID NewWorld;
+    }
+    public delegate void TeleportedHandler(object sender, TeleportedEventArgs e);
+
     private Nights2State _curState = Nights2State.GettingReady;
 
     private List<Nights2Beacon> _unlitBeacons = new List<Nights2Beacon>();
@@ -198,6 +207,8 @@ public class Nights2Mgr : MonoBehaviour
         return (_curWorld == WorldID.AltWorld2);
     }
 
+    public WorldID CurWorld() { return _curWorld; }
+
     public void NotifyInWorld(WorldID newWorld)
     {
         WorldID prevWorld = _curWorld;
@@ -215,6 +226,9 @@ public class Nights2Mgr : MonoBehaviour
                 Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kBeaconAmbience);
             }
         }
+
+        if (OnTeleported != null)
+           OnTeleported(this, new TeleportedEventArgs(prevWorld, _curWorld));
     }
 
     public Nights2State GetState() { return _curState; }

@@ -626,18 +626,24 @@ public class Nights2AudioMgr : MonoBehaviour
             //start attacking or releasing based on candle state
             Nights2Beacon b =  Nights2Mgr.Instance.GetBeacon(d.CandleIdx);
             bool isLit = false;
+            bool isNarrating = false;
             if (b != null)
+            {
                isLit = b.IsLit();
+               isNarrating = b.IsNarrationPlaying();
+            }
+
+            bool shouldPlay = isLit && !isNarrating;
 
             //turn on stem if we're lit but not yet attacking or sustaining
-            if (isLit && ((d.LoopState != StemLoopState.Attacking) && (d.LoopState != StemLoopState.Sustaining)))
+            if (shouldPlay && ((d.LoopState != StemLoopState.Attacking) && (d.LoopState != StemLoopState.Sustaining)))
             {
                d.LoopState = StemLoopState.Attacking;
                d.CaptureTimestamp();
             }
 
             //turn off stem if we're not lit, but current sustaining
-            if (!isLit && (d.LoopState == StemLoopState.Sustaining))
+            if (!shouldPlay && (d.LoopState == StemLoopState.Sustaining))
             {
                d.LoopState = StemLoopState.Releasing;
                d.CaptureTimestamp();

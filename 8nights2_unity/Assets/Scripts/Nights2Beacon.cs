@@ -50,7 +50,7 @@ public class Nights2Beacon : MonoBehaviour
 
     private Nights2Icon _torchIcon;
 
-    //public bool IsNarrationPlaying() { return (_narrationStartTime >= 0.0f); }
+    public bool IsNarrationPlaying() { return (_narrationStartTime >= 0.0f); }
 
     public bool IsLit() { return _isLit; } 
     public void SetLit(bool b)
@@ -116,7 +116,22 @@ public class Nights2Beacon : MonoBehaviour
            if ((r != null) && (propName.Length > 0))
               r.material.SetColor(propName, CandleColor);
         }
+
+        //subscribe to state changed events
+        if (Nights2Mgr.Instance != null)
+           Nights2Mgr.Instance.OnTeleported += OnTeleported;
 	}
+
+   void OnTeleported(object sender, Nights2Mgr.TeleportedEventArgs e)
+   {
+      //cancel out of narration (and stop audio) if the player
+      //teleports before its done
+      if (IsNarrationPlaying() && (e.NewWorld != Nights2Mgr.WorldID.RoomWorld))
+      {
+         _narrationSound.Stop();
+         _narrationStartTime = -1; //done tracking narration
+      }
+   }
 
     void SetAnimatorBool(string boolName, bool val)
     {
@@ -203,6 +218,16 @@ public class Nights2Beacon : MonoBehaviour
         if ((_torchIcon != null) && (_closestSpot != null))
         {
             Nights2SpotMgr.Instance.MakeSpotActive(_closestSpot);
+        }
+
+        if (IsNarrationPlaying())
+        {
+           //end narration state after its time
+           float elapsedNarration = Time.time - _narrationStartTime;
+           if (elapsedNarration >= _narrationDuration) //done?
+           {
+              _narrationStartTime = -1;
+           }
         }
 
 	}
