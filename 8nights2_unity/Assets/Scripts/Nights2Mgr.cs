@@ -84,6 +84,7 @@ public class Nights2Mgr : MonoBehaviour
     private TurnOnInSequenceParams _turnOnSeqParams = null;
     private TurnAllOnParams _turnOnAllParams = null;
     private GradientCycleParams _gradCycleParams = null;
+    private ScrollColorParams _scrollColorParams = null;
 
     private bool _torchHasMagic = false;
 
@@ -105,6 +106,7 @@ public class Nights2Mgr : MonoBehaviour
        TurnAllOn, //turn on for x seconds, optional color override
        GradientCycle, //cycle through a gradient at the given spead with option fmod level meter to control brightness
        TurnOnInSequence, //turn on one at a time using counter clockwise sequence, option to specify delay between each, and final hold time
+       ScrollColors //scroll colors around circle
     }
 
     public class TurnAllOnParams
@@ -157,6 +159,22 @@ public class Nights2Mgr : MonoBehaviour
        public Nights2Beacon[] LightOrder;
     }
 
+    public class ScrollColorParams
+    {
+       public ScrollColorParams(float holdDuration, float fadeDuration, float scrollSpeed, Nights2Beacon[] lightOrder)
+       {
+          HoldDuration = holdDuration;
+          FadeDuration = fadeDuration;
+          ScrollSpeed = scrollSpeed;
+          LightOrder = lightOrder;
+       }
+
+       public float HoldDuration;
+       public float FadeDuration;
+       public float ScrollSpeed;
+       public Nights2Beacon[] LightOrder;
+    }
+
     //trigger effect on lights that turns them on in sequence
     public void FXTurnOnInSequence(TurnOnInSequenceParams paramDef)
     {
@@ -178,6 +196,13 @@ public class Nights2Mgr : MonoBehaviour
     {
        _curLightOverride = LightAction.TurnAllOn;
        _turnOnAllParams = paramDef;
+       _lightActionStartTime = Time.time;
+    }
+
+    public void FXScrollColors(ScrollColorParams paramDef)
+    {
+       _curLightOverride = LightAction.ScrollColors;
+       _scrollColorParams = paramDef;
        _lightActionStartTime = Time.time;
     }
 
@@ -301,6 +326,9 @@ public class Nights2Mgr : MonoBehaviour
             {
                if (FinaleEvent != null)
                   FinaleEvent.Play();
+
+               float scrollSpeed = 3.0f;
+               FXScrollColors(new ScrollColorParams(38.0f, 1.0f, scrollSpeed, ClockwiseCandleOrder));
 
                Nights2AudioMgr.Instance.StopShamashDrones();
             }
@@ -428,6 +456,7 @@ public class Nights2Mgr : MonoBehaviour
 
     public void ResetInstallation()
     {
+       _curLightOverride = LightAction.None;
         Nights2AudioMgr.Instance.StopShamashDrones();
         Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kIntroAmbience);
         if (FinaleEvent != null)
@@ -741,6 +770,30 @@ public class Nights2Mgr : MonoBehaviour
                EightNightsMgr.GroupID candleGroup = Nights2AudioMgr.Instance.GetGroupForBeacon(candle);
                LightMgr.Instance.SetAllLightsInGroup(candleGroup, (i <= onIdxThresh) ? fadeAmt : 0.0f, LightMgr.Instance.GetDefaultColor(candleGroup));
             }            
+
+         break;
+
+         case LightAction.ScrollColors:
+            float totalScrollTime =   _scrollColorParams.HoldDuration + _scrollColorParams.FadeDuration;
+            
+            u = Mathf.Clamp01(actionElapsed / totalScrollTime);
+
+            float fadeOut = 1.0f - Mathf.InverseLerp(_scrollColorParams.HoldDuration, totalScrollTime, actionElapsed);
+            float scrollOffset = actionElapsed * _scrollColorParams.ScrollSpeed;
+            for (int i = 0; i < _scrollColorParams.LightOrder.Length; i++)
+            {
+               int idx1 = (i + (int)scrollOffset) % _scrollColorParams.LightOrder.Length;
+               int idx2 = (idx1 + 1) % _scrollColorParams.LightOrder.Length;
+               float blendColorU = scrollOffset % 1.0f;
+
+               Nights2Beacon candle1 = _scrollColorParams.LightOrder[idx1];
+               Nights2Beacon candle2 = _scrollColorParams.LightOrder[idx2];
+               Color scrolledColor = Color.Lerp(candle1.CandleColor, candle2.CandleColor, blendColorU);
+
+               Nights2Beacon candle = _scrollColorParams.LightOrder[i];
+               EightNightsMgr.GroupID candleGroup = Nights2AudioMgr.Instance.GetGroupForBeacon(candle);
+               LightMgr.Instance.SetAllLightsInGroup(candleGroup, fadeOut, scrolledColor);
+            }
 
          break;
 
