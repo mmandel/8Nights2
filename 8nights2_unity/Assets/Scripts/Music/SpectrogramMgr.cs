@@ -51,24 +51,28 @@ public class SpectrogramMgr : MonoBehaviour
          FileStream fs = File.OpenRead(filePath);
          BinaryReader b = new BinaryReader(fs);
 
-         int numCurves = b.ReadInt32();
-         float timeBetweenSamples = b.ReadSingle();
-         _spectroCurves = new AnimationCurve[numCurves];
-         for (int i = 0; i < numCurves; i++)
+         try
          {
-            AnimationCurve curve = new AnimationCurve();
-            _spectroCurves[i] = curve;
-
-            float time = 0.0f;
-            float[] curveValues = ReadFloats(b);
-            for (int j = 0; j < curveValues.Length; j++)
+            int numCurves = b.ReadInt32();
+            float timeBetweenSamples = b.ReadSingle();
+            _spectroCurves = new AnimationCurve[numCurves];
+            for (int i = 0; i < numCurves; i++)
             {
-               curve.AddKey(time, curveValues[j]);
-               time += timeBetweenSamples;
+               AnimationCurve curve = new AnimationCurve();
+               _spectroCurves[i] = curve;
+
+               float time = 0.0f;
+               float[] curveValues = ReadFloats(b);
+               for (int j = 0; j < curveValues.Length; j++)
+               {
+                  curve.AddKey(time, curveValues[j]);
+                  time += timeBetweenSamples;
+               }
             }
          }
+         catch (System.Exception e) { Debug.LogWarning("Error reading '" + PathToSpecFile + "': " + e.Message); }
 
-         _fftFreqBands = ReadFloats(b);
+         //_fftFreqBands = ReadFloats(b);
       }
 
       //draw spectrogram
