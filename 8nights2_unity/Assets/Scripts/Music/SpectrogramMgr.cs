@@ -21,6 +21,8 @@ public class SpectrogramMgr : MonoBehaviour
       public string PathToSpecFile = "Spectrograms/Humans 1.spec";
       public bool DebugDraw = false;
 
+      private float _lengthInSecs = 0.0f;
+
       public static float[] ReadFloats(BinaryReader b)
       {
          int arrayLen = b.ReadInt32();
@@ -56,24 +58,28 @@ public class SpectrogramMgr : MonoBehaviour
             int numCurves = b.ReadInt32();
             float timeBetweenSamples = b.ReadSingle();
             _spectroCurves = new AnimationCurve[numCurves];
+            float time = 0.0f;
             for (int i = 0; i < numCurves; i++)
             {
                AnimationCurve curve = new AnimationCurve();
                _spectroCurves[i] = curve;
 
-               float time = 0.0f;
+               time = 0.0f;
                float[] curveValues = ReadFloats(b);
                for (int j = 0; j < curveValues.Length; j++)
                {
                   curve.AddKey(time, curveValues[j]);
                   time += timeBetweenSamples;
                }
+               _lengthInSecs = time;
             }
          }
          catch (System.Exception e) { Debug.LogWarning("Error reading '" + PathToSpecFile + "': " + e.Message); }
 
          //_fftFreqBands = ReadFloats(b);
       }
+
+      public float LengthInSecs() { return _lengthInSecs; }
 
       //draw spectrogram
       public void GUIDraw()
@@ -114,6 +120,10 @@ public class SpectrogramMgr : MonoBehaviour
       //get the intensity of a particular band at the given time
       public float GetBandValue(int idx, float time) 
       {
+         //wrap time around, in case we are syncing with signal that is looping
+         if ((time > _lengthInSecs) && (_lengthInSecs > 0))
+            time = time % _lengthInSecs;
+
          if (_spectroCurves == null) //fake spectrograme if we don't have one
          {
             float stemVolume = 0.0f;
