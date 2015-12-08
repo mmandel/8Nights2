@@ -21,6 +21,7 @@ public class Nights2AnimTrigger : MonoBehaviour
 
     public string InAltWorld1Bool = "alt_world1";
     public string InAltWorld2Bool = "alt_world2";
+    public string InFinaleBool = "in_finale";
 
     [Space(10)]
 
@@ -41,6 +42,7 @@ public class Nights2AnimTrigger : MonoBehaviour
     private bool _hasExitPortalParam = false;
     private bool _hasAltWorld1Param = false;
     private bool _hasAltWorld2Param = false;
+    private bool _hasFinaleParam = false;
 
     void Start()
     {
@@ -61,6 +63,7 @@ public class Nights2AnimTrigger : MonoBehaviour
 
         _hasAltWorld1Param = Nights2Utl.AnimatorHasParam(_animator, InAltWorld1Bool);
         _hasAltWorld2Param = Nights2Utl.AnimatorHasParam(_animator, InAltWorld2Bool);
+        _hasFinaleParam = Nights2Utl.AnimatorHasParam(_animator, InFinaleBool);
     }
 
     void Update()
@@ -78,6 +81,8 @@ public class Nights2AnimTrigger : MonoBehaviour
             _animator.SetBool(InAltWorld1Bool, Nights2Mgr.Instance.InAltWorld1());
         if (_hasAltWorld2Param)
             _animator.SetBool(InAltWorld2Bool, Nights2Mgr.Instance.InAltWorld2());
+        if (_hasFinaleParam)
+           _animator.SetBool(InFinaleBool, Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.AllBeaconsLit);
     }
 
     void OnDestroy()
