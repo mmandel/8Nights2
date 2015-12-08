@@ -13,6 +13,7 @@ public class FFTLightEffect : MonoBehaviour
    public bool FadeWithStemVolume = true;
    public bool DisableDuringCrescendos = true;
    public bool AllowNights2Override = true; //sometimes we want to show other things on the lights...
+   public bool AllowOverrideWithNarration = false; //allow overriding stems with narration level as retreived from Nights2Beacon
    [Range(0, 39)]
    public int MinFFTBin = 0;
    [Range(0, 39)]
@@ -110,6 +111,24 @@ public class FFTLightEffect : MonoBehaviour
       {
          if (FadeWithStemVolume)
             groupFader = Nights2AudioMgr.Instance.GetGroupVolume(Group);
+      }
+
+      //if this group has narration playing, let its audio level override the FFT
+      if (AllowOverrideWithNarration)
+      {
+         Nights2Beacon b = Nights2AudioMgr.Instance.GetBeaconForGroup(Group);
+         if ((b != null) && b.IsNarrationPlaying())
+         {
+            groupFader = 1.0f;
+            //curSignal = b.CurNarrationAudioLevel();
+            
+            curSignal = 0.0f;
+            for (int i = MinFFTBin; i <= MaxFFTBin; i++)
+            {
+               curSignal += b.GetNarrationFFT(i);
+            }
+            curSignal = Mathf.Clamp01(Gain * (curSignal / numSamples));
+         }
       }
 
       if (EnableADSR)

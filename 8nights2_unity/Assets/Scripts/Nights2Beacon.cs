@@ -45,12 +45,16 @@ public class Nights2Beacon : MonoBehaviour
     private Nights2Spot _closestSpot = null;
 
     private FMOD_StudioEventEmitter _narrationSound = null;
+    private FModLevelMeter _narrationMeter = null;
+    private FModPrecomputedFFT _narrationFFT = null;
     private float _narrationStartTime = -1.0f;
     private float _narrationDuration = 20.0f;
 
     private Nights2Icon _torchIcon;
 
     public bool IsNarrationPlaying() { return (_narrationStartTime >= 0.0f); }
+    public float CurNarrationAudioLevel() { return (IsNarrationPlaying() && (_narrationMeter != null)) ? _narrationMeter.CurLevel : 0.0f; }
+    public float GetNarrationFFT(int bin) { return (IsNarrationPlaying() && (_narrationFFT != null)) ? _narrationFFT.CurBandValue(bin) : 0.0f; }
 
     public bool IsLit() { return _isLit; } 
     public void SetLit(bool b, bool force = false)
@@ -109,6 +113,11 @@ public class Nights2Beacon : MonoBehaviour
 
         EightNightsMgr.GroupID group = Nights2AudioMgr.Instance.GetGroupForBeacon(this);
         _narrationSound = Nights2AudioMgr.Instance.GetNarrationForGroup(group);
+        if (_narrationSound != null)
+        {
+           _narrationMeter = _narrationSound.gameObject.GetComponent<FModLevelMeter>();
+           _narrationFFT = _narrationSound.gameObject.GetComponent<FModPrecomputedFFT>();
+        }
         _narrationDuration = Nights2AudioMgr.Instance.GetNarrationTimeForGroup(group);
 
         SetIsNext(false);
