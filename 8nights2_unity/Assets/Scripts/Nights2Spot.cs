@@ -11,12 +11,18 @@ public class Nights2Spot : MonoBehaviour
 
    public EightNightsMgr.GroupID LightGroup = EightNightsMgr.GroupID.Spot1;
 
+   [ScriptButton("Debug SHOW", "OnDebugShow")]
+   public bool DummyDebugShow;
+    [ScriptButton("Debug HIDE", "OnDebugHide")]
+   public bool DummyDebugHide;
+
    private bool _isSpotActive = false;
    private bool _lanternArrived = false;
    private Collider _collider = null;
    private GameObject _spawned = null;
 
    private Nights2SpotDebug _debugViz = null;
+   private bool _debugOverride = false;
 
    public Vector3 GetPos()
    {
@@ -46,7 +52,7 @@ public class Nights2Spot : MonoBehaviour
     void Update()
     {
 
-        if (_debugViz != null)
+        if ((_debugViz != null) && !_debugOverride)
             _debugViz.gameObject.SetActive(Nights2SpotMgr.Instance.ShowSpotDebugSpheres);
     }
 
@@ -92,4 +98,19 @@ public class Nights2Spot : MonoBehaviour
       Gizmos.DrawSphere(transform.position, kSphereRadius);      
    }
 
+   public void OnDebugShow(string propPath)
+   {
+      MakeActive(true);
+      if (_debugViz != null)
+         _debugViz.gameObject.SetActive(true);
+      _debugOverride = true;
+   }
+
+   public void OnDebugHide(string propPath)
+   {
+      MakeActive(false);
+      if (_debugViz != null)
+         _debugViz.gameObject.SetActive(false);
+      _debugOverride = false;
+   }
 }
