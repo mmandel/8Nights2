@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.07.00">
+    <object class="AudioFile" id="{e584daaf-ba59-445a-b20d-aed7be463d35}">
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>180.01770975056689</value>
+        </property>
+        <property name="audioFilePath">
+            <value>$(AUDIO_BIN_DIR)/Beacon 3-3 Seamless Loop {1e7eceeb-f2ce-46de-9ab6-88257edc2898}.wav</value>
+        </property>
+        <relationship name="container">
+            <destination>{b62342fb-7e92-41e4-a677-3fc59bac55b4}</destination>
+        </relationship>
+    </object>
+</objects>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.07.00">
+    <object class="AudioFile" id="{06da40a6-1554-4922-be14-5e81784a6d00}">
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>7.4630158730158733</value>
+        </property>
+        <property name="audioFilePath">
+            <value>$(AUDIO_BIN_DIR)/Enter-Exit Portal - TRIMMED {61de7d4a-5e2b-424e-975e-17896beb3591}.wav</value>
+        </property>
+        <relationship name="container">
+            <destination>{b62342fb-7e92-41e4-a677-3fc59bac55b4}</destination>
+        </relationship>
+    </object>
+</objects>
