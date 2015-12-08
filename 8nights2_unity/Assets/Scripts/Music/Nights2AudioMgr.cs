@@ -16,11 +16,12 @@ public class Nights2AudioMgr : MonoBehaviour
    public EightNightsMusicPlayerFMod MusicPlayer;
 
    [Space(10)]
-
-   public FMOD_StudioEventEmitter ShamashAmbience;
-   public FMOD_StudioEventEmitter BeaconAmbience;
    public FMOD_StudioEventEmitter CaveWorldTheme;
    public FMOD_StudioEventEmitter OpenWorldTheme;
+   public FMOD_StudioEventEmitter IntroAmbience;
+   [Space(10)]
+   public FMOD_StudioEventEmitter ShamashDrone1;
+   public FMOD_StudioEventEmitter ShamashDrone2;
 
    [Space(10)] 
 
@@ -191,27 +192,51 @@ public class Nights2AudioMgr : MonoBehaviour
 
    public enum BackingLoops
    {
-       kShamashAmbience,
-       kBeaconAmbience,
+       kNone,
        kCaveWorldTheme,
-       kOpenWorldTheme
+       kOpenWorldTheme,
+       kIntroAmbience
    };
 
    public void ActivateBackingLoop(BackingLoops l)
    {
-       ShamashAmbience.Stop();
-       BeaconAmbience.Stop();
        CaveWorldTheme.Stop();
        OpenWorldTheme.Stop();
+       IntroAmbience.Stop();
 
        switch (l)
        {
-           case BackingLoops.kBeaconAmbience: BeaconAmbience.Play(); break;
-           case BackingLoops.kShamashAmbience: ShamashAmbience.Play(); break;
            case BackingLoops.kCaveWorldTheme: CaveWorldTheme.Play(); break;
            case BackingLoops.kOpenWorldTheme: OpenWorldTheme.Play(); break;
+           case BackingLoops.kIntroAmbience:  IntroAmbience.Play(); break;
            default: break;
        }
+   }
+
+   public void StopShamashDrones()
+   {
+      if (ShamashDrone1 != null)
+         ShamashDrone1.Stop();
+      if (ShamashDrone2 != null)
+         ShamashDrone2.Stop();
+   }
+
+   public void PlayShamashDrone1()
+   {
+      if (ShamashDrone2 != null)
+         ShamashDrone2.Stop();
+
+      if (ShamashDrone1 != null)
+         ShamashDrone1.Play();
+   }
+
+   public void PlayShamashDrone2()
+   {
+      if (ShamashDrone1 != null)
+         ShamashDrone1.Stop();
+
+      if (ShamashDrone2 != null)
+         ShamashDrone2.Play();
    }
 
 

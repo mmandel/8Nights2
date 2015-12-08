@@ -53,9 +53,9 @@ public class Nights2Beacon : MonoBehaviour
     public bool IsNarrationPlaying() { return (_narrationStartTime >= 0.0f); }
 
     public bool IsLit() { return _isLit; } 
-    public void SetLit(bool b)
+    public void SetLit(bool b, bool force = false)
     {
-        if (_isLit != b)
+        if ((_isLit != b) || force)
         {
             _isLit = b;
 
@@ -81,6 +81,12 @@ public class Nights2Beacon : MonoBehaviour
 
     public int BeaconIdx() { return _beaconIdx; }
     public void SetBeaconIdx(int idx) { _beaconIdx = idx; }
+
+    void OnEnable()
+    {
+       //animator variables seem to be reset when disabled and then enabled, so make sure this is set
+       SetLit(_isLit, true);
+    }
 
 	void Start () 
     {
@@ -138,11 +144,11 @@ public class Nights2Beacon : MonoBehaviour
    {
       //cancel out of narration (and stop audio) if the player
       //teleports before its done
-      if (IsNarrationPlaying() && (e.NewWorld != Nights2Mgr.WorldID.RoomWorld))
-      {
-         _narrationSound.Stop();
-         _narrationStartTime = -1; //done tracking narration
-      }
+      //if (IsNarrationPlaying() && (e.NewWorld != Nights2Mgr.WorldID.RoomWorld))
+      //{
+      //   _narrationSound.Stop();
+      //   _narrationStartTime = -1; //done tracking narration
+      //}
    }
 
     void SetAnimatorBool(string boolName, bool val)
@@ -196,7 +202,8 @@ public class Nights2Beacon : MonoBehaviour
 
         Nights2Mgr.Nights2State curState = Nights2Mgr.Instance.GetState();
 
-        SetAnimatorBool(IsHiddenBool, IsHiddenInWorld());
+        bool isHidden = IsHiddenInWorld();
+        SetAnimatorBool(IsHiddenBool, isHidden);
         SetAnimatorBool(IsNextBool, _isNextBeacon && IsInSeekingState());
         //bool showNearState = _playerIsNear;
         //once we show the beacon in near state, just leave it there till the task is completed

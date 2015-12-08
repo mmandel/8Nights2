@@ -59,6 +59,9 @@
     <object class="EventAutomatableProperties" id="{a2282dc8-ccea-4b29-8d61-971cf3ae828d}"/>
     <object class="MarkerTrack" id="{37c0b967-9a62-4763-b6d1-460dc8d8cf08}"/>
     <object class="GroupTrack" id="{f0289203-5d4f-4227-90ab-d70afbc9c910}">
+        <relationship name="automationTracks">
+            <destination>{68d79f67-da94-4ea0-be15-d7e43fd61d70}</destination>
+        </relationship>
         <relationship name="modules">
             <destination>{b5caf4ac-4a03-407a-880b-2d0ebe8c269c}</destination>
         </relationship>
@@ -69,6 +72,9 @@
     <object class="Timeline" id="{cc2e3876-9b60-4894-9f74-8d33a7ef312d}">
         <relationship name="modules">
             <destination>{b5caf4ac-4a03-407a-880b-2d0ebe8c269c}</destination>
+        </relationship>
+        <relationship name="automationCurves">
+            <destination>{73bec75f-24fb-4a73-ab14-758752e189d2}</destination>
         </relationship>
     </object>
     <object class="EventMixerMaster" id="{80e7506f-77a2-47fb-8381-9f530abad482}">
@@ -91,9 +97,20 @@
         </relationship>
     </object>
     <object class="MixerBusPanner" id="{bcded73e-2581-4dd7-bdf1-4079ab0f1e9e}"/>
+    <object class="AutomationTrack" id="{68d79f67-da94-4ea0-be15-d7e43fd61d70}">
+        <property name="nameOfPropertyBeingAutomated">
+            <value>volume</value>
+        </property>
+        <relationship name="automationCurves">
+            <destination>{73bec75f-24fb-4a73-ab14-758752e189d2}</destination>
+        </relationship>
+        <relationship name="objectBeingAutomated">
+            <destination>{e5e5f783-46b0-4bba-b402-08c3a9584a34}</destination>
+        </relationship>
+    </object>
     <object class="SingleSound" id="{b5caf4ac-4a03-407a-880b-2d0ebe8c269c}">
         <property name="start">
-            <value>0</value>
+            <value>0.20000000298023224</value>
         </property>
         <property name="length">
             <value>108.48362811791384</value>
@@ -104,7 +121,7 @@
     </object>
     <object class="EventMixerGroup" id="{e5e5f783-46b0-4bba-b402-08c3a9584a34}">
         <property name="volume">
-            <value>-2</value>
+            <value>-9</value>
         </property>
         <property name="name">
             <value>Audio 1</value>
@@ -117,6 +134,13 @@
         </relationship>
         <relationship name="output">
             <destination>{80e7506f-77a2-47fb-8381-9f530abad482}</destination>
+        </relationship>
+    </object>
+    <object class="AutomationCurve" id="{73bec75f-24fb-4a73-ab14-758752e189d2}">
+        <relationship name="automationPoints">
+            <destination>{377ad307-2064-4df4-8f5f-9a9e75ccf95c}</destination>
+            <destination>{bb45ce8b-de4d-4b8c-be09-906388583351}</destination>
+            <destination>{1b1586ea-0bdb-407a-939a-1eff459f6873}</destination>
         </relationship>
     </object>
     <object class="ADSRModulator" id="{049d2cc3-415f-4e84-a91c-7d3e0355b1b1}">
@@ -182,6 +206,36 @@
         </property>
         <property name="outputFormatOverridden">
             <value>true</value>
+        </property>
+    </object>
+    <object class="AutomationPoint" id="{377ad307-2064-4df4-8f5f-9a9e75ccf95c}">
+        <property name="position">
+            <value>43.000299839105757</value>
+        </property>
+        <property name="value">
+            <value>-9</value>
+        </property>
+        <property name="curveShape">
+            <value>0.550603151</value>
+        </property>
+    </object>
+    <object class="AutomationPoint" id="{bb45ce8b-de4d-4b8c-be09-906388583351}">
+        <property name="position">
+            <value>45.738027877042924</value>
+        </property>
+        <property name="value">
+            <value>-80</value>
+        </property>
+    </object>
+    <object class="AutomationPoint" id="{1b1586ea-0bdb-407a-939a-1eff459f6873}">
+        <property name="position">
+            <value>43.750796704607765</value>
+        </property>
+        <property name="value">
+            <value>-11.2865486</value>
+        </property>
+        <property name="curveShape">
+            <value>0.434855402</value>
         </property>
     </object>
     <object class="MixerBusFader" id="{56e2461f-7dd6-4a6a-b59a-226398c2d222}"/>
