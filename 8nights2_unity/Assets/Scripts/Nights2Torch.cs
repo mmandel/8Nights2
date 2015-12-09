@@ -14,6 +14,7 @@ public class Nights2Torch : MonoBehaviour
     [Space(10)]
     public Renderer TorchColorRend;
     public string TorchColorProp = "_Color";
+    public ParticleSystem[] PartSysToGetColor = new ParticleSystem[0];
 
     [Space(10)]
 
@@ -107,6 +108,15 @@ public class Nights2Torch : MonoBehaviour
         {
             Color nextCandleColor = (Nights2Mgr.Instance.NextBeacon() != null) ? Nights2Mgr.Instance.NextBeacon().CandleColor : _offFlameColor;
             TorchColorRend.material.SetColor(TorchColorProp, IsFlameOn() ? nextCandleColor : _offFlameColor);
+        }
+
+        for (int i = 0; i < PartSysToGetColor.Length; i++)
+        {
+           if ((PartSysToGetColor[i] != null) && IsFlameOn())
+           {
+              Color nextCandleColor = (Nights2Mgr.Instance.NextBeacon() != null) ? Nights2Mgr.Instance.NextBeacon().CandleColor : _offFlameColor;
+              PartSysToGetColor[i].startColor = nextCandleColor;
+           }
         }
 
 	    //make sure we are parented to the right thing

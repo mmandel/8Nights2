@@ -51,6 +51,8 @@ public class Nights2Spot : MonoBehaviour
 
     void Update()
     {
+       if (!Nights2SpotMgr.Instance.IsOverridingSpots() && (LightMgr.Instance != null) && !LightMgr.Instance.TestLights)
+          LightMgr.Instance.SetLight(LightGroup, EightNightsMgr.LightID.Light1, _isSpotActive ? 1.0f : 0.0f);
 
         if ((_debugViz != null) && !_debugOverride)
             _debugViz.gameObject.SetActive(Nights2SpotMgr.Instance.ShowSpotDebugSpheres);

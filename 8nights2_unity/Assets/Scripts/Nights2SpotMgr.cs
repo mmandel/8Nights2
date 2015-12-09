@@ -65,7 +65,12 @@ public class Nights2SpotMgr : MonoBehaviour
       _overrideHoldTime = optionalHoldTime;
       _overrideAction = l;
       _actionSpot = actionSpot;
-   }   
+   }
+
+   public bool IsOverridingSpots()
+   {
+      return _overrideStartTime > 0.0f;
+   }
 
    void Awake()
    {

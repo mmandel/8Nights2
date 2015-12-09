@@ -243,7 +243,10 @@ public class Nights2Beacon : MonoBehaviour
            DestroyIcon();
 
         //if showing icon, light up spot
-        if ((_torchIcon != null) && (_closestSpot != null))
+        if (((_torchIcon != null) && (_closestSpot != null)) ||
+            //if we're through the exit portal we should be directing to the candle
+            (IsNext() && (Nights2Mgr.Instance.GetState() == Nights2Mgr.Nights2State.SeekingBeacon) && (Nights2TorchPlayer.Instance.GetPortalState() == Nights2TorchPlayer.PortalState.ThroughExitPortal))
+           )
         {
             Nights2SpotMgr.Instance.MakeSpotActive(_closestSpot);
         }
