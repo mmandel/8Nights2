@@ -69,6 +69,7 @@ public class Nights2Mgr : MonoBehaviour
     private int _curAltWorldIdx = 0;
     private float _stateActivateTime = 0.0f;
     private WorldID _curWorld = WorldID.RoomWorld;
+    private bool _isFinaleActive = false;
 
     private float _turnStartTime = -1.0f;
     private float _turnEndTime = -1.0f;
@@ -329,6 +330,7 @@ public class Nights2Mgr : MonoBehaviour
 
                float scrollSpeed = 3.0f;
                FXScrollColors(new ScrollColorParams(38.0f, 1.0f, scrollSpeed, ClockwiseCandleOrder));
+               _isFinaleActive = true;
 
                Nights2AudioMgr.Instance.StopShamashDrones();
             }
@@ -443,6 +445,11 @@ public class Nights2Mgr : MonoBehaviour
        return false;
     }
 
+    public bool IsFinaleActive()
+    {
+       return _isFinaleActive;
+    }
+
     void Awake()
     {
         Instance = this;
@@ -456,6 +463,7 @@ public class Nights2Mgr : MonoBehaviour
 
     public void ResetInstallation()
     {
+       _isFinaleActive = false;
        _curLightOverride = LightAction.None;
         Nights2AudioMgr.Instance.StopShamashDrones();
         Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kIntroAmbience);
@@ -691,7 +699,7 @@ public class Nights2Mgr : MonoBehaviour
 
         //figure out if we should be in ducked mode
         Nights2AudioMgr.DuckedMode curDuckedMode = Nights2AudioMgr.DuckedMode.Off;
-        if (_curState == Nights2State.AllBeaconsLit)
+        if ((_curState == Nights2State.AllBeaconsLit) && IsFinaleActive())
            curDuckedMode = Nights2AudioMgr.DuckedMode.Finale;
         else if (_curWorld != WorldID.RoomWorld)
            curDuckedMode = Nights2AudioMgr.DuckedMode.InAltWorld;
@@ -802,6 +810,13 @@ public class Nights2Mgr : MonoBehaviour
 
       if (Mathf.Approximately(u, 1.0f)) //done?
       {
+         //finale over
+         if ((_curLightOverride == LightAction.ScrollColors) && (_curState == Nights2State.AllBeaconsLit))
+         {
+            Nights2AudioMgr.Instance.PlayShamashDrone2();
+            _isFinaleActive = false;
+         }
+
          _curLightOverride = LightAction.None;
       }
       

@@ -139,7 +139,13 @@ public class Nights2Torch : MonoBehaviour
       }
       _lastXBeeWrite = Time.time;
 
-      if (IsFlameOn())
+      //send "Z" during finale
+      if (Nights2Mgr.Instance.IsFinaleActive())
+      {
+         //Debug.Log("XBEE: Z");
+         _xbeeCom.Write("Z");
+      }
+      else if (IsFlameOn())
       {
          int numCandlesOn = Nights2Mgr.Instance.NumCandlesLit();
 
