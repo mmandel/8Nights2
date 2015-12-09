@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: fed57fff3f864164189fc9abbdf03ac3
+timeCreated: 1449627596
+licenseType: Pro
+ShaderImporter:
+  defaultTextures:
+  - _Noise: {fileID: 2800000, guid: 4e488caea5ebb1c4c942fb5df9e6260c, type: 3}
+  - _facets: {fileID: 2800000, guid: 934e890c2c24c6a4197d9e84524dc97c, type: 3}
+  - _flickergradient: {fileID: 2800000, guid: 33808ab004e674f428e41cb59df35a2b, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
