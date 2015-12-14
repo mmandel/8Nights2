@@ -699,7 +699,7 @@ public class Nights2Mgr : MonoBehaviour
 
         //figure out if we should be in ducked mode
         Nights2AudioMgr.DuckedMode curDuckedMode = Nights2AudioMgr.DuckedMode.Off;
-        if ((_curState == Nights2State.AllBeaconsLit) && IsFinaleActive())
+        if ((_curState == Nights2State.AllBeaconsLit) /*&& IsFinaleActive()*/)
            curDuckedMode = Nights2AudioMgr.DuckedMode.Finale;
         else if (_curWorld != WorldID.RoomWorld)
            curDuckedMode = Nights2AudioMgr.DuckedMode.InAltWorld;
@@ -813,7 +813,8 @@ public class Nights2Mgr : MonoBehaviour
          //finale over
          if ((_curLightOverride == LightAction.ScrollColors) && (_curState == Nights2State.AllBeaconsLit))
          {
-            Nights2AudioMgr.Instance.PlayShamashDrone2();
+            Nights2AudioMgr.Instance.StopShamashDrones();
+            Nights2AudioMgr.Instance.ActivateBackingLoop(Nights2AudioMgr.BackingLoops.kIntroAmbience);
             _isFinaleActive = false;
          }
 
